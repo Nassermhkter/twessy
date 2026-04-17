@@ -4,11 +4,799 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Twessy - من نحن</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/responsive.css">
+
+    <style>
+        :root {
+            --primary: #0D9488;
+            --primary-dark: #0F766E;
+            --primary-darker: #115E59;
+            --primary-light: #CCFBF1;
+            --accent: #F59E0B;
+            --accent-dark: #D97706;
+            --bg: #F8FAFC;
+            --bg-white: #FFFFFF;
+            --text: #0F172A;
+            --text-secondary: #64748B;
+            --text-light: #94A3B8;
+            --border: #E2E8F0;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow: 0 1px 3px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 16px rgba(0,0,0,0.1);
+            --radius: 12px;
+            --radius-sm: 8px;
+            --radius-lg: 16px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --font: 'Tajawal', sans-serif;
+        }
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+        a { text-decoration: none; color: inherit; transition: var(--transition); }
+        ul { list-style: none; }
+        img { max-width: 100%; height: auto; display: block; }
+        input, textarea, button, select { font-family: inherit; font-size: inherit; border: none; outline: none; }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+
+        /* أزرار */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 28px;
+            border-radius: var(--radius-sm);
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            transition: var(--transition);
+            white-space: nowrap;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .btn:active { transform: scale(0.96); }
+        .btn-primary {
+            background: var(--primary);
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(13,148,136,0.35);
+        }
+        .btn-primary:hover { background: var(--primary-dark); }
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+        .btn-outline:hover { background: var(--primary); color: #fff; }
+
+        /* الشريط العلوي */
+        .top-bar {
+            background: var(--primary-dark);
+            color: #fff;
+            font-size: 13px;
+            padding: 8px 0;
+            display: none;
+        }
+        .top-bar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .contact-info {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .contact-info span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .shipping-info {
+            font-weight: 700;
+            background: var(--accent);
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+        @media (min-width: 768px) { .top-bar { display: block; } }
+
+        /* شريط التنقل */
+        .navbar {
+            background: var(--bg-white);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+        }
+        .nav-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 60px;
+        }
+        .logo a {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .logo i {
+            font-size: 28px;
+            color: var(--primary);
+        }
+        .logo h1 {
+            font-size: 24px;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .nav-links {
+            display: none;
+            flex-direction: column;
+            position: fixed;
+            top: 60px;
+            right: 0;
+            left: 0;
+            bottom: 0;
+            background: var(--bg-white);
+            padding: 20px;
+            gap: 4px;
+            z-index: 999;
+            overflow-y: auto;
+            animation: slideDown 0.3s ease;
+        }
+        .nav-links.active { display: flex; }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .nav-links li a {
+            display: block;
+            padding: 14px 16px;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            font-size: 16px;
+            color: var(--text);
+        }
+        .nav-links li a:hover,
+        .nav-links li a.active {
+            background: var(--primary-light);
+            color: var(--primary-dark);
+        }
+        .nav-icons {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .nav-icons a {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            color: var(--text-secondary);
+            transition: var(--transition);
+            position: relative;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .nav-icons a:hover {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+        .instagram-icon:hover {
+            color: #E1306C !important;
+            background: #FCE4EC !important;
+        }
+        .cart-count {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            background: var(--accent);
+            color: #fff;
+            font-size: 10px;
+            font-weight: 800;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
+        .menu-toggle {
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            color: var(--text);
+            font-size: 20px;
+            transition: var(--transition);
+            -webkit-tap-highlight-color: transparent;
+        }
+        .menu-toggle:hover {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+        @media (min-width: 1024px) {
+            .menu-toggle { display: none; }
+            .nav-links {
+                display: flex !important;
+                flex-direction: row;
+                position: static;
+                background: transparent;
+                padding: 0;
+                gap: 4px;
+                animation: none;
+            }
+            .nav-links li a { padding: 8px 14px; font-size: 14px; }
+        }
+
+        /* رأس الصفحة */
+        .page-header {
+            position: relative;
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 50%, #14B8A6 100%);
+            padding: 44px 0;
+            text-align: center;
+            color: #fff;
+            overflow: hidden;
+        }
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: -40%;
+            right: -15%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(255,255,255,0.07) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: heroGlow 6s ease-in-out infinite alternate;
+        }
+        .page-header::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -10%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(245,158,11,0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: heroGlow 8s ease-in-out infinite alternate-reverse;
+        }
+        @keyframes heroGlow {
+            from { transform: scale(1); opacity: 0.6; }
+            to { transform: scale(1.3); opacity: 1; }
+        }
+        .page-header .container { position: relative; z-index: 2; }
+        .page-header h1 {
+            font-size: 26px;
+            font-weight: 900;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.12);
+        }
+        .page-header p {
+            font-size: 14px;
+            opacity: 0.9;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        @media (min-width: 640px) {
+            .page-header { padding: 56px 0; }
+            .page-header h1 { font-size: 34px; }
+            .page-header p { font-size: 16px; }
+        }
+
+        /* محتوى الصفحة */
+        .content-page {
+            padding: 36px 0 50px;
+        }
+
+        .content-section {
+            margin-bottom: 40px;
+        }
+
+        .content-section > h2 {
+            font-size: 22px;
+            font-weight: 900;
+            color: var(--text);
+            margin-bottom: 16px;
+            position: relative;
+            padding-bottom: 12px;
+            display: inline-block;
+        }
+
+        .content-section > h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            border-radius: 3px;
+        }
+
+        .content-section > p {
+            font-size: 15px;
+            line-height: 1.9;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        .content-section > p:last-child {
+            margin-bottom: 0;
+        }
+
+        @media (min-width: 640px) {
+            .content-page { padding: 48px 0 64px; }
+            .content-section { margin-bottom: 48px; }
+            .content-section > h2 { font-size: 26px; }
+            .content-section > p { font-size: 16px; }
+        }
+
+        /* شبكة القيم */
+        .values-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 14px;
+            margin-top: 20px;
+        }
+
+        .value-card {
+            background: var(--bg-white);
+            border-radius: var(--radius);
+            padding: 24px 20px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .value-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .value-card:hover::before { transform: scaleX(1); }
+
+        .value-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-3px);
+        }
+
+        .value-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-light), #D1FAE5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 14px;
+            font-size: 22px;
+            color: var(--primary);
+            transition: var(--transition);
+        }
+
+        .value-card:hover .value-icon {
+            background: var(--primary);
+            color: #fff;
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .value-card h3 {
+            font-size: 17px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            color: var(--text);
+        }
+
+        .value-card p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        @media (min-width: 480px) {
+            .values-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+        }
+
+        @media (min-width: 768px) {
+            .values-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; }
+            .value-card { padding: 28px 24px; }
+            .value-icon { width: 64px; height: 64px; font-size: 26px; }
+            .value-card h3 { font-size: 18px; }
+        }
+
+        /* قائمة لماذا تختارنا */
+        .content-section ul {
+            list-style: none;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .content-section ul li {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            font-size: 15px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            padding: 12px 16px;
+            background: var(--bg-white);
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            transition: var(--transition);
+        }
+
+        .content-section ul li::before {
+            content: '\f00c';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            min-width: 26px;
+            border-radius: 50%;
+            background: var(--primary-light);
+            color: var(--primary);
+            font-size: 11px;
+            margin-top: 2px;
+        }
+
+        .content-section ul li:hover {
+            border-color: var(--primary-light);
+            background: var(--bg-white);
+            box-shadow: var(--shadow);
+        }
+
+        @media (min-width: 480px) {
+            .content-section ul { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        }
+
+        @media (min-width: 768px) {
+            .content-section ul { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+        }
+
+        /* قسم دعوة للتواصل */
+        .cta-section {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            border-radius: var(--radius-lg);
+            padding: 36px 24px;
+            text-align: center;
+            color: #fff;
+            margin-top: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -20%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .cta-section h2 {
+            font-size: 22px;
+            font-weight: 900;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta-section p {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 20px;
+            max-width: 480px;
+            margin-left: auto;
+            margin-right: auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta-buttons .btn-primary {
+            background: #fff;
+            color: var(--primary-dark);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+
+        .cta-buttons .btn-primary:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        .cta-buttons .btn-outline {
+            border-color: rgba(255,255,255,0.5);
+            color: #fff;
+        }
+
+        .cta-buttons .btn-outline:hover {
+            background: #fff;
+            color: var(--primary-dark);
+            border-color: #fff;
+        }
+
+        @media (min-width: 640px) {
+            .cta-section { padding: 48px 32px; }
+            .cta-section h2 { font-size: 28px; }
+        }
+
+        /* التذييل */
+        .footer {
+            background: var(--text);
+            color: #CBD5E1;
+            padding: 48px 0 0;
+            margin-top: 0;
+        }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 32px;
+            padding-bottom: 32px;
+        }
+        .footer-column h3 {
+            font-size: 18px;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 16px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 40px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            border-radius: 3px;
+        }
+        .footer-column p {
+            font-size: 14px;
+            line-height: 1.8;
+            color: #94A3B8;
+        }
+        .social-icons {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+        }
+        .social-icons a {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            color: #94A3B8;
+            transition: var(--transition);
+        }
+        .social-icons a:hover {
+            background: var(--primary);
+            color: #fff;
+            transform: translateY(-3px);
+        }
+        .footer-column ul li { margin-bottom: 8px; }
+        .footer-column ul li a {
+            font-size: 14px;
+            color: #94A3B8;
+            transition: var(--transition);
+        }
+        .footer-column ul li a:hover {
+            color: var(--primary);
+            padding-right: 6px;
+        }
+        .contact-info-list li {
+            display: flex;
+            gap: 10px;
+            font-size: 14px;
+            color: #94A3B8;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+        .contact-info-list li i {
+            color: var(--primary);
+            margin-top: 5px;
+            flex-shrink: 0;
+        }
+        .copyright {
+            border-top: 1px solid rgba(255,255,255,0.08);
+            padding: 20px 0;
+            text-align: center;
+        }
+        .copyright p { font-size: 13px; color: #64748B; }
+
+        @media (min-width: 640px) {
+            .footer-grid { grid-template-columns: repeat(2, 1fr); gap: 36px; }
+        }
+        @media (min-width: 1024px) {
+            .footer-grid { grid-template-columns: 2fr 1fr 1fr 1.5fr; }
+        }
+
+        /* سلة التسوق المبسطة */
+        .cart-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15,23,42,0.5);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+        }
+        .cart-overlay.active { opacity: 1; visibility: visible; }
+        .cart-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            max-width: 420px;
+            background: var(--bg-white);
+            z-index: 2001;
+            transform: translateX(-100%);
+            transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+            display: flex;
+            flex-direction: column;
+        }
+        .cart-modal.active { transform: translateX(0); }
+        @media (min-width: 1024px) {
+            .cart-modal { right: 0; left: auto; transform: translateX(100%); }
+            .cart-modal.active { transform: translateX(0); }
+        }
+        .cart-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+        }
+        .cart-header h3 { font-size: 17px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+        .cart-header h3 i { color: var(--primary); }
+        .close-cart {
+            width: 36px; height: 36px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; background: var(--bg); color: var(--text-secondary);
+            transition: var(--transition); -webkit-tap-highlight-color: transparent;
+        }
+        .close-cart:hover { background: #FEE2E2; color: #EF4444; }
+        .cart-content { flex: 1; overflow-y: auto; padding: 16px 20px; }
+        .empty-cart-msg { text-align: center; padding: 50px 0; color: var(--text-light); font-size: 15px; }
+        .cart-item {
+            display: flex; gap: 12px; padding: 12px 0;
+            border-bottom: 1px solid var(--border); align-items: center;
+        }
+        .cart-item-img {
+            width: 56px; height: 56px; border-radius: var(--radius-sm);
+            overflow: hidden; flex-shrink: 0; background: var(--bg);
+        }
+        .cart-item-img img { width: 100%; height: 100%; object-fit: cover; }
+        .cart-item-info { flex: 1; min-width: 0; }
+        .cart-item-name {
+            font-size: 13px; font-weight: 700;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 4px;
+        }
+        .cart-item-price { font-size: 14px; font-weight: 800; color: var(--primary-dark); }
+        .cart-item-qty {
+            display: flex; align-items: center; gap: 8px; margin-top: 6px;
+        }
+        .qty-btn {
+            width: 26px; height: 26px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            background: var(--bg); color: var(--text); cursor: pointer;
+            font-size: 12px; font-weight: 700; transition: var(--transition);
+            -webkit-tap-highlight-color: transparent;
+        }
+        .qty-btn:hover { background: var(--primary); color: #fff; }
+        .cart-item-qty span { font-weight: 700; font-size: 14px; min-width: 20px; text-align: center; }
+        .cart-item-del {
+            color: var(--text-light); cursor: pointer; padding: 4px;
+            transition: var(--transition); -webkit-tap-highlight-color: transparent;
+            background: none; border: none; font-size: 14px;
+        }
+        .cart-item-del:hover { color: #EF4444; }
+        .cart-summary {
+            padding: 16px 20px; border-top: 1px solid var(--border);
+            background: var(--bg); flex-shrink: 0;
+        }
+        .cart-total {
+            display: flex; justify-content: space-between;
+            font-size: 18px; font-weight: 900; margin-bottom: 14px;
+        }
+        .cart-total span:last-child { color: var(--primary-dark); }
+        .cart-summary .btn { width: 100%; padding: 13px; font-size: 15px; }
+
+        /* توست */
+        .toast {
+            position: fixed; bottom: 24px; left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--text); color: #fff;
+            padding: 14px 24px; border-radius: var(--radius-sm);
+            font-size: 14px; font-weight: 600; z-index: 5000;
+            box-shadow: var(--shadow-md);
+            transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+            white-space: nowrap; max-width: calc(100% - 32px); text-align: center;
+        }
+        .toast.show { transform: translateX(-50%) translateY(0); }
+        .toast.success { background: #059669; }
+        .toast.error { background: #EF4444; }
+
+        /* حركة ظهور */
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+
+        body.modal-open { overflow: hidden; }
+
+        @media (hover: none) {
+            .value-card:hover { transform: none; box-shadow: var(--shadow); }
+            .content-section ul li:hover { box-shadow: var(--shadow-sm); }
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--text-light); border-radius: 3px; }
+    </style>
 </head>
 <body>
+
     <!-- الشريط العلوي -->
     <div class="top-bar">
         <div class="container">
@@ -16,12 +804,10 @@
                 <span><i class="fas fa-phone"></i> +967 779 217 474</span>
                 <span><i class="fas fa-envelope"></i> Hadirynasser@gmail.com</span>
             </div>
-            <div class="shipping-info">
-                شحن مجاني داخل عدن
-            </div>
+            <div class="shipping-info">شحن مجاني داخل عدن</div>
         </div>
     </div>
-    
+
     <!-- شريط التنقل -->
     <nav class="navbar">
         <div class="container nav-container">
@@ -31,7 +817,6 @@
                     <h1>Twessy</h1>
                 </a>
             </div>
-            
             <ul class="nav-links" id="navLinks">
                 <li><a href="index.html">الرئيسية</a></li>
                 <li><a href="products.html">المنتجات</a></li>
@@ -40,26 +825,24 @@
                 <li><a href="services.html">الخدمات</a></li>
                 <li><a href="contact.html">اتصل بنا</a></li>
             </ul>
-            
             <div class="nav-icons">
-                <a href="https://www.instagram.com/x5tai?igsh=cDV5Ym5vaTVleXJt" target="_blank" class="instagram-icon">
+                <a href="https://www.instagram.com/x5tai?igsh=cDV5Ym5vaTVleXJt" target="_blank" class="instagram-icon" aria-label="انستقرام">
                     <i class="fab fa-instagram"></i>
                 </a>
-                <a href="login.html" class="user-icon">
+                <a href="#" class="user-icon" id="userIcon" aria-label="حسابي">
                     <i class="fas fa-user"></i>
                 </a>
-                <a href="#" class="cart-icon" id="cartIcon">
+                <a href="#" class="cart-icon" id="cartIcon" aria-label="سلة التسوق">
                     <i class="fas fa-shopping-cart"></i>
-                    <span class="cart-count">0</span>
+                    <span class="cart-count" id="cartCount">0</span>
                 </a>
             </div>
-            
-            <div class="menu-toggle" id="menuToggle">
-                <i class="fas fa-bars"></i>
+            <div class="menu-toggle" id="menuToggle" aria-label="القائمة">
+                <i class="fas fa-bars" id="menuIcon"></i>
             </div>
         </div>
     </nav>
-    
+
     <!-- رأس الصفحة -->
     <header class="page-header">
         <div class="container">
@@ -67,64 +850,54 @@
             <p>تعرف على قصة متجر Twessy ورسالتنا في تحسين صحة الفم والأسنان</p>
         </div>
     </header>
-    
-    <!-- محتوى صفحة من نحن -->
+
+    <!-- المحتوى -->
     <section class="content-page">
         <div class="container">
-            <div class="content-section">
+
+            <div class="content-section reveal">
                 <h2>قصة تأسيس Twessy</h2>
                 <p>تأسس متجر Twessy عام 2025 برؤية طموحة لتحسين صحة الفم والأسنان في مجتمعنا. جاءت الفكرة من ملاحظة انتشار مشاكل الأسنان واللثة الناتجة عن استخدام منتجات غير مناسبة أو غير فعالة.</p>
                 <p>بدأنا برحلة بحث وتطوير طويلة للعثور على أفضل منتجات العناية بالأسنان من مختلف المصادر العالمية، مع التركيز على الجودة والفعالية والأسعار المناسبة للجميع.</p>
             </div>
-            
-            <div class="content-section">
+
+            <div class="content-section reveal">
                 <h2>رؤيتنا</h2>
                 <p>أن نكون المتجر الرائد في توفير منتجات العناية بالأسنان في اليمن، ونشر الوعي بأهمية صحة الفم والأسنان، وتمكين الجميع من الحصول على ابتسامة صحية وجميلة.</p>
             </div>
-            
-            <div class="content-section">
+
+            <div class="content-section reveal">
                 <h2>رسالتنا</h2>
                 <p>توفير منتجات عالية الجودة للعناية بالأسنان بأسعار مناسبة، مع تقديم نصائح وإرشادات مهنية لمساعدة عملائنا على اختيار المنتجات المناسبة لاحتياجاتهم الخاصة.</p>
             </div>
-            
-            <div class="content-section">
+
+            <div class="content-section reveal">
                 <h2>قيمنا</h2>
                 <div class="values-grid">
                     <div class="value-card">
-                        <div class="value-icon">
-                            <i class="fas fa-award"></i>
-                        </div>
+                        <div class="value-icon"><i class="fas fa-award"></i></div>
                         <h3>الجودة</h3>
                         <p>نضمن أن جميع منتجاتنا أصلية وذات جودة عالية تفي بأعلى المعايير العالمية.</p>
                     </div>
-                    
                     <div class="value-card">
-                        <div class="value-icon">
-                            <i class="fas fa-handshake"></i>
-                        </div>
+                        <div class="value-icon"><i class="fas fa-handshake"></i></div>
                         <h3>الثقة</h3>
                         <p>نبني علاقات طويلة الأمد مع عملائنا بناءً على الصدق والشفافية.</p>
                     </div>
-                    
                     <div class="value-card">
-                        <div class="value-icon">
-                            <i class="fas fa-heart"></i>
-                        </div>
+                        <div class="value-icon"><i class="fas fa-heart"></i></div>
                         <h3>الرعاية</h3>
                         <p>نحن نهتم حقاً بصحة عملائنا ونقدم لهم أفضل النصائح والمنتجات.</p>
                     </div>
-                    
                     <div class="value-card">
-                        <div class="value-icon">
-                            <i class="fas fa-bullseye"></i>
-                        </div>
+                        <div class="value-icon"><i class="fas fa-bullseye"></i></div>
                         <h3>الابتكار</h3>
                         <p>نسعى دائماً لتقديم أحدث المنتجات والتقنيات في مجال العناية بالأسنان.</p>
                     </div>
                 </div>
             </div>
-            
-            <div class="content-section">
+
+            <div class="content-section reveal">
                 <h2>لماذا تختار Twessy؟</h2>
                 <ul>
                     <li>منتجات أصلية 100% من مصادر موثوقة</li>
@@ -137,16 +910,27 @@
                     <li>سهولة في عملية الشراء والتوصيل</li>
                 </ul>
             </div>
-            
-            <div class="content-section">
+
+            <div class="content-section reveal">
                 <h2>فريقنا</h2>
                 <p>فريق Twessy يتكون من مجموعة من الخبراء والمختصين في مجال العناية بالأسنان، بالإضافة إلى فريق خدمة عملاء مدرب تدريباً عالياً لمساعدتك في اختيار المنتجات المناسبة والإجابة على استفساراتك.</p>
                 <p>نعمل جميعاً تحت شعار "صحة فمك هي أولويتنا" ونؤمن بأن الابتسامة الصحية حق للجميع.</p>
             </div>
+
+            <!-- دعوة للتواصل -->
+            <div class="cta-section reveal">
+                <h2>هل لديك استفسار؟</h2>
+                <p>لا تتردد في التواصل معنا، فريقنا جاهز لمساعدتك على مدار الساعة</p>
+                <div class="cta-buttons">
+                    <a href="contact.html" class="btn btn-primary"><i class="fas fa-envelope"></i> تواصل معنا</a>
+                    <a href="https://wa.me/967779217474" target="_blank" class="btn btn-outline"><i class="fab fa-whatsapp"></i> واتساب</a>
+                </div>
+            </div>
+
         </div>
     </section>
-    
-    <!-- الفوتر -->
+
+    <!-- التذييل -->
     <footer class="footer">
         <div class="container">
             <div class="footer-grid">
@@ -154,12 +938,11 @@
                     <h3>Twessy</h3>
                     <p>متجر متخصص في توفير منتجات طب الأسنان بجودة عالية وأسعار مناسبة. نسعى لتحسين صحة الفم والأسنان للمجتمع.</p>
                     <div class="social-icons">
-                        <a href="https://wa.me/967779217474" target="_blank"><i class="fab fa-whatsapp"></i></a>
-                        <a href="https://www.instagram.com/x5tai?igsh=cDV5Ym5vaTVleXJt" target="_blank"><i class="fab fa-instagram"></i></a>
-                        <a href="mailto:Hadirynasser@gmail.com"><i class="fas fa-envelope"></i></a>
+                        <a href="https://wa.me/967779217474" target="_blank" aria-label="واتساب"><i class="fab fa-whatsapp"></i></a>
+                        <a href="https://www.instagram.com/x5tai?igsh=cDV5Ym5vaTVleXJt" target="_blank" aria-label="انستقرام"><i class="fab fa-instagram"></i></a>
+                        <a href="mailto:Hadirynasser@gmail.com" aria-label="بريد إلكتروني"><i class="fas fa-envelope"></i></a>
                     </div>
                 </div>
-                
                 <div class="footer-column">
                     <h3>روابط سريعة</h3>
                     <ul>
@@ -171,7 +954,6 @@
                         <li><a href="contact.html">اتصل بنا</a></li>
                     </ul>
                 </div>
-                
                 <div class="footer-column">
                     <h3>فئات المنتجات</h3>
                     <ul>
@@ -182,7 +964,6 @@
                         <li><a href="categories.html?category=أجهزة العناية">أجهزة العناية</a></li>
                     </ul>
                 </div>
-                
                 <div class="footer-column">
                     <h3>معلومات الاتصال</h3>
                     <ul class="contact-info-list">
@@ -193,21 +974,209 @@
                     </ul>
                 </div>
             </div>
-            
             <div class="copyright">
-                <p>&copy; 2025 Twessy. جميع الحقوق محفوظة.</p>
+                <p>&copy; 2026 Twessy. جميع الحقوق محفوظة.</p>
             </div>
         </div>
     </footer>
 
-    <!-- المكونات المشتركة -->
+    <!-- سلة التسوق -->
     <div class="cart-overlay" id="cartOverlay"></div>
     <div class="cart-modal" id="cartModal">
-        <!-- محتوى سلة التسوق -->
+        <div class="cart-header">
+            <h3><i class="fas fa-shopping-cart"></i> سلة التسوق</h3>
+            <button class="close-cart" id="closeCart" aria-label="إغلاق"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="cart-content" id="cartItems">
+            <p class="empty-cart-msg">سلة التسوق فارغة</p>
+        </div>
+        <div class="cart-summary" id="cartSummary" style="display:none;">
+            <div class="cart-total">
+                <span>الإجمالي:</span>
+                <span id="cartTotal">0$</span>
+            </div>
+            <button class="btn btn-primary" id="checkoutBtn" style="background:#25D366;box-shadow:0 4px 14px rgba(37,211,102,0.35);">
+                <i class="fab fa-whatsapp"></i> إتمام الشراء
+            </button>
+        </div>
     </div>
-    
-    <script src="js/main.js"></script>
-    <script src="js/auth.js"></script>
-    <script src="js/cart.js"></script>
+
+    <script>
+    (function() {
+        'use strict';
+
+        // ============================================
+        //  السلة
+        // ============================================
+        var cart = JSON.parse(localStorage.getItem('twessy_cart') || '[]');
+
+        function saveCart() {
+            localStorage.setItem('twessy_cart', JSON.stringify(cart));
+            updateCartCount();
+        }
+
+        function updateCartCount() {
+            var count = cart.reduce(function(s, i) { return s + i.qty; }, 0);
+            document.getElementById('cartCount').textContent = count;
+        }
+
+        function renderCart() {
+            var container = document.getElementById('cartItems');
+            var summary = document.getElementById('cartSummary');
+            var totalEl = document.getElementById('cartTotal');
+
+            if (cart.length === 0) {
+                container.innerHTML = '<p class="empty-cart-msg">سلة التسوق فارغة</p>';
+                summary.style.display = 'none';
+                return;
+            }
+
+            var total = 0;
+            container.innerHTML = cart.map(function(item) {
+                total += item.price * item.qty;
+                return '<div class="cart-item">' +
+                    '<div class="cart-item-img"><img src="' + item.image + '" alt="' + item.name + '"></div>' +
+                    '<div class="cart-item-info">' +
+                        '<div class="cart-item-name">' + item.name + '</div>' +
+                        '<div class="cart-item-price">' + item.price + '$</div>' +
+                        '<div class="cart-item-qty">' +
+                            '<button class="qty-btn" data-id="' + item.id + '" data-delta="-1">-</button>' +
+                            '<span>' + item.qty + '</span>' +
+                            '<button class="qty-btn" data-id="' + item.id + '" data-delta="1">+</button>' +
+                        '</div>' +
+                    '</div>' +
+                    '<button class="cart-item-del" data-id="' + item.id + '"><i class="fas fa-trash-alt"></i></button>' +
+                '</div>';
+            }).join('');
+
+            totalEl.textContent = total + '$';
+            summary.style.display = 'block';
+
+            // ربط الأحداث
+            container.querySelectorAll('.qty-btn').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    changeQty(this.dataset.id, parseInt(this.dataset.delta));
+                });
+            });
+            container.querySelectorAll('.cart-item-del').forEach(function(btn) {
+                btn.addEventListener('click', function() { removeItem(this.dataset.id); });
+            });
+        }
+
+        function changeQty(id, delta) {
+            var item = cart.find(function(i) { return i.id == id; });
+            if (!item) return;
+            item.qty += delta;
+            if (item.qty <= 0) { removeItem(id); return; }
+            saveCart();
+            renderCart();
+        }
+
+        function removeItem(id) {
+            cart = cart.filter(function(i) { return i.id != id; });
+            saveCart();
+            renderCart();
+            showToast('تم إزالة المنتج من السلة', 'error');
+        }
+
+        function openCartModal() {
+            renderCart();
+            document.getElementById('cartModal').classList.add('active');
+            document.getElementById('cartOverlay').classList.add('active');
+            document.body.classList.add('modal-open');
+        }
+
+        function closeCartModal() {
+            document.getElementById('cartModal').classList.remove('active');
+            document.getElementById('cartOverlay').classList.remove('active');
+            document.body.classList.remove('modal-open');
+        }
+
+        // ============================================
+        //  توست
+        // ============================================
+        function showToast(message, type) {
+            var existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+            var toast = document.createElement('div');
+            toast.className = 'toast ' + (type || '');
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            requestAnimationFrame(function() { toast.classList.add('show'); });
+            setTimeout(function() {
+                toast.classList.remove('show');
+                setTimeout(function() { toast.remove(); }, 350);
+            }, 2500);
+        }
+
+        // ============================================
+        //  قائمة الجوال
+        // ============================================
+        var menuOpen = false;
+        document.getElementById('menuToggle').addEventListener('click', function() {
+            menuOpen = !menuOpen;
+            document.getElementById('navLinks').classList.toggle('active');
+            document.getElementById('menuIcon').className = menuOpen ? 'fas fa-times' : 'fas fa-bars';
+            document.body.classList.toggle('modal-open', menuOpen);
+        });
+
+        document.querySelectorAll('#navLinks a').forEach(function(link) {
+            link.addEventListener('click', function() {
+                menuOpen = false;
+                document.getElementById('navLinks').classList.remove('active');
+                document.getElementById('menuIcon').className = 'fas fa-bars';
+                document.body.classList.remove('modal-open');
+            });
+        });
+
+        // ============================================
+        //  ربط الأزرار
+        // ============================================
+        document.getElementById('cartIcon').addEventListener('click', function(e) {
+            e.preventDefault();
+            openCartModal();
+        });
+        document.getElementById('closeCart').addEventListener('click', closeCartModal);
+        document.getElementById('cartOverlay').addEventListener('click', closeCartModal);
+
+        document.getElementById('userIcon').addEventListener('click', function(e) {
+            e.preventDefault();
+            showToast('صفحة تسجيل الدخول قيد التطوير', 'info');
+        });
+
+        document.getElementById('checkoutBtn').addEventListener('click', function() {
+            if (cart.length === 0) { showToast('السلة فارغة', 'error'); return; }
+            closeCartModal();
+            var msg = '*طلب جديد من Twessy*\n\n';
+            var total = 0;
+            cart.forEach(function(item, i) {
+                var sub = item.price * item.qty;
+                total += sub;
+                msg += (i+1) + '. ' + item.name + ' x' + item.qty + ' = ' + sub + '$\n';
+            });
+            msg += '\n*الإجمالي:* ' + total + '$';
+            window.open('https://wa.me/967779217474?text=' + encodeURIComponent(msg), '_blank');
+        });
+
+        // ============================================
+        //  حركة الظهور عند التمرير
+        // ============================================
+        var observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+
+        document.querySelectorAll('.reveal').forEach(function(el) { observer.observe(el); });
+
+        // ============================================
+        //  تهيئة
+        // ============================================
+        updateCartCount();
+    })();
+    </script>
 </body>
 </html>
