@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Twessy - لوحة التحكم</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+    <!-- الشريط العلوي -->
+    <div class="top-bar">
+        <div class="container">
+            <div class="contact-info">
+                <span><i class="fas fa-phone"></i> +967 779 217 474</span>
+                <span><i class="fas fa-envelope"></i> Hadirynasser@gmail.com</span>
+            </div>
+            <div class="shipping-info">
+                شحن مجاني داخل عدن
+            </div>
+        </div>
+    </div>
+    
+    <!-- شريط التنقل -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <a href="index.html">
+                    <i class="fas fa-tooth"></i>
+                    <h1>Twessy</h1>
+                </a>
+            </div>
+            
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">الرئيسية</a></li>
+                <li><a href="products.html">المنتجات</a></li>
+                <li><a href="categories.html">الفئات</a></li>
+                <li><a href="about.html">من نحن</a></li>
+                <li><a href="services.html">الخدمات</a></li>
+                <li><a href="contact.html">اتصل بنا</a></li>
+            </ul>
+            
+            <div class="nav-icons">
+                <a href="https://www.instagram.com/x5tai?igsh=cDV5Ym5vaTVleXJt" target="_blank" class="instagram-icon">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="dashboard.html" class="user-icon active">
+                    <i class="fas fa-user"></i>
+                </a>
+                <a href="#" class="cart-icon" id="cartIcon">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count">0</span>
+                </a>
+            </div>
+            
+            <div class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- لوحة التحكم -->
+    <section class="dashboard-page">
+        <div class="container">
+            <div class="dashboard-header">
+                <h1>لوحة التحكم</h1>
+                <p>مرحباً بعودتك، <span id="userName">علي أحمد</span></p>
+            </div>
+            
+            <div class="dashboard-grid">
+                <!-- القائمة الجانبية -->
+                <div class="dashboard-sidebar">
+                    <div class="dashboard-user">
+                        <div class="user-avatar">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <h3 id="displayName">علي أحمد</h3>
+                        <p id="userEmail">ali.ahmed@example.com</p>
+                        <button class="btn btn-outline btn-sm" id="logoutBtn">تسجيل الخروج</button>
+                    </div>
+                    
+                    <ul class="dashboard-menu">
+                        <li><a href="#dashboard" class="active" data-section="dashboard">
+                            <i class="fas fa-tachometer-alt"></i>لوحة التحكم
+                        </a></li>
+                        <li><a href="#orders" data-section="orders">
+                            <i class="fas fa-shopping-bag"></i>طلباتي
+                        </a></li>
+                        <li><a href="#wishlist" data-section="wishlist">
+                            <i class="fas fa-heart"></i>المفضلة
+                        </a></li>
+                        <li><a href="#addresses" data-section="addresses">
+                            <i class="fas fa-map-marker-alt"></i>عناويني
+                        </a></li>
+                        <li><a href="#profile" data-section="profile">
+                            <i class="fas fa-user-edit"></i>الملف الشخصي
+                        </a></li>
+                        <li><a href="#settings" data-section="settings">
+                            <i class="fas fa-cog"></i>الإعدادات
+                        </a></li>
+                    </ul>
+                </div>
+                
+                <!-- المحتوى الرئيسي -->
+                <div class="dashboard-content">
+                    <!-- لوحة التحكم الرئيسية -->
+                    <div class="dashboard-section active" id="dashboardSection">
+                        <h2>نظرة عامة</h2>
+                        
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-shopping-bag"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <h3>5</h3>
+                                    <p>الطلبات</p>
+                                </div>
+                            </div>
+                            
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-heart"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <h3>8</h3>
+                                    <p>المفضلة</p>
+                                </div>
+                            </div>
+                            
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <h3>4.8</h3>
+                                    <p>التقييم</p>
+                                </div>
+                            </div>
+                            
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-coins"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <h3>250</h3>
+                                    <p>نقاط المكافآت</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="recent-orders">
+                            <h3>آخر الطلبات</h3>
+                            <div class="orders-list">
+                                <div class="order-item">
+                                    <div class="order-header">
+                                        <span class="order-id">#TW2025001</span>
+                                        <span class="order-date">15 مارس 2025</span>
+                                        <span class="order-status status-delivered">تم التوصيل</span>
+                                    </div>
+                                    <div class="order-details">
+                                        <p>فرشاة أسنان كهربائية سونيك × 1</p>
+                                        <p class="order-total">الإجمالي: 25$</p>
+                                    </div>
+                                    <div class="order-actions">
+                                        <a href="#" class="btn btn-outline btn-sm">عرض التفاصيل</a>
+                                        <a href="#" class="btn btn-outline btn-sm">إعادة طلب</a>
+                                    </div>
+                                </div>
+                                
+                                <div class="order-item">
+                                    <div class="order-header">
+                                        <span class="order-id">#TW2025002</span>
+                                        <span class="order-date">10 مارس 2025</span>
+                                        <span class="order-status status-processing">قيد التجهيز</span>
+                                    </div>
+                                    <div class="order-details">
+                                        <p>معجون أسنان بالفلورايد × 2</p>
+                                        <p class="order-total">الإجمالي: 8$</p>
+                                    </div>
+                                    <div class="order-actions">
+                                        <a href="#" class="btn btn-outline btn-sm">تتبع الطلب</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- صفحة الطلبات -->
+                    <div class="dashboard-section" id="ordersSection">
+                        <h2>طلباتي</h2>
+                        <table class="orders-table">
+                            <thead>
+                                <tr>
+                                    <th>رقم الطلب</th>
+                                    <th>التاريخ</th>
+                                    <th>المبلغ</th>
+                                    <th>الحالة</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>#TW2025001</td>
+                                    <td>15 مارس 2025</td>
+                                    <td>25$</td>
+                                    <td><span class="order-status status-delivered">تم التوصيل</span></td>
+                                    <td>
+                                        <button class="btn btn-outline btn-sm">تفاصيل</button>
+                                        <button class="btn btn-outline btn-sm">إعادة طلب</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>#TW2025002</td>
+                                    <td>10 مارس 2025</td>
+                                    <td>8$</td>
+                                    <td><span class="order-status status-processing">قيد التجهيز</span></td>
+                                    <td>
+                                        <button class="btn btn-outline btn-sm">تتبع</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>#TW2024120</td>
+                                    <td>25 فبراير 2025</td>
+                                    <td>42$</td>
+                                    <td><span class="order-status status-delivered">تم التوصيل</span></td>
+                                    <td>
+                                        <button class="btn btn-outline btn-sm">تفاصيل</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>#TW2024115</td>
+                                    <td>10 فبراير 2025</td>
+                                    <td>15$</td>
+                                    <td><span class="order-status status-cancelled">ملغي</span></td>
+                                    <td>
+                                        <button class="btn btn-outline btn-sm">تفاصيل</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- صفحة المفضلة -->
+                    <div class="dashboard-section" id="wishlistSection">
+                        <h2>قائمة المفضلة</h2>
+                        <div class="wishlist-grid">
+                            <!-- سيتم إضافة المنتجات المفضلة هنا -->
+                        </div>
+                    </div>
+                    
+                    <!-- صفحة العناوين -->
+                    <div class="dashboard-section" id="addressesSection">
+                        <h2>عناويني</h2>
+                        <div class="addresses-grid">
+                            <div class="address-card">
+                                <div class="address-header">
+                                    <h3>العنوان الرئيسي</h3>
+                                    <span class="default-badge">افتراضي</span>
+                                </div>
+                                <div class="address-details">
+                                    <p><strong>الاسم:</strong> علي أحمد</p>
+                                    <p><strong>العنوان:</strong> عدن - التواهي</p>
+                                    <p><strong>الهاتف:</strong> +967 777 888 999</p>
+                                </div>
+                                <div class="address-actions">
+                                    <button class="btn btn-outline btn-sm">تعديل</button>
+                                    <button class="btn btn-outline btn-sm">حذف</button>
+                                </div>
+                            </div>
+                            
+                            <div class="address-card">
+                                <div class="address-header">
+                                    <h3>عنوان العمل</h3>
+                                </div>
+                                <div class="address-details">
+                                    <p><strong>الاسم:</strong> علي أحمد</p>
+                                    <p><strong>العنوان:</strong> عدن - الخورمكسر</p>
+                                    <p><strong>الهاتف:</strong> +967 777 888 999</p>
+                                </div>
+                                <div class="address-actions">
+                                    <button class="btn btn-outline btn-sm">تعيين افتراضي</button>
+                                    <button class="btn btn-outline btn-sm">تعديل</button>
+                                    <button class="btn btn-outline btn-sm">حذف</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button class="btn btn-primary" id="addAddressBtn">إضافة عنوان جديد</button>
+                    </div>
+                    
+                    <!-- صفحة الملف الشخصي -->
+                    <div class="dashboard-section" id="profileSection">
+                        <h2>الملف الشخصي</h2>
+                        <form id="profileForm">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="firstName">الاسم الأول</label>
+                                    <input type="text" id="firstName" value="علي" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="lastName">اسم العائلة</label>
+                                    <input type="text" id="lastName" value="أحمد" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="email">البريد الإلكتروني</label>
+                                <input type="email" id="email" value="ali.ahmed@example.com" required disabled>
+                                <small class="form-text">لا يمكن تغيير البريد الإلكتروني</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="phone">رقم الهاتف</label>
+                                <input type="tel" id="phone" value="+967777888999" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="birthDate">تاريخ الميلاد</label>
+                                <input type="date" id="birthDate" value="1990-01-15">
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary">حفظ التغييرات</button>
+                        </form>
+                    </div>
+                    
+                    <!-- صفحة الإعدادات -->
+                    <div class="dashboard-section" id="settingsSection">
+                        <h2>الإعدادات</h2>
+                        
+                        <div class="settings-group">
+                            <h3>إعدادات الإشعارات</h3>
+                            <div class="setting-item">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="notifyOrders" checked>
+                                    <span>إشعارات حالة الطلبات</span>
+                                </label>
+                            </div>
+                            <div class="setting-item">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="notifyOffers" checked>
+                                    <span>إشعارات العروض والتخفيضات</span>
+                                </label>
+                            </div>
+                            <div class="setting-item">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="notifyNews" checked>
+                                    <span>النشرة الإخبارية</span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="settings-group">
+                            <h3>إعدادات الخصوصية</h3>
+                            <div class="setting-item">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="privacyProfile" checked>
+                                    <span>إظهار ملفي الشخصي للعامة</span>
+                                </label>
+                            </div>
+                            <div class="setting-item">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="privacyOrders">
+                                    <span>إخفاء سجل طلباتي</span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="settings-group">
+                            <h3>إعدادات الحساب</h3>
+                            <button class="btn btn-outline" id="changePasswordBtn">تغيير كلمة المرور</button>
+                            <button class="btn btn-outline" id="deleteAccountBtn">حذف الحساب</button>
+                        </div>
+                        
+                        <button class="btn btn-primary" id="saveSettingsBtn">حفظ الإعدادات</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- الفوتر -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-column">
+                    <h3>Twessy</h3>
+                    <p>متجر متخصص في توفير منتجات طب الأسنان بجودة عالية وأسعار مناسبة. نسعى لتحسين صحة الفم والأسنان للمجتمع.</p>
+                    <div class="social-icons">
+                        <a href="https://wa.me/967779217474" target="_blank"><i class="fab fa-whatsapp"></i></a>
+                        <a href="https://www.instagram.com/x5tai?igsh=cDV5Ym5vaTVleXJt" target="_blank"><i class="fab fa-instagram"></i></a>
+                        <a href="mailto:Hadirynasser@gmail.com"><i class="fas fa-envelope"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>روابط سريعة</h3>
+                    <ul>
+                        <li><a href="index.html">الرئيسية</a></li>
+                        <li><a href="products.html">المنتجات</a></li>
+                        <li><a href="categories.html">الفئات</a></li>
+                        <li><a href="about.html">من نحن</a></li>
+                        <li><a href="services.html">الخدمات</a></li>
+                        <li><a href="contact.html">اتصل بنا</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>فئات المنتجات</h3>
+                    <ul>
+                        <li><a href="categories.html?category=فرش الأسنان">فرش الأسنان</a></li>
+                        <li><a href="categories.html?category=معاجين الأسنان">معاجين الأسنان</a></li>
+                        <li><a href="categories.html?category=خيط الأسنان">خيط الأسنان</a></li>
+                        <li><a href="categories.html?category=مبيضات الأسنان">مبيضات الأسنان</a></li>
+                        <li><a href="categories.html?category=أجهزة العناية">أجهزة العناية</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>معلومات الاتصال</h3>
+                    <ul class="contact-info-list">
+                        <li><i class="fas fa-map-marker-alt"></i> عدن - اليمن</li>
+                        <li><i class="fas fa-phone"></i> +967 779 217 474</li>
+                        <li><i class="fas fa-envelope"></i> Hadirynasser@gmail.com</li>
+                        <li><i class="fas fa-clock"></i> من الأحد إلى الخميس: 9 صباحاً - 10 مساءً</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2025 Twessy. جميع الحقوق محفوظة.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- المكونات المشتركة -->
+    <div class="cart-overlay" id="cartOverlay"></div>
+    <div class="cart-modal" id="cartModal">
+        <!-- محتوى سلة التسوق -->
+    </div>
+    
+    <script src="js/main.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>

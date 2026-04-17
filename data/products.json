@@ -1,0 +1,41 @@
+{
+  "version": "1.0",
+  "lastUpdate": "2025-01-15T10:00:00Z",
+  "products": [
+    {
+      "id": "1",
+      "name": "فرشاة أسنان كهربائية سونيك",
+      "category": "فرش الأسنان",
+      "description": "فرشاة أسنان كهربائية بتقنية السونيك لتنظيف عميق وفعال",
+      "price": 25,
+      "oldPrice": 35,
+      "stock": 50,
+      "inStock": true,
+      "badge": "sale",
+      "featured": true,
+      "image": "https://via.placeholder.com/300x300?text=Electric+Toothbrush",
+      "images": [],
+      "sku": "TW-001",
+      "rating": 4.8,
+      "reviews": 124,
+      "createdAt": "2025-01-01T00:00:00Z"
+    },
+    {
+      "id": "2",
+      "name": "معجون أسنان بالفلورايد للحماية الكاملة",
+      "category": "معاجين الأسنان",
+      "description": "معجون أسنان متطور يحمي من التسوس ويقوي المينا",
+      "price": 8,
+      "stock": 100,
+      "inStock": true,
+      "badge": null,
+      "featured": true,
+      "image": "https://via.placeholder.com/300x300?text=Toothpaste",
+      "images": [],
+      "sku": "TW-002",
+      "rating": 4.6,
+      "reviews": 89,
+      "createdAt": "2025-01-02T00:00:00Z"
+    }
+  ]
+}

@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Twessy - اتصل بنا</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+    <!-- الشريط العلوي -->
+    <div class="top-bar">
+        <div class="container">
+            <div class="contact-info">
+                <span><i class="fas fa-phone"></i> +967 779 217 474</span>
+                <span><i class="fas fa-envelope"></i> Hadirynasser@gmail.com</span>
+            </div>
+            <div class="shipping-info">
+                شحن مجاني داخل عدن
+            </div>
+        </div>
+    </div>
+    
+    <!-- شريط التنقل -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <a href="index.html">
+                    <i class="fas fa-tooth"></i>
+                    <h1>Twessy</h1>
+                </a>
+            </div>
+            
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">الرئيسية</a></li>
+                <li><a href="products.html">المنتجات</a></li>
+                <li><a href="categories.html">الفئات</a></li>
+                <li><a href="about.html">من نحن</a></li>
+                <li><a href="services.html">الخدمات</a></li>
+                <li><a href="contact.html" class="active">اتصل بنا</a></li>
+            </ul>
+            
+            <div class="nav-icons">
+                <a href="https://www.instagram.com/x5tai?igsh=cDV5Ym5vaTVleXJt" target="_blank" class="instagram-icon">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="login.html" class="user-icon">
+                    <i class="fas fa-user"></i>
+                </a>
+                <a href="#" class="cart-icon" id="cartIcon">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count">0</span>
+                </a>
+            </div>
+            
+            <div class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- رأس الصفحة -->
+    <header class="page-header">
+        <div class="container">
+            <h1>اتصل بنا</h1>
+            <p>نحن هنا للإجابة على استفساراتكم وتلقي ملاحظاتكم. تواصلوا معنا بأي طريقة تناسبكم</p>
+        </div>
+    </header>
+    
+    <!-- محتوى صفحة اتصل بنا -->
+    <section class="contact-page">
+        <div class="container">
+            <div class="contact-grid">
+                <div class="contact-info-card">
+                    <div class="contact-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <h3>العنوان</h3>
+                    <p>عدن - اليمن</p>
+                    <p>نقدم خدمة التوصيل لجميع مناطق عدن</p>
+                </div>
+                
+                <div class="contact-info-card">
+                    <div class="contact-icon">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <h3>الهاتف</h3>
+                    <p>+967 779 217 474</p>
+                    <p>متاح من الأحد إلى الخميس: 9 ص - 10 م</p>
+                </div>
+                
+                <div class="contact-info-card">
+                    <div class="contact-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <h3>البريد الإلكتروني</h3>
+                    <p>Hadirynasser@gmail.com</p>
+                    <p>نرد على الاستفسارات خلال 24 ساعة</p>
+                </div>
+                
+                <div class="contact-info-card">
+                    <div class="contact-icon">
+                        <i class="fab fa-whatsapp"></i>
+                    </div>
+                    <h3>الواتساب</h3>
+                    <p>+967775082146</p>
+                    <p>للاستفسارات والطلبات السريعة</p>
+                </div>
+            </div>
+            
+            <div class="contact-section">
+                <div class="contact-form-container">
+                    <h2>أرسل رسالة إلينا</h2>
+                    <p>املأ النموذج التالي وسنرد عليك في أقرب وقت ممكن</p>
+                    
+                    <form id="contactForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="contactName">الاسم الكامل *</label>
+                                <input type="text" id="contactName" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="contactEmail">البريد الإلكتروني *</label>
+                                <input type="email" id="contactEmail" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="contactPhone">رقم الهاتف</label>
+                            <input type="tel" id="contactPhone">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="contactSubject">الموضوع *</label>
+                            <select id="contactSubject" required>
+                                <option value="">اختر موضوع الرسالة</option>
+                                <option value="استفسار عن منتج">استفسار عن منتج</option>
+                                <option value="مشكلة في طلب">مشكلة في طلب</option>
+                                <option value="اقتراح أو شكوى">اقتراح أو شكوى</option>
+                                <option value="تعاون أو شراكة">تعاون أو شراكة</option>
+                                <option value="أخرى">أخرى</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="contactMessage">الرسالة *</label>
+                            <textarea id="contactMessage" rows="6" required placeholder="اكتب رسالتك هنا..."></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">إرسال الرسالة</button>
+                    </form>
+                </div>
+                
+                <div class="contact-info-container">
+                    <h2>معلومات التواصل</h2>
+                    
+                    <div class="business-hours">
+                        <h3><i class="fas fa-clock"></i> ساعات العمل</h3>
+                        <ul>
+                            <li><strong>الأحد - الخميس:</strong> 9:00 ص - 10:00 م</li>
+                            <li><strong>الجمعة:</strong> 4:00 م - 10:00 م</li>
+                            <li><strong>السبت:</strong> 9:00 ص - 6:00 م</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="social-contact">
+                        <h3><i class="fas fa-share-alt"></i> تواصل معنا عبر</h3>
+                        <div class="social-icons">
+                            <a href="https://wa.me/967775082146" target="_blank" class="social-icon whatsapp">
+                                <i class="fab fa-whatsapp"></i>
+                                <span>الواتساب</span>
+                            </a>
+                            <a href="https://www.instagram.com/x5tai?igsh=cDV5Ym5vaTVleXJt" target="_blank" class="social-icon instagram">
+                                <i class="fab fa-instagram"></i>
+                                <span>إنستجرام</span>
+                            </a>
+                            <a href="mailto:Hadirynasser@gmail.com" class="social-icon email">
+                                <i class="fas fa-envelope"></i>
+                                <span>البريد</span>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-preview">
+                        <h3><i class="fas fa-question-circle"></i> أسئلة متكررة</h3>
+                        <div class="faq-item">
+                            <h4>كيف أتأكد من صحة منتجاتكم؟</h4>
+                            <p>جميع منتجاتنا أصلية ومرفق معها شهادات الجودة. يمكنك طلب صور للشهادات قبل الشراء.</p>
+                        </div>
+                        <div class="faq-item">
+                            <h4>ماذا لو لم أكن راضياً عن المنتج؟</h4>
+                            <p>نقدم سياسة إرجاع واستبدال خلال 3 أيام من تاريخ الاستلام.</p>
+                        </div>
+                        <a href="services.html" class="btn btn-outline">المزيد من الأسئلة</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="map-section">
+                <h2>موقعنا</h2>
+                <div class="map-placeholder">
+                    <div class="map-info">
+                        <h3><i class="fas fa-map-marker-alt"></i> عدن - اليمن</h3>
+                        <p>نقدم خدمة التوصيل لجميع مناطق عدن. للمناطق الأخرى، يرجى التواصل معنا لمعرفة إمكانية التوصيل.</p>
+                        <div class="delivery-info">
+                            <h4><i class="fas fa-shipping-fast"></i> معلومات التوصيل:</h4>
+                            <ul>
+                                <li>توصيل مجاني داخل عدن للطلبات  </li>
+                                <li>توصيل خلال 24-48 ساعة عمل</li>
+                                <li>تتبع الطلب متاح عبر الرابط المرسل</li>
+                                <li>خيار الدفع عند الاستلام متاح</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- الفوتر -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-column">
+                    <h3>Twessy</h3>
+                    <p>متجر متخصص في توفير منتجات طب الأسنان بجودة عالية وأسعار مناسبة. نسعى لتحسين صحة الفم والأسنان للمجتمع.</p>
+                    <div class="social-icons">
+                        <a href="https://wa.me/967775082146" target="_blank"><i class="fab fa-whatsapp"></i></a>
+                        <a href="https://www.instagram.com/x5tai?igsh=cDV5Ym5vaTVleXJt" target="_blank"><i class="fab fa-instagram"></i></a>
+                        <a href="mailto:Hadirynasser@gmail.com"><i class="fas fa-envelope"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>روابط سريعة</h3>
+                    <ul>
+                        <li><a href="index.html">الرئيسية</a></li>
+                        <li><a href="products.html">المنتجات</a></li>
+                        <li><a href="categories.html">الفئات</a></li>
+                        <li><a href="about.html">من نحن</a></li>
+                        <li><a href="services.html">الخدمات</a></li>
+                        <li><a href="contact.html">اتصل بنا</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>فئات المنتجات</h3>
+                    <ul>
+                        <li><a href="categories.html?category=فرش الأسنان">فرش الأسنان</a></li>
+                        <li><a href="categories.html?category=معاجين الأسنان">معاجين الأسنان</a></li>
+                        <li><a href="categories.html?category=خيط الأسنان">خيط الأسنان</a></li>
+                        <li><a href="categories.html?category=مبيضات الأسنان">مبيضات الأسنان</a></li>
+                        <li><a href="categories.html?category=أجهزة العناية">أجهزة العناية</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>معلومات الاتصال</h3>
+                    <ul class="contact-info-list">
+                        <li><i class="fas fa-map-marker-alt"></i> عدن - اليمن</li>
+                        <li><i class="fas fa-phone"></i> +967775082146</li>
+                        <li><i class="fas fa-envelope"></i> Hadirynasser@gmail.com</li>
+                        <li><i class="fas fa-clock"></i> من الأحد إلى الخميس: 9 صباحاً - 10 مساءً</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2026 Twessy. جميع الحقوق محفوظة.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- المكونات المشتركة -->
+    <div class="cart-overlay" id="cartOverlay"></div>
+    <div class="cart-modal" id="cartModal">
+        <!-- محتوى سلة التسوق -->
+    </div>
+    
+    <script src="js/main.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/contact.js"></script>
+</body>
+</html>

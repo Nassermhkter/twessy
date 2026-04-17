@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Twessy - الصفحة الرئيسية</title>
+    
+    <!-- الخطوط -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- المكتبات الخارجية -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- ملفات التنسيق الخاصة بالمشروع -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+    <!-- ======================================== -->
+    <!-- الشريط العلوي (Top Bar) -->
+    <!-- ======================================== -->
+    <div class="top-bar">
+        <div class="container">
+            <div class="contact-info">
+                <span><i class="fas fa-phone"></i> +967775082146</span>
+                <span><i class="fas fa-envelope"></i> Hadirynasser@gmail.com</span>
+            </div>
+            <div class="shipping-info">
+                شحن مجاني داخل عدن
+            </div>
+        </div>
+    </div>
+
+    <!-- ======================================== -->
+    <!-- شريط التنقل (Navbar) -->
+    <!-- ======================================== -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <!-- الشعار -->
+            <div class="logo">
+                <a href="index.html">
+                    <i class="fas fa-tooth"></i>
+                    <h1>Twessy</h1>
+                </a>
+            </div>
+            
+            <!-- روابط التنقل -->
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html" class="active">الرئيسية</a></li>
+                <li><a href="products.html">المنتجات</a></li>
+                <li><a href="categories.html">الفئات</a></li>
+                <li><a href="about.html">من نحن</a></li>
+                <li><a href="services.html">الخدمات</a></li>
+                <li><a href="contact.html">اتصل بنا</a></li>
+            </ul>
+            
+            <!-- أيقونات الجانبية -->
+            <div class="nav-icons">
+                <a href="https://www.instagram.com/x5tai?igsh=cDV5Ym5vaTVleXJt" target="_blank" class="instagram-icon">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="#" class="user-icon" id="userIcon">
+                    <i class="fas fa-user"></i>
+                </a>
+                <a href="#" class="cart-icon" id="cartIcon">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count">0</span>
+                </a>
+            </div>
+            
+            <!-- زر القائمة للجوال -->
+            <div class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ======================================== -->
+    <!-- القسم الرئيسي (Hero Section) -->
+    <!-- ======================================== -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h2>Twessy - لكل ما تحتاجه لصحة أسنانك</h2>
+                <p>نوفر لك أفضل منتجات العناية بالأسنان من فرش ومعاجين وأدوات احترافية بجودة عالية وأسعار مناسبة</p>
+                <div class="hero-buttons">
+                    <a href="products.html" class="btn btn-primary">تسوق الآن</a>
+                    <a href="about.html" class="btn btn-outline">تعرف علينا</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======================================== -->
+    <!-- المنتجات المميزة (Featured Products) -->
+    <!-- ======================================== -->
+    <section class="featured-products">
+        <div class="container">
+            <div class="section-title">
+                <h2>منتجاتنا المميزة</h2>
+                <p>اكتشف تشكيلتنا الواسعة من منتجات طب الأسنان</p>
+            </div>
+            
+            <div class="products-grid" id="featuredProducts">
+                <!-- سيتم إضافة المنتجات هنا عبر JavaScript -->
+            </div>
+            
+            <div class="text-center">
+                <a href="products.html" class="btn btn-secondary">عرض جميع المنتجات</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======================================== -->
+    <!-- فئات المنتجات (Categories) -->
+    <!-- ======================================== -->
+    <section class="categories-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>فئات المنتجات</h2>
+                <p>تصفح منتجاتنا حسب الفئات المختلفة</p>
+            </div>
+            
+            <div class="categories-grid">
+                <div class="category-card">
+                    <div class="category-icon">
+                        <i class="fas fa-toothbrush"></i>
+                    </div>
+                    <h3>فرش الأسنان</h3>
+                    <p>أفضل أنواع فرش الأسنان اليدوية والكهربائية</p>
+                    <a href="categories.html?category=فرش الأسنان" class="category-link">تصفح المنتجات</a>
+                </div>
+                
+                <div class="category-card">
+                    <div class="category-icon">
+                        <i class="fas fa-paste"></i>
+                    </div>
+                    <h3>معاجين الأسنان</h3>
+                    <p>معاجين متخصصة لجميع أنواع الأسنان</p>
+                    <a href="categories.html?category=معاجين الأسنان" class="category-link">تصفح المنتجات</a>
+                </div>
+                
+                <div class="category-card">
+                    <div class="category-icon">
+                        <i class="fas fa-thread"></i>
+                    </div>
+                    <h3>خيط الأسنان</h3>
+                    <p>خيط طبي للتنظيف بين الأسنان</p>
+                    <a href="categories.html?category=خيط الأسنان" class="category-link">تصفح المنتجات</a>
+                </div>
+                
+                <div class="category-card">
+                    <div class="category-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <h3>مبيضات الأسنان</h3>
+                    <p>منتجات تبييض احترافية وآمنة</p>
+                    <a href="categories.html?category=مبيضات الأسنان" class="category-link">تصفح المنتجات</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======================================== -->
+    <!-- الخدمات (Services) -->
+    <!-- ======================================== -->
+    <section class="services-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>خدماتنا</h2>
+                <p>نقدم لكم أفضل الخدمات لضمان رضاكم</p>
+            </div>
+            
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-shipping-fast"></i>
+                    </div>
+                    <h3>شحن سريع</h3>
+                    <p>نوفر خدمة الشحن السريع لجميع أنحاء عدن خلال 2-3 أيام عمل</p>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    <h3>دعم فني 24/7</h3>
+                    <p>دعم فني متاح على مدار الساعة لمساعدتك في أي استفسار</p>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>ضمان الجودة</h3>
+                    <p>جميع منتجاتنا أصلية وموثوقة مع ضمان الجودة والصلاحية</p>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-hand-holding-usd"></i>
+                    </div>
+                    <h3>أسعار تنافسية</h3>
+                    <p>نوفر أفضل الأسعار مع عروض وتخفيضات مستمرة بالدولار</p>
+                </div>
+            </div>
+            
+            <div class="text-center">
+                <a href="services.html" class="btn btn-outline">المزيد من الخدمات</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======================================== -->
+    <!-- سلة التسوق (Cart Modal) -->
+    <!-- ======================================== -->
+    <div class="cart-overlay" id="cartOverlay"></div>
+    <div class="cart-modal" id="cartModal">
+        <div class="cart-header">
+            <h3>سلة التسوق</h3>
+            <button class="close-cart" id="closeCart"><i class="fas fa-times"></i></button>
+        </div>
+        
+        <div class="cart-content">
+            <div class="cart-items" id="cartItems">
+                <p id="emptyCartMessage">سلة التسوق فارغة</p>
+            </div>
+            
+            <div class="cart-summary">
+                <div class="cart-total">
+                    <span>الإجمالي:</span>
+                    <span id="cartTotal">0$</span>
+                </div>
+                
+                <div class="cart-buttons">
+                    <button class="btn btn-primary checkout-btn" id="checkoutBtn">إتمام الشراء</button>
+                    <button class="btn btn-outline continue-shopping" id="continueShopping">مواصلة التسوق</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======================================== -->
+    <!-- نافذة تفاصيل المنتج (Product Detail Modal) -->
+    <!-- ======================================== -->
+    <div class="product-detail-overlay" id="productDetailOverlay"></div>
+    <div class="product-detail-modal" id="productDetailModal">
+        <div class="product-detail-header">
+            <h3>تفاصيل المنتج</h3>
+            <button class="close-detail" id="closeDetail"><i class="fas fa-times"></i></button>
+        </div>
+        
+        <div class="product-detail-content" id="productDetailContent">
+            <!-- سيتم إضافة محتوى تفاصيل المنتج هنا -->
+        </div>
+    </div>
+
+    <!-- ======================================== -->
+    <!-- نموذج تأكيد الطلب (Checkout Modal) -->
+    <!-- ======================================== -->
+    <div class="checkout-modal-overlay" id="checkoutOverlay"></div>
+    <div class="checkout-modal" id="checkoutModal">
+        <div class="checkout-header">
+            <h3>تأكيد الطلب</h3>
+            <button class="close-checkout" id="closeCheckout"><i class="fas fa-times"></i></button>
+        </div>
+        
+        <form id="orderForm">
+            <div class="form-group">
+                <label for="customerName">الاسم الكامل *</label>
+                <input type="text" id="customerName" required>
+                <div class="error" id="nameError">يرجى إدخال الاسم الكامل</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="customerPhone">رقم الهاتف *</label>
+                <input type="tel" id="customerPhone" required>
+                <div class="error" id="phoneError">يرجى إدخال رقم هاتف صحيح</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="customerAddress">العنوان (اختياري)</label>
+                <textarea id="customerAddress" rows="3"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="customerNotes">ملاحظات إضافية (اختياري)</label>
+                <textarea id="customerNotes" rows="3" placeholder="مثل: وقت التسليم المناسب، تعليمات خاصة..."></textarea>
+            </div>
+            
+            <div class="order-summary">
+                <h4>ملخص الطلب</h4>
+                <div id="orderSummaryItems"></div>
+                <div class="summary-total">
+                    <span>الإجمالي:</span>
+                    <span id="orderTotal">0$</span>
+                </div>
+            </div>
+            
+            <button type="submit" class="btn btn-success whatsapp-btn">
+                <i class="fab fa-whatsapp"></i> تأكيد الطلب عبر واتساب
+            </button>
+        </form>
+    </div>
+
+    <!-- ======================================== -->
+    <!-- نموذج تسجيل الدخول (Login Modal) -->
+    <!-- ======================================== -->
+    <div class="login-overlay" id="loginOverlay"></div>
+    <div class="login-modal" id="loginModal">
+        <div class="login-header">
+            <h3>تسجيل الدخول</h3>
+            <button class="close-login" id="closeLogin"><i class="fas fa-times"></i></button>
+        </div>
+        
+        <div class="login-content">
+            <p class="login-intro">سجل دخولك لتجربة تسوق أفضل ومتابعة طلباتك</p>
+            
+            <div class="social-login">
+                <button class="btn btn-google" id="googleLogin">
+                    <i class="fab fa-google"></i> تسجيل الدخول بجوجل
+                </button>
+                
+                <button class="btn btn-facebook" id="facebookLogin">
+                    <i class="fab fa-facebook-f"></i> تسجيل الدخول بفيسبوك
+                </button>
+            </div>
+            
+            <div class="divider">
+                <span>أو</span>
+            </div>
+            
+            <form id="emailLoginForm">
+                <div class="form-group">
+                    <label for="loginEmail">البريد الإلكتروني</label>
+                    <input type="email" id="loginEmail" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="loginPassword">كلمة المرور</label>
+                    <input type="password" id="loginPassword" required>
+                </div>
+                
+                <div class="form-options">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="rememberMe">
+                        <span>تذكرني</span>
+                    </label>
+                    <a href="#" class="forgot-password">نسيت كلمة المرور؟</a>
+                </div>
+                
+                <button type="submit" class="btn btn-primary login-btn">تسجيل الدخول</button>
+            </form>
+            
+            <div class="register-link">
+                <p>ليس لديك حساب؟ <a href="#" id="showRegister">سجل الآن</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======================================== -->
+    <!-- نموذج التسجيل (Register Modal) -->
+    <!-- ======================================== -->
+    <div class="register-modal" id="registerModal">
+        <div class="register-header">
+            <h3>إنشاء حساب جديد</h3>
+            <button class="close-register" id="closeRegister"><i class="fas fa-times"></i></button>
+        </div>
+        
+        <div class="register-content">
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="registerName">الاسم الكامل *</label>
+                    <input type="text" id="registerName" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="registerEmail">البريد الإلكتروني *</label>
+                    <input type="email" id="registerEmail" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="registerPhone">رقم الهاتف *</label>
+                    <input type="tel" id="registerPhone" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="registerPassword">كلمة المرور *</label>
+                    <input type="password" id="registerPassword" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="registerConfirmPassword">تأكيد كلمة المرور *</label>
+                    <input type="password" id="registerConfirmPassword" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="agreeTerms" required>
+                        <span>أوافق على <a href="#">الشروط والأحكام</a> و <a href="#">سياسة الخصوصية</a></span>
+                    </label>
+                </div>
+                
+                <button type="submit" class="btn btn-primary register-btn">إنشاء الحساب</button>
+            </form>
+            
+            <div class="login-link">
+                <p>لديك حساب بالفعل؟ <a href="#" id="showLogin">سجل دخول</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======================================== -->
+    <!-- تذييل الصفحة (Footer) -->
+    <!-- ======================================== -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-column">
+                    <h3>Twessy</h3>
+                    <p>متجر متخصص في توفير منتجات طب الأسنان بجودة عالية وأسعار مناسبة. نسعى لتحسين صحة الفم والأسنان للمجتمع.</p>
+                    <div class="social-icons">
+                        <a href="https://wa.me/967775082146" target="_blank"><i class="fab fa-whatsapp"></i></a>
+                        <a href="https://www.instagram.com/x5tai?igsh=cDV5Ym5vaTVleXJt" target="_blank"><i class="fab fa-instagram"></i></a>
+                        <a href="mailto:Hadirynasser@gmail.com"><i class="fas fa-envelope"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>روابط سريعة</h3>
+                    <ul>
+                        <li><a href="index.html">الرئيسية</a></li>
+                        <li><a href="products.html">المنتجات</a></li>
+                        <li><a href="categories.html">الفئات</a></li>
+                        <li><a href="about.html">من نحن</a></li>
+                        <li><a href="services.html">الخدمات</a></li>
+                        <li><a href="contact.html">اتصل بنا</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>فئات المنتجات</h3>
+                    <ul>
+                        <li><a href="categories.html?category=فرش الأسنان">فرش الأسنان</a></li>
+                        <li><a href="categories.html?category=معاجين الأسنان">معاجين الأسنان</a></li>
+                        <li><a href="categories.html?category=خيط الأسنان">خيط الأسنان</a></li>
+                        <li><a href="categories.html?category=مبيضات الأسنان">مبيضات الأسنان</a></li>
+                        <li><a href="categories.html?category=أجهزة العناية">أجهزة العناية</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>معلومات الاتصال</h3>
+                    <ul class="contact-info-list">
+                        <li><i class="fas fa-map-marker-alt"></i> عدن - اليمن</li>
+                        <li><i class="fas fa-phone"></i> +967775082146</li>
+                        <li><i class="fas fa-envelope"></i> Hadirynasser@gmail.com</li>
+                        <li><i class="fas fa-clock"></i> من الأحد إلى الخميس: 9 صباحاً - 10 مساءً</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2026 Twessy. جميع الحقوق محفوظة.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ======================================== -->
+    <!-- ملفات الجافا سكريبت -->
+    <!-- ======================================== -->
+    <script src="js/main.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/cart.js"></script>
+</body>
+    <!-- كود مزامنة المنتجات من لوحة التحكم بشكل فوري -->
+    <script>
+    function loadStoreProducts() {
+        // البحث عن المنتجات في المخزن
+        const savedProducts = localStorage.getItem('twessy_store_products') || localStorage.getItem('twessy_products');
+        
+        if (savedProducts) {
+            const products = JSON.parse(savedProducts);
+            
+            // التأكد من أن دالة العرض موجودة في main.js
+            if (typeof renderFeaturedProducts === 'function') {
+                renderFeaturedProducts(products);
+            } else {
+                console.error("خطأ: دالة renderFeaturedProducts غير معرفة في main.js");
+            }
+        }
+    }
+
+    // التحديث التلقائي عند حدوث أي تغيير في التخزين (من صفحة الأدمن)
+    window.addEventListener('storage', (e) => {
+        if (e.key === 'twessy_store_products' || e.key === 'twessy_products') {
+            loadStoreProducts();
+        }
+    });
+
+    // تحميل المنتجات فور فتح المتجر
+    document.addEventListener('DOMContentLoaded', loadStoreProducts);
+</script>
+</html>

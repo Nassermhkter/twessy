@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Twessy - فئات المنتجات</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Cairo', 'Tajawal', sans-serif;
+            background: #f5f7fa;
+            direction: rtl;
+            line-height: 1.6;
+        }
+        
+        /* ========== الشريط العلوي ========== */
+        .top-bar {
+            background-color: #2C3E50;
+            color: white;
+            padding: 10px 0;
+            font-size: 14px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .top-bar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .contact-info span {
+            margin-left: 20px;
+        }
+        
+        .contact-info i {
+            margin-left: 5px;
+            color: #00A9B5;
+        }
+        
+        .shipping-info {
+            background: #00A9B5;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+        
+        /* ========== شريط التنقل ========== */
+        .navbar {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .logo a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+        
+        .logo i {
+            font-size: 32px;
+            color: #00A9B5;
+        }
+        
+        .logo h1 {
+            font-size: 24px;
+            color: #2C3E50;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: #2C3E50;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: #00A9B5;
+        }
+        
+        .nav-icons {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .nav-icons a {
+            color: #2C3E50;
+            font-size: 20px;
+            position: relative;
+            transition: color 0.3s;
+        }
+        
+        .nav-icons a:hover {
+            color: #00A9B5;
+        }
+        
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #E74C3C;
+            color: white;
+            font-size: 11px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .menu-toggle {
+            display: none;
+            font-size: 24px;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+        
+        /* ========== رأس الصفحة ========== */
+        .page-header {
+            background: linear-gradient(135deg, #00A9B5, #008a94);
+            padding: 50px 0;
+            text-align: center;
+            color: white;
+        }
+        
+        .page-header h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+        
+        .page-header p {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+        
+        /* ========== محتوى الصفحة ========== */
+        .content-page {
+            padding: 50px 0;
+        }
+        
+        .content-section {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .content-section h2 {
+            color: #2C3E50;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #00A9B5;
+            display: inline-block;
+        }
+        
+        .content-section p {
+            color: #7f8c8d;
+            margin-bottom: 15px;
+        }
+        
+        .content-section ul {
+            list-style: disc;
+            padding-right: 25px;
+        }
+        
+        .content-section li {
+            color: #7f8c8d;
+            margin-bottom: 8px;
+        }
+        
+        /* ========== شبكة الفئات ========== */
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .category-card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border: 1px solid #eee;
+        }
+        
+        .category-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.12);
+            border-color: #00A9B5;
+        }
+        
+        .category-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, #00A9B5, #008a94);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+        
+        .category-card:hover .category-icon {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,169,181,0.3);
+        }
+        
+        .category-icon i {
+            font-size: 36px;
+            color: white;
+        }
+        
+        .category-card h3 {
+            font-size: 22px;
+            color: #2C3E50;
+            margin-bottom: 10px;
+        }
+        
+        .category-card p {
+            color: #7f8c8d;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+        
+        .category-count {
+            display: inline-block;
+            background: #e8f4f5;
+            color: #00A9B5;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        
+        .category-link {
+            display: inline-block;
+            margin-top: 15px;
+            color: #00A9B5;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .category-link i {
+            transition: transform 0.3s;
+        }
+        
+        .category-card:hover .category-link i {
+            transform: translateX(-5px);
+        }
+        
+        /* ========== الفوتر ========== */
+        .footer {
+            background: #2C3E50;
+            color: white;
+            padding: 40px 0 20px;
+        }
+        
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .footer-column h3 {
+            margin-bottom: 15px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 50px;
+            height: 2px;
+            background: #00A9B5;
+        }
+        
+        .footer-column p {
+            color: rgba(255,255,255,0.7);
+            line-height: 1.8;
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-column a {
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-column a:hover {
+            color: #00A9B5;
+        }
+        
+        .social-icons {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .social-icons a {
+            width: 38px;
+            height: 38px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+        
+        .social-icons a:hover {
+            background: #00A9B5;
+            transform: translateY(-3px);
+        }
+        
+        .contact-info-list li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .contact-info-list i {
+            width: 20px;
+            color: #00A9B5;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.5);
+        }
+        
+        /* ========== سلة التسوق ========== */
+        .cart-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 16px;
+            width: 400px;
+            max-width: 90%;
+            z-index: 2001;
+            box-shadow: 0 5px 30px rgba(0,0,0,0.2);
+        }
+        
+        .cart-modal.active {
+            display: block;
+        }
+        
+        .cart-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+        }
+        
+        .cart-overlay.active {
+            display: block;
+        }
+        
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .cart-header h3 {
+            margin: 0;
+        }
+        
+        .close-cart {
+            background: none;
+            border: none;
+            font-size: 22px;
+            cursor: pointer;
+        }
+        
+        .cart-content {
+            padding: 15px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .cart-item {
+            display: flex;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .cart-item-image {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+        
+        .cart-item-info {
+            flex: 1;
+        }
+        
+        .cart-item-name {
+            font-weight: 600;
+        }
+        
+        .cart-item-price {
+            color: #00A9B5;
+        }
+        
+        .cart-summary {
+            padding: 15px 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        .cart-total {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+        
+        .checkout-btn {
+            width: 100%;
+            padding: 12px;
+            background: #00A9B5;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .empty-cart-message {
+            text-align: center;
+            padding: 30px;
+            color: #7f8c8d;
+        }
+        
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            z-index: 9999;
+            animation: slideIn 0.3s ease;
+        }
+        
+        .notification.success { background: #27ae60; }
+        .notification.info { background: #3498db; }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        /* ========== استجابة ========== */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 70px;
+                right: 0;
+                left: 0;
+                background: white;
+                flex-direction: column;
+                padding: 20px;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            }
+            
+            .nav-links.active {
+                display: flex;
+            }
+            
+            .menu-toggle {
+                display: block;
+            }
+            
+            .categories-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                gap: 15px;
+            }
+            
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- الشريط العلوي -->
+    <div class="top-bar">
+        <div class="container">
+            <div class="contact-info">
+                <span><i class="fas fa-phone"></i> +967 779 217 474</span>
+                <span><i class="fas fa-envelope"></i> Hadirynasser@gmail.com</span>
+            </div>
+            <div class="shipping-info">
+                شحن مجاني داخل عدن
+            </div>
+        </div>
+    </div>
+    
+    <!-- شريط التنقل -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <a href="index.html">
+                    <i class="fas fa-tooth"></i>
+                    <h1>Twessy</h1>
+                </a>
+            </div>
+            
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">الرئيسية</a></li>
+                <li><a href="products.html">المنتجات</a></li>
+                <li><a href="categories.html" class="active">الفئات</a></li>
+                <li><a href="about.html">من نحن</a></li>
+                <li><a href="services.html">الخدمات</a></li>
+                <li><a href="contact.html">اتصل بنا</a></li>
+            </ul>
+            
+            <div class="nav-icons">
+                <a href="https://www.instagram.com/x5tai?igsh=cDV5Ym5vaTVleXJt" target="_blank" class="instagram-icon">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="login.html" class="user-icon">
+                    <i class="fas fa-user"></i>
+                </a>
+                <a href="#" class="cart-icon" id="cartIcon">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count" id="cartCount">0</span>
+                </a>
+            </div>
+            
+            <div class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- رأس الصفحة -->
+    <header class="page-header">
+        <div class="container">
+            <h1>فئات المنتجات</h1>
+            <p>تصفح منتجاتنا حسب الفئات المختلفة واختر ما يناسب احتياجاتك</p>
+        </div>
+    </header>
+    
+    <!-- محتوى صفحة الفئات -->
+    <section class="content-page">
+        <div class="container">
+            <div class="content-section">
+                <h2>جميع الفئات</h2>
+                <p>في متجر Twessy، نقدم تشكيلة واسعة من منتجات العناية بالأسنان مقسمة إلى فئات منظمة لتسهيل عملية البحث والاختيار. كل فئة تحتوي على منتجات عالية الجودة تلبي احتياجات مختلفة.</p>
+            </div>
+            
+            <div class="categories-grid" id="categoriesGrid">
+                <!-- سيتم إضافة الفئات هنا عبر JavaScript -->
+                <div style="text-align:center; grid-column:1/-1; padding:40px;">
+                    <i class="fas fa-spinner fa-spin" style="font-size:40px; color:#00A9B5;"></i>
+                    <p>جاري تحميل الفئات...</p>
+                </div>
+            </div>
+            
+            <div class="content-section">
+                <h2>كيف تختار المنتج المناسب؟</h2>
+                <p>لضمان صحة أسنانك ولثتك، ننصح باختيار المنتجات المناسبة لنوع أسنانك واحتياجاتك الخاصة:</p>
+                <ul>
+                    <li><strong>فرش الأسنان:</strong> اختر فرشاة ناعمة للأسنان الحساسة، وكهربائية للتنظيف العميق</li>
+                    <li><strong>معاجين الأسنان:</strong> استخدم معجون بالفلورايد للحماية من التسوس، ومعجون مبيض للتبييض</li>
+                    <li><strong>خيط الأسنان:</strong> استخدم الخيط المشمع إذا كانت أسنانك متقاربة</li>
+                    <li><strong>غسول الفم:</strong> اختر غسولاً خالياً من الكحول للاستخدام اليومي</li>
+                    <li><strong>أجهزة العناية:</strong> مثالية لمرتدي التقويم أو أطقم الأسنان</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+    
+    <!-- الفوتر -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-column">
+                    <h3>Twessy</h3>
+                    <p>متجر متخصص في توفير منتجات طب الأسنان بجودة عالية وأسعار مناسبة. نسعى لتحسين صحة الفم والأسنان للمجتمع.</p>
+                    <div class="social-icons">
+                        <a href="https://wa.me/967779217474" target="_blank"><i class="fab fa-whatsapp"></i></a>
+                        <a href="https://www.instagram.com/x5tai?igsh=cDV5Ym5vaTVleXJt" target="_blank"><i class="fab fa-instagram"></i></a>
+                        <a href="mailto:Hadirynasser@gmail.com"><i class="fas fa-envelope"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>روابط سريعة</h3>
+                    <ul>
+                        <li><a href="index.html">الرئيسية</a></li>
+                        <li><a href="products.html">المنتجات</a></li>
+                        <li><a href="categories.html">الفئات</a></li>
+                        <li><a href="about.html">من نحن</a></li>
+                        <li><a href="services.html">الخدمات</a></li>
+                        <li><a href="contact.html">اتصل بنا</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>فئات المنتجات</h3>
+                    <ul id="footerCategoriesList">
+                        <!-- سيتم إضافة الفئات ديناميكياً -->
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>معلومات الاتصال</h3>
+                    <ul class="contact-info-list">
+                        <li><i class="fas fa-map-marker-alt"></i> عدن - اليمن</li>
+                        <li><i class="fas fa-phone"></i> +967 779 217 474</li>
+                        <li><i class="fas fa-envelope"></i> Hadirynasser@gmail.com</li>
+                        <li><i class="fas fa-clock"></i> من الأحد إلى الخميس: 9 صباحاً - 10 مساءً</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2025 Twessy. جميع الحقوق محفوظة.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- نافذة سلة التسوق -->
+    <div class="cart-overlay" id="cartOverlay"></div>
+    <div class="cart-modal" id="cartModal">
+        <div class="cart-header">
+            <h3><i class="fas fa-shopping-cart"></i> سلة التسوق</h3>
+            <button class="close-cart" id="closeCartBtn">&times;</button>
+        </div>
+        <div class="cart-content" id="cartContent">
+            <p class="empty-cart-message">سلة التسوق فارغة</p>
+        </div>
+        <div class="cart-summary" id="cartSummary" style="display: none;">
+            <div class="cart-total">
+                <span>الإجمالي:</span>
+                <span id="cartTotal">0$</span>
+            </div>
+            <button class="checkout-btn" id="checkoutBtn">إتمام الشراء</button>
+        </div>
+    </div>
+
+    <script>
+        // ========== بيانات الفئات مع الأيقونات ==========
+        const categoriesData = [
+            { name: "فرش الأسنان", icon: "fas fa-toothbrush", description: "فرش أسنان يدوية وكهربائية لتنظيف مثالي", color: "#00A9B5" },
+            { name: "معاجين الأسنان", icon: "fas fa-paste", description: "معاجين متخصصة للحماية والتبييض", color: "#27AE60" },
+            { name: "خيط الأسنان", icon: "fas fa-thread", description: "خيط طبي للتنظيف بين الأسنان", color: "#3498DB" },
+            { name: "مبيضات الأسنان", icon: "fas fa-star", description: "منتجات تبييض احترافية وآمنة", color: "#F39C12" },
+            { name: "أجهزة العناية", icon: "fas fa-microchip", description: "أجهزة متطورة للعناية بالفم", color: "#9B59B6" },
+            { name: "غسول الفم", icon: "fas fa-tint", description: "غسول منعش للفم يقضي على البكتيريا", color: "#1ABC9C" },
+            { name: "فرش لسان", icon: "fas fa-tongue", description: "أدوات تنظيف اللسان للتخلص من الرائحة", color: "#E74C3C" },
+            { name: "منتجات تقويم", icon: "fas fa-braces", description: "منتجات خاصة لمرتدي التقويم", color: "#16A085" }
+        ];
+        
+        let allProducts = [];
+        let currentCurrency = 'USD';
+        let exchangeRates = { SAR: 3.75, YER: 1250 };
+        
+        // رموز العملات
+        const currencySymbols = {
+            USD: { symbol: '$', name: 'دولار', position: 'left' },
+            SAR: { symbol: 'ر.س', name: 'ريال سعودي', position: 'right' },
+            YER: { symbol: 'ر.ي', name: 'ريال يمني', position: 'right' }
+        };
+        
+        // تحويل السعر حسب العملة
+        function convertPrice(priceUSD) {
+            if (currentCurrency === 'USD') return { value: priceUSD, formatted: '$' + priceUSD.toFixed(2) };
+            if (currentCurrency === 'SAR') {
+                const converted = priceUSD * exchangeRates.SAR;
+                return { value: converted, formatted: converted.toFixed(2) + ' ر.س' };
+            }
+            if (currentCurrency === 'YER') {
+                const converted = priceUSD * exchangeRates.YER;
+                return { value: converted, formatted: converted.toFixed(0) + ' ر.ي' };
+            }
+            return { value: priceUSD, formatted: '$' + priceUSD.toFixed(2) };
+        }
+        
+        // ========== تحميل المنتجات من localStorage ==========
+        function loadProducts() {
+            const savedProducts = localStorage.getItem('twessy_products');
+            if (savedProducts) {
+                try {
+                    allProducts = JSON.parse(savedProducts);
+                } catch(e) {
+                    allProducts = [];
+                }
+            } else {
+                allProducts = [];
+            }
+        }
+        
+        // ========== تحميل إعدادات العملة ==========
+        function loadCurrencySettings() {
+            const savedSettings = localStorage.getItem('twessy_settings');
+            if (savedSettings) {
+                const s = JSON.parse(savedSettings);
+                currentCurrency = s.currency || 'USD';
+                exchangeRates.SAR = parseFloat(s.sarRate) || 3.75;
+                exchangeRates.YER = parseFloat(s.yerRate) || 1250;
+            }
+        }
+        
+        // ========== حساب عدد المنتجات في كل فئة ==========
+        function getProductCountByCategory(categoryName) {
+            return allProducts.filter(p => p.category === categoryName && p.stock > 0).length;
+        }
+        
+        // ========== عرض الفئات ==========
+        function displayCategories() {
+            const container = document.getElementById('categoriesGrid');
+            if (!container) return;
+            
+            // تصفية الفئات التي لها منتجات فقط (أو عرض الكل)
+            const categoriesToShow = categoriesData;
+            
+            container.innerHTML = categoriesToShow.map(cat => {
+                const productCount = getProductCountByCategory(cat.name);
+                return `
+                    <div class="category-card" onclick="goToCategory('${cat.name}')">
+                        <div class="category-icon" style="background: linear-gradient(135deg, ${cat.color}, ${cat.color}cc);">
+                            <i class="${cat.icon}"></i>
+                        </div>
+                        <h3>${cat.name}</h3>
+                        <p>${cat.description}</p>
+                        <span class="category-count">📦 ${productCount} منتج</span>
+                        <div class="category-link">
+                            تصفح المنتجات <i class="fas fa-arrow-left"></i>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // ========== عرض الفئات في الفوتر ==========
+        function displayFooterCategories() {
+            const footerList = document.getElementById('footerCategoriesList');
+            if (footerList) {
+                footerList.innerHTML = categoriesData.map(cat => `
+                    <li><a href="#" onclick="goToCategory('${cat.name}'); return false;">${cat.name}</a></li>
+                `).join('');
+            }
+        }
+        
+        // ========== الانتقال إلى صفحة المنتجات مع تصفية الفئة ==========
+        function goToCategory(categoryName) {
+            // ترميز اسم الفئة لاستخدامه في URL
+            const encodedCategory = encodeURIComponent(categoryName);
+            window.location.href = `products.html?category=${encodedCategory}`;
+        }
+        
+        // ========== وظائف سلة التسوق ==========
+        function updateCartCount() {
+            const cart = JSON.parse(localStorage.getItem('twessy_cart') || '[]');
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const cartCountElement = document.getElementById('cartCount');
+            if (cartCountElement) {
+                cartCountElement.textContent = totalItems;
+            }
+        }
+        
+        function openCart() {
+            const cart = JSON.parse(localStorage.getItem('twessy_cart') || '[]');
+            const cartModal = document.getElementById('cartModal');
+            const cartOverlay = document.getElementById('cartOverlay');
+            const cartContent = document.getElementById('cartContent');
+            const cartSummary = document.getElementById('cartSummary');
+            
+            if (cart.length === 0) {
+                cartContent.innerHTML = '<p class="empty-cart-message">🛒 سلة التسوق فارغة</p>';
+                cartSummary.style.display = 'none';
+            } else {
+                let total = 0;
+                cartContent.innerHTML = cart.map(item => {
+                    const itemTotal = item.price * item.quantity;
+                    total += itemTotal;
+                    return `
+                        <div class="cart-item" data-id="${item.id}">
+                            <img src="${item.image || 'https://via.placeholder.com/60'}" class="cart-item-image" onerror="this.src='https://via.placeholder.com/60'">
+                            <div class="cart-item-info">
+                                <div class="cart-item-name">${item.name}</div>
+                                <div class="cart-item-price">${convertPrice(item.price).formatted}</div>
+                                <div>الكمية: ${item.quantity}</div>
+                            </div>
+                            <button class="remove-from-cart" data-id="${item.id}" style="background:none; border:none; color:#e74c3c; cursor:pointer; font-size:18px;">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    `;
+                }).join('');
+                document.getElementById('cartTotal').textContent = convertPrice(total).formatted;
+                cartSummary.style.display = 'block';
+                
+                // ربط أزرار الحذف
+                document.querySelectorAll('.remove-from-cart').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = this.dataset.id;
+                        let cart = JSON.parse(localStorage.getItem('twessy_cart') || '[]');
+                        cart = cart.filter(item => item.id !== id);
+                        localStorage.setItem('twessy_cart', JSON.stringify(cart));
+                        updateCartCount();
+                        openCart();
+                        showNotification('🗑️ تم إزالة المنتج من السلة', 'info');
+                    });
+                });
+            }
+            
+            cartModal.classList.add('active');
+            cartOverlay.classList.add('active');
+        }
+        
+        function closeCart() {
+            document.getElementById('cartModal').classList.remove('active');
+            document.getElementById('cartOverlay').classList.remove('active');
+        }
+        
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = message;
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 3000);
+        }
+        
+        // ========== التهيئة ==========
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCurrencySettings();
+            loadProducts();
+            displayCategories();
+            displayFooterCategories();
+            updateCartCount();
+            
+            // أحداث السلة
+            document.getElementById('cartIcon').addEventListener('click', function(e) {
+                e.preventDefault();
+                openCart();
+            });
+            
+            document.getElementById('closeCartBtn').addEventListener('click', closeCart);
+            document.getElementById('cartOverlay').addEventListener('click', closeCart);
+            
+            document.getElementById('checkoutBtn').addEventListener('click', function() {
+                const cart = JSON.parse(localStorage.getItem('twessy_cart') || '[]');
+                if (cart.length === 0) {
+                    showNotification('⚠️ سلة التسوق فارغة', 'info');
+                    return;
+                }
+                window.location.href = 'checkout.html';
+            });
+            
+            // قائمة الجوال
+            document.getElementById('menuToggle').addEventListener('click', function() {
+                document.getElementById('navLinks').classList.toggle('active');
+            });
+            
+            // إغلاق القائمة عند النقر على رابط
+            document.querySelectorAll('.nav-links a').forEach(link => {
+                link.addEventListener('click', () => {
+                    document.getElementById('navLinks').classList.remove('active');
+                });
+            });
+        });
+        
+        // جعل الدوال عامة
+        window.goToCategory = goToCategory;
+    </script>
+</body>
+</html>
