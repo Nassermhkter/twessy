@@ -112,7 +112,9 @@
             min-width: 22px;
             height: 22px;
             border-radius: 11px;
-            display: flex; align-items: center; justify-content: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             padding: 0 6px;
         }
 
@@ -569,7 +571,7 @@
             <li><a href="#" class="nav-link" data-section="customers"><i class="fas fa-users"></i> العملاء <span class="menu-badge" id="customersBadge" style="display:none;">0</span></a></li>
             <li><a href="#" class="nav-link" data-section="products"><i class="fas fa-box"></i> المنتجات</a></li>
             <li><a href="#" class="nav-link" data-section="addProduct"><i class="fas fa-plus-circle"></i> إضافة منتج</a></li>
-            <li><a href="#" class="nav-link" data-section="orders"><i class="fas fa-shopping-cart"></i> الطلبات</a></li>
+            <li><a href="#" class="nav-link" data-section="orders"><i class="fas fa-shopping-cart"></i> الطلبات <span class="menu-badge" id="ordersBadge" style="display:none;">0</span></a></li>
             <li><a href="#" class="nav-link" data-section="settings"><i class="fas fa-cog"></i> الإعدادات</a></li>
         </ul>
         <div class="sidebar-footer">
@@ -704,6 +706,7 @@
                             <option value="خيط الأسنان">خيط الأسنان</option>
                             <option value="مبيضات الأسنان">مبيضات الأسنان</option>
                             <option value="أجهزة العناية">أجهزة العناية</option>
+                            <option value="غسول الفم">غسول الفم</option>
                         </select>
                     </div>
                 </div>
@@ -733,7 +736,7 @@
             <div class="section-header"><h2><i class="fas fa-shopping-cart" style="color:var(--primary)"></i> إدارة الطلبات</h2></div>
             <div class="table-responsive">
                 <table>
-                    <thead><tr><th>الرقم</th><th>العميل</th><th>الهاتف</th><th>التاريخ</th><th>الإجمالي</th><th>الحالة</th><th>إجراءات</th></tr></thead>
+                    <thead><tr><th>الرقم</th><th>العميل</th><th>الهاتف</th><th>التاريخ</th><th>الإجمالي</th><th>المنتجات</th><th>الحالة</th><th>إجراءات</th></tr></thead>
                     <tbody id="ordersTableBody"></tbody>
                 </table>
             </div>
@@ -835,7 +838,7 @@
         var products = [];
         var orders = [];
         var customers = [];
-        var categories = ['فرش الأسنان', 'معاجين الأسنان', 'خيط الأسنان', 'مبيضات الأسنان', 'أجهزة العناية'];
+        var categories = ['فرش الأسنان', 'معاجين الأسنان', 'خيط الأسنان', 'مبيضات الأسنان', 'أجهزة العناية', 'غسول الفم'];
         var deleteTargetId = null;
         var deleteTargetType = 'product';
 
@@ -849,13 +852,6 @@
             ];
         }
 
-        function getDefaultOrders() {
-            return [
-                { id:'ORD001', customerName:'أحمد محمد', phone:'777888999', date:'2025-01-15', total:33, status:'تم التوصيل' },
-                { id:'ORD002', customerName:'سارة علي', phone:'777888111', date:'2025-01-14', total:25, status:'قيد التجهيز' }
-            ];
-        }
-
         // ========== حفظ وتحميل ==========
         function saveProducts() {
             var d = JSON.stringify(products);
@@ -863,7 +859,18 @@
             localStorage.setItem('twessy_store_products', d);
             window.dispatchEvent(new Event('storage'));
         }
-        function saveOrders() { localStorage.setItem('twessy_orders', JSON.stringify(orders)); }
+        
+        function saveOrders() { 
+            localStorage.setItem('twessy_orders', JSON.stringify(orders));
+            // تحديث عدد الطلبات في الشريط الجانبي
+            var badge = document.getElementById('ordersBadge');
+            if (orders.length > 0) {
+                badge.style.display = 'flex';
+                badge.textContent = orders.length;
+            } else {
+                badge.style.display = 'none';
+            }
+        }
 
         function loadCustomers() {
             try {
@@ -896,8 +903,8 @@
             } catch(e) { products = getDefaultProducts(); }
             try {
                 var so = localStorage.getItem('twessy_orders');
-                orders = so ? JSON.parse(so) : getDefaultOrders();
-            } catch(e) { orders = getDefaultOrders(); }
+                orders = so ? JSON.parse(so) : [];
+            } catch(e) { orders = []; }
             if (!localStorage.getItem('twessy_products')) saveProducts();
             if (!localStorage.getItem('twessy_orders')) saveOrders();
             loadCustomers();
@@ -974,7 +981,6 @@
                 ) && (!providerFilter || (c.provider || 'email') === providerFilter);
             });
 
-            // ترتيب بالأحدث أولاً
             filtered.sort(function(a, b) {
                 return new Date(b.createdAt) - new Date(a.createdAt);
             });
@@ -1060,8 +1066,7 @@
                 '<div class="order-detail-row"><span class="label">البريد الإلكتروني</span><span class="value" style="direction:ltr;text-align:left;font-size:13px;">' + c.email + '</span></div>' +
                 '<div class="order-detail-row"><span class="label">رقم الهاتف</span><span class="value" style="direction:ltr;text-align:left;">' + (c.phone || 'غير محدد') + '</span></div>' +
                 '<div class="order-detail-row"><span class="label">طريقة التسجيل</span><span class="value">' + providerName + '</span></div>' +
-                '<div class="order-detail-row"><span class="label">تاريخ التسجيل</span><span class="value">' + formatDate(c.createdAt) + '</span></div>' +
-                '<div class="order-detail-row"><span class="label">كلمة المرور</span><span class="value" style="font-family:monospace;letter-spacing:1px;">' + (c.password || '—') + '</span></div>';
+                '<div class="order-detail-row"><span class="label">تاريخ التسجيل</span><span class="value">' + formatDate(c.createdAt) + '</span></div>';
 
             document.getElementById('customerDetailOverlay').classList.add('active');
             document.body.classList.add('modal-open');
@@ -1155,30 +1160,94 @@
             var tbody = document.getElementById('ordersTableBody');
             if (!tbody) return;
             if (orders.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" class="empty-table"><i class="fas fa-inbox"></i>لا توجد طلبات</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="8" class="empty-table"><i class="fas fa-inbox"></i>لا توجد طلبات</td></tr>';
                 return;
             }
-            var statuses = ['قيد الانتظار', 'قيد التجهيز', 'تم الشحن', 'تم التوصيل'];
+            var statuses = ['قيد الانتظار', 'قيد التجهيز', 'تم الشحن', 'تم التوصيل', 'ملغي'];
             tbody.innerHTML = orders.map(function(o) {
+                // عرض المنتجات بشكل مختصر
+                var itemsHtml = '';
+                if (o.items && o.items.length > 0) {
+                    itemsHtml = o.items.map(function(item) {
+                        return item.name + ' ×' + item.quantity;
+                    }).join(', ');
+                } else if (o.orderItems) {
+                    itemsHtml = o.orderItems.map(function(item) {
+                        return item.name + ' ×' + item.quantity;
+                    }).join(', ');
+                } else {
+                    itemsHtml = '-';
+                }
+                
                 return '<tr>' +
                     '<td><strong>#' + o.id + '</strong></td>' +
-                    '<td>' + o.customerName + '</td>' +
-                    '<td style="direction:ltr;text-align:right;font-size:13px;">' + o.phone + '</td>' +
+                    '<td>' + (o.customerName || 'زائر') + '</td>' +
+                    '<td style="direction:ltr;text-align:right;font-size:13px;">' + (o.phone || '-') + '</td>' +
                     '<td>' + o.date + '</td>' +
                     '<td><strong>' + convertPrice(o.total) + '</strong></td>' +
+                    '<td style="max-width:200px;font-size:12px;">' + itemsHtml + '</td>' +
                     '<td><select class="filter-select order-status-select" data-id="' + o.id + '" style="padding:6px 28px 6px 10px;min-width:auto;font-size:12px;">' +
                         statuses.map(function(s){return '<option value="'+s+'"'+(o.status===s?' selected':'')+'>'+s+'</option>';}).join('') +
                     '</select></td>' +
-                    '<td><button class="action-btn edit" data-id="' + o.id + '" title="عرض"><i class="fas fa-eye"></i></button></td>' +
+                    '<td><button class="action-btn view" data-id="' + o.id + '" title="عرض"><i class="fas fa-eye"></i></button></td>' +
                 '</tr>';
             }).join('');
             tbody.querySelectorAll('.order-status-select').forEach(function(sel) {
                 sel.addEventListener('change', function() { updateOrderStatus(this.dataset.id, this.value); });
             });
-            tbody.querySelectorAll('.action-btn.edit').forEach(function(btn) {
+            tbody.querySelectorAll('.action-btn.view').forEach(function(btn) {
                 btn.addEventListener('click', function() { viewOrder(this.dataset.id); });
             });
         }
+
+        // ========== تحديث حالة الطلب ==========
+        function updateOrderStatus(id, status) {
+            var order = orders.find(function(o){return o.id===id;});
+            if (order) { 
+                order.status = status; 
+                saveOrders(); 
+                showToast('تم تحديث حالة الطلب', 'success');
+                updateStats();
+            }
+        }
+
+        // ========== عرض تفاصيل الطلب ==========
+        function viewOrder(id) {
+            var order = orders.find(function(o){return o.id===id;});
+            if (!order) return;
+            
+            var itemsHtml = '';
+            var items = order.items || order.orderItems || [];
+            if (items.length > 0) {
+                itemsHtml = '<div style="margin:8px 0;"><strong>المنتجات:</strong><ul style="margin-top:8px;list-style:none;">' +
+                    items.map(function(item) {
+                        return '<li style="padding:4px 0;">• ' + item.name + ' × ' + item.quantity + ' = ' + convertPrice(item.price * item.quantity) + '</li>';
+                    }).join('') +
+                    '</ul></div>';
+            }
+            
+            var content = document.getElementById('orderDetailContent');
+            content.innerHTML =
+                '<div class="order-detail-row"><span class="label">رقم الطلب</span><span class="value">#' + order.id + '</span></div>' +
+                '<div class="order-detail-row"><span class="label">العميل</span><span class="value">' + (order.customerName || 'زائر') + '</span></div>' +
+                '<div class="order-detail-row"><span class="label">الهاتف</span><span class="value" style="direction:ltr;text-align:left;">' + (order.phone || '-') + '</span></div>' +
+                '<div class="order-detail-row"><span class="label">التاريخ</span><span class="value">' + order.date + '</span></div>' +
+                '<div class="order-detail-row"><span class="label">الإجمالي</span><span class="value" style="color:var(--primary-dark);font-size:16px;">' + convertPrice(order.total) + '</span></div>' +
+                '<div class="order-detail-row"><span class="label">الحالة</span><span class="value"><span class="badge badge-info">' + (order.status || 'قيد الانتظار') + '</span></span></div>' +
+                itemsHtml +
+                (order.notes ? '<div class="order-detail-row"><span class="label">ملاحظات</span><span class="value">' + order.notes + '</span></div>' : '');
+            
+            document.getElementById('orderDetailOverlay').classList.add('active');
+            document.body.classList.add('modal-open');
+        }
+
+        document.getElementById('orderDetailCloseBtn').addEventListener('click', function() {
+            document.getElementById('orderDetailOverlay').classList.remove('active');
+            document.body.classList.remove('modal-open');
+        });
+        document.getElementById('orderDetailOverlay').addEventListener('click', function(e) {
+            if (e.target === this) { this.classList.remove('active'); document.body.classList.remove('modal-open'); }
+        });
 
         // ========== الصور ==========
         document.getElementById('productImageFile').addEventListener('change', function(e) {
@@ -1312,35 +1381,6 @@
         document.getElementById('confirmCancelBtn').addEventListener('click', hideConfirm);
         document.getElementById('confirmOverlay').addEventListener('click', function(e) { if (e.target === this) hideConfirm(); });
 
-        // ========== الطلبات ==========
-        function updateOrderStatus(id, status) {
-            var order = orders.find(function(o){return o.id===id;});
-            if (order) { order.status = status; saveOrders(); showToast('تم تحديث حالة الطلب', 'success'); }
-        }
-
-        function viewOrder(id) {
-            var order = orders.find(function(o){return o.id===id;});
-            if (!order) return;
-            var content = document.getElementById('orderDetailContent');
-            content.innerHTML =
-                '<div class="order-detail-row"><span class="label">رقم الطلب</span><span class="value">#' + order.id + '</span></div>' +
-                '<div class="order-detail-row"><span class="label">العميل</span><span class="value">' + order.customerName + '</span></div>' +
-                '<div class="order-detail-row"><span class="label">الهاتف</span><span class="value" style="direction:ltr;text-align:left;">' + order.phone + '</span></div>' +
-                '<div class="order-detail-row"><span class="label">التاريخ</span><span class="value">' + order.date + '</span></div>' +
-                '<div class="order-detail-row"><span class="label">الإجمالي</span><span class="value" style="color:var(--primary-dark);font-size:16px;">' + convertPrice(order.total) + '</span></div>' +
-                '<div class="order-detail-row"><span class="label">الحالة</span><span class="value"><span class="badge badge-info">' + order.status + '</span></span></div>';
-            document.getElementById('orderDetailOverlay').classList.add('active');
-            document.body.classList.add('modal-open');
-        }
-
-        document.getElementById('orderDetailCloseBtn').addEventListener('click', function() {
-            document.getElementById('orderDetailOverlay').classList.remove('active');
-            document.body.classList.remove('modal-open');
-        });
-        document.getElementById('orderDetailOverlay').addEventListener('click', function(e) {
-            if (e.target === this) { this.classList.remove('active'); document.body.classList.remove('modal-open'); }
-        });
-
         // ========== التوست ==========
         function showToast(message, type) {
             var existing = document.querySelector('.toast');
@@ -1428,6 +1468,7 @@
 
         // ========== تهيئة الصفحة ==========
         document.addEventListener('DOMContentLoaded', function() {
+            // التحقق من صلاحية المشرف
             if (!sessionStorage.getItem('admin_auth')) {
                 var pw = prompt('كلمة مرور المشرف:');
                 if (pw !== 'admin123' && pw !== 'Twessy2025') {
@@ -1486,15 +1527,27 @@
                     updateRecentCustomers();
                     updateStats();
                 }
+                if (e.key === 'twessy_orders') {
+                    loadAllData();
+                }
             });
 
-            // فحص دوري لتحديث العملاء (للتغييرات في نفس التاب)
+            // فحص دوري لتحديث العملاء والطلبات
             setInterval(function() {
-                var prevCount = customers.length;
+                var prevCustomerCount = customers.length;
+                var prevOrderCount = orders.length;
                 loadCustomers();
-                if (customers.length !== prevCount) {
+                try {
+                    var so = localStorage.getItem('twessy_orders');
+                    if (so) orders = JSON.parse(so);
+                } catch(e) {}
+                if (customers.length !== prevCustomerCount) {
                     displayCustomers();
                     updateRecentCustomers();
+                    updateStats();
+                }
+                if (orders.length !== prevOrderCount) {
+                    displayOrders();
                     updateStats();
                 }
             }, 2000);
