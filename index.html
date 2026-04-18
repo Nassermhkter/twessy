@@ -36,9 +36,6 @@
             --font: 'Tajawal', sans-serif;
         }
 
-        /* ============================================ */
-        /*  إعادة تعيين عامة                             */
-        /* ============================================ */
         *, *::before, *::after {
             margin: 0;
             padding: 0;
@@ -220,7 +217,6 @@
             height: 60px;
         }
 
-        /* الشعار */
         .logo a {
             display: flex;
             align-items: center;
@@ -241,7 +237,6 @@
             background-clip: text;
         }
 
-        /* روابط التنقل */
         .nav-links {
             display: none;
             flex-direction: column;
@@ -283,7 +278,6 @@
             color: var(--primary-dark);
         }
 
-        /* أيقونات الجانبية */
         .nav-icons {
             display: flex;
             align-items: center;
@@ -313,6 +307,52 @@
             background: #FCE4EC !important;
         }
 
+        /* شارة المستخدم المسجل */
+        .nav-user-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px 4px 4px;
+            background: var(--primary-light);
+            border-radius: 24px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .nav-user-badge:hover {
+            background: var(--primary);
+        }
+
+        .nav-user-badge:hover .user-name-sm {
+            color: #fff;
+        }
+
+        .nav-user-badge .user-avatar-sm {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 800;
+            overflow: hidden;
+        }
+
+        .nav-user-badge .user-avatar-sm img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .nav-user-badge .user-name-sm {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--primary-dark);
+        }
+
         .cart-count {
             position: absolute;
             top: 2px;
@@ -330,7 +370,6 @@
             line-height: 1;
         }
 
-        /* زر القائمة */
         .menu-toggle {
             width: 42px;
             height: 42px;
@@ -350,7 +389,6 @@
             color: var(--primary);
         }
 
-        /* ديسك توب */
         @media (min-width: 1024px) {
             .menu-toggle {
                 display: none;
@@ -414,7 +452,6 @@
             to { transform: scale(1.3); opacity: 1; }
         }
 
-        /* نقاط زخرفية */
         .hero-dots {
             position: absolute;
             inset: 0;
@@ -742,6 +779,7 @@
             border: 1px solid var(--border);
             position: relative;
             overflow: hidden;
+            cursor: pointer;
         }
 
         .category-card::before {
@@ -914,7 +952,6 @@
         /*  المودالات (النوافذ المنبثقة)                  */
         /* ============================================ */
 
-        /* أفرقة شفافة خلفية */
         .cart-overlay,
         .product-detail-overlay,
         .checkout-modal-overlay,
@@ -938,7 +975,6 @@
             visibility: visible;
         }
 
-        /* سلة التسوق */
         .cart-modal {
             position: fixed;
             top: 0;
@@ -1138,20 +1174,17 @@
             padding: 12px;
         }
 
-        /* ديسك توب - سلة من الجانب الأيسر */
         @media (min-width: 1024px) {
             .cart-modal {
                 right: 0;
                 left: auto;
                 transform: translateX(100%);
             }
-
             .cart-modal.active {
                 transform: translateX(0);
             }
         }
 
-        /* تفاصيل المنتج */
         .product-detail-modal {
             position: fixed;
             top: 50%;
@@ -1266,7 +1299,6 @@
             .detail-grid { grid-template-columns: 1fr 1fr; }
         }
 
-        /* نموذج الطلب */
         .checkout-modal {
             position: fixed;
             top: 50%;
@@ -1389,232 +1421,6 @@
             width: 100%;
             font-size: 16px;
             padding: 14px;
-        }
-
-        /* تسجيل الدخول */
-        .login-modal {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0.9);
-            width: calc(100% - 32px);
-            max-width: 420px;
-            max-height: 90vh;
-            background: var(--bg-white);
-            border-radius: var(--radius-lg);
-            z-index: 2001;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .login-modal.active {
-            opacity: 1;
-            visibility: visible;
-            transform: translate(-50%, -50%) scale(1);
-        }
-
-        .login-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 16px 20px;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .login-header h3 {
-            font-size: 17px;
-            font-weight: 800;
-        }
-
-        .login-content {
-            padding: 24px 20px;
-            overflow-y: auto;
-            flex: 1;
-        }
-
-        .login-intro {
-            text-align: center;
-            font-size: 14px;
-            color: var(--text-secondary);
-            margin-bottom: 24px;
-        }
-
-        .social-login {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .btn-google {
-            background: #fff;
-            color: var(--text);
-            border: 2px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            padding: 12px;
-            border-radius: var(--radius-sm);
-            font-weight: 700;
-            font-size: 14px;
-            cursor: pointer;
-            transition: var(--transition);
-            width: 100%;
-        }
-
-        .btn-google:hover {
-            border-color: var(--primary);
-            background: var(--bg);
-        }
-
-        .btn-facebook {
-            background: #1877F2;
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            padding: 12px;
-            border-radius: var(--radius-sm);
-            font-weight: 700;
-            font-size: 14px;
-            cursor: pointer;
-            transition: var(--transition);
-            width: 100%;
-        }
-
-        .btn-facebook:hover {
-            background: #1565C0;
-        }
-
-        .divider {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-
-        .divider::before,
-        .divider::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: var(--border);
-        }
-
-        .divider span {
-            font-size: 13px;
-            color: var(--text-light);
-            font-weight: 600;
-        }
-
-        .form-options {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .checkbox-label {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 13px;
-            cursor: pointer;
-        }
-
-        .checkbox-label input[type="checkbox"] {
-            width: 16px;
-            height: 16px;
-            accent-color: var(--primary);
-        }
-
-        .forgot-password {
-            font-size: 13px;
-            color: var(--primary);
-            font-weight: 600;
-        }
-
-        .forgot-password:hover {
-            text-decoration: underline;
-        }
-
-        .login-btn,
-        .register-btn {
-            width: 100%;
-            padding: 13px;
-            font-size: 16px;
-        }
-
-        .register-link,
-        .login-link {
-            text-align: center;
-            margin-top: 16px;
-            font-size: 14px;
-            color: var(--text-secondary);
-        }
-
-        .register-link a,
-        .login-link a {
-            color: var(--primary);
-            font-weight: 700;
-        }
-
-        .register-link a:hover,
-        .login-link a:hover {
-            text-decoration: underline;
-        }
-
-        /* نموذج التسجيل */
-        .register-modal {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0.9);
-            width: calc(100% - 32px);
-            max-width: 440px;
-            max-height: 90vh;
-            background: var(--bg-white);
-            border-radius: var(--radius-lg);
-            z-index: 2001;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .register-modal.active {
-            opacity: 1;
-            visibility: visible;
-            transform: translate(-50%, -50%) scale(1);
-        }
-
-        .register-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 16px 20px;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .register-header h3 {
-            font-size: 17px;
-            font-weight: 800;
-        }
-
-        .register-content {
-            padding: 24px 20px;
-            overflow-y: auto;
-            flex: 1;
         }
 
         /* ============================================ */
@@ -1753,9 +1559,6 @@
             background: #DC2626;
         }
 
-        /* ============================================ */
-        /*  مؤشر التحميل للمنتجات                        */
-        /* ============================================ */
         .products-loading {
             grid-column: 1 / -1;
             text-align: center;
@@ -1777,9 +1580,6 @@
             to { transform: rotate(360deg); }
         }
 
-        /* ============================================ */
-        /*  تحسينات إضافية للجوال                        */
-        /* ============================================ */
         @media (max-width: 480px) {
             .hero-content h2 { font-size: 22px; }
             .hero-buttons .btn { padding: 10px 20px; font-size: 14px; }
@@ -1790,12 +1590,10 @@
             .detail-actions .btn { min-width: unset; }
         }
 
-        /* منع التمرير عند فتح مودال */
         body.modal-open {
             overflow: hidden;
         }
 
-        /* تحسين اللمس */
         @media (hover: none) {
             .product-card:hover { transform: none; box-shadow: var(--shadow); }
             .category-card:hover { transform: none; box-shadow: var(--shadow); }
@@ -1803,7 +1601,6 @@
             .btn:hover { transform: none; }
         }
 
-        /* حركة ظهور عند التمرير */
         .reveal {
             opacity: 0;
             transform: translateY(24px);
@@ -1815,7 +1612,6 @@
             transform: translateY(0);
         }
 
-        /* شريط التمرير المخصص */
         ::-webkit-scrollbar {
             width: 6px;
         }
@@ -1836,7 +1632,6 @@
 </head>
 <body>
 
-    <!-- الشريط العلوي -->
     <div class="top-bar">
         <div class="container">
             <div class="contact-info">
@@ -1847,7 +1642,6 @@
         </div>
     </div>
 
-    <!-- شريط التنقل -->
     <nav class="navbar">
         <div class="container nav-container">
             <div class="logo">
@@ -1864,15 +1658,15 @@
                 <li><a href="about.html">من نحن</a></li>
                 <li><a href="services.html">الخدمات</a></li>
                 <li><a href="contact.html">اتصل بنا</a></li>
-                <li><a href="login.html"> تسجيل الدخول</a></li>
-                <li><a href="dashboard.html"> لوحة التحكم </a></li>
+                <li><a href="login.html">تسجيل الدخول</a></li>
+                <li><a href="dashboard.html">لوحة التحكم</a></li>
             </ul>
             
             <div class="nav-icons">
                 <a href="https://www.instagram.com/x5tai?igsh=cDV5Ym5vaTVleXJt" target="_blank" class="instagram-icon" aria-label="انستقرام">
                     <i class="fab fa-instagram"></i>
                 </a>
-                <a href="#" class="user-icon" id="userIcon" aria-label="حسابي">
+                <a href="#" id="userIcon" aria-label="حسابي">
                     <i class="fas fa-user"></i>
                 </a>
                 <a href="#" class="cart-icon" id="cartIcon" aria-label="سلة التسوق">
@@ -1887,7 +1681,6 @@
         </div>
     </nav>
 
-    <!-- القسم الرئيسي -->
     <section class="hero">
         <div class="hero-dots">
             <span></span><span></span><span></span><span></span><span></span><span></span>
@@ -1904,7 +1697,6 @@
         </div>
     </section>
 
-    <!-- المنتجات المميزة -->
     <section class="featured-products reveal">
         <div class="container">
             <div class="section-title">
@@ -1913,7 +1705,6 @@
             </div>
             
             <div class="products-grid" id="featuredProducts">
-                <!-- المنتجات تُحمّل عبر JavaScript -->
             </div>
             
             <div class="text-center">
@@ -1922,7 +1713,6 @@
         </div>
     </section>
 
-    <!-- فئات المنتجات -->
     <section class="categories-section reveal">
         <div class="container">
             <div class="section-title">
@@ -1931,35 +1721,34 @@
             </div>
             
             <div class="categories-grid">
-                <div class="category-card">
+                <div class="category-card" data-category="فرش الأسنان">
                     <div class="category-icon"><i class="fas fa-toothbrush"></i></div>
                     <h3>فرش الأسنان</h3>
                     <p>أفضل أنواع فرش الأسنان اليدوية والكهربائية</p>
-                    <a href="categories.html?category=فرش الأسنان" class="category-link">تصفح المنتجات</a>
+                    <div class="category-link">تصفح المنتجات</div>
                 </div>
-                <div class="category-card">
+                <div class="category-card" data-category="معاجين الأسنان">
                     <div class="category-icon"><i class="fas fa-paste"></i></div>
                     <h3>معاجين الأسنان</h3>
                     <p>معاجين متخصصة لجميع أنواع الأسنان</p>
-                    <a href="categories.html?category=معاجين الأسنان" class="category-link">تصفح المنتجات</a>
+                    <div class="category-link">تصفح المنتجات</div>
                 </div>
-                <div class="category-card">
+                <div class="category-card" data-category="خيط الأسنان">
                     <div class="category-icon"><i class="fas fa-thread"></i></div>
                     <h3>خيط الأسنان</h3>
                     <p>خيط طبي للتنظيف بين الأسنان</p>
-                    <a href="categories.html?category=خيط الأسنان" class="category-link">تصفح المنتجات</a>
+                    <div class="category-link">تصفح المنتجات</div>
                 </div>
-                <div class="category-card">
+                <div class="category-card" data-category="مبيضات الأسنان">
                     <div class="category-icon"><i class="fas fa-star"></i></div>
                     <h3>مبيضات الأسنان</h3>
                     <p>منتجات تبييض احترافية وآمنة</p>
-                    <a href="categories.html?category=مبيضات الأسنان" class="category-link">تصفح المنتجات</a>
+                    <div class="category-link">تصفح المنتجات</div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- الخدمات -->
     <section class="services-section reveal">
         <div class="container">
             <div class="section-title">
@@ -1996,7 +1785,6 @@
         </div>
     </section>
 
-    <!-- سلة التسوق -->
     <div class="cart-overlay" id="cartOverlay"></div>
     <div class="cart-modal" id="cartModal">
         <div class="cart-header">
@@ -2022,7 +1810,6 @@
         </div>
     </div>
 
-    <!-- تفاصيل المنتج -->
     <div class="product-detail-overlay" id="productDetailOverlay"></div>
     <div class="product-detail-modal" id="productDetailModal">
         <div class="product-detail-header">
@@ -2032,7 +1819,6 @@
         <div class="product-detail-content" id="productDetailContent"></div>
     </div>
 
-    <!-- تأكيد الطلب -->
     <div class="checkout-modal-overlay" id="checkoutOverlay"></div>
     <div class="checkout-modal" id="checkoutModal">
         <div class="checkout-header">
@@ -2072,87 +1858,6 @@
         </form>
     </div>
 
-    <!-- تسجيل الدخول -->
-    <div class="login-overlay" id="loginOverlay"></div>
-    <div class="login-modal" id="loginModal">
-        <div class="login-header">
-            <h3>تسجيل الدخول</h3>
-            <button class="close-login" id="closeLogin" aria-label="إغلاق"><i class="fas fa-times"></i></button>
-        </div>
-        <div class="login-content">
-            <p class="login-intro">سجل دخولك لتجربة تسوق أفضل ومتابعة طلباتك</p>
-            <div class="social-login">
-                <button class="btn-google" id="googleLogin"><i class="fab fa-google"></i> تسجيل الدخول بجوجل</button>
-                <button class="btn-facebook" id="facebookLogin"><i class="fab fa-facebook-f"></i> تسجيل الدخول بفيسبوك</button>
-            </div>
-            <div class="divider"><span>أو</span></div>
-            <form id="emailLoginForm">
-                <div class="form-group">
-                    <label for="loginEmail">البريد الإلكتروني</label>
-                    <input type="email" id="loginEmail" placeholder="example@email.com" required>
-                </div>
-                <div class="form-group">
-                    <label for="loginPassword">كلمة المرور</label>
-                    <input type="password" id="loginPassword" placeholder="أدخل كلمة المرور" required>
-                </div>
-                <div class="form-options">
-                    <label class="checkbox-label">
-                        <input type="checkbox" id="rememberMe">
-                        <span>تذكرني</span>
-                    </label>
-                    <a href="#" class="forgot-password">نسيت كلمة المرور؟</a>
-                </div>
-                <button type="submit" class="btn btn-primary login-btn">تسجيل الدخول</button>
-            </form>
-            <div class="register-link">
-                <p>ليس لديك حساب؟ <a href="#" id="showRegister">سجل الآن</a></p>
-            </div>
-        </div>
-    </div>
-
-    <!-- إنشاء حساب -->
-    <div class="register-modal" id="registerModal">
-        <div class="register-header">
-            <h3>إنشاء حساب جديد</h3>
-            <button class="close-register" id="closeRegister" aria-label="إغلاق"><i class="fas fa-times"></i></button>
-        </div>
-        <div class="register-content">
-            <form id="registerForm">
-                <div class="form-group">
-                    <label for="registerName">الاسم الكامل *</label>
-                    <input type="text" id="registerName" placeholder="أدخل اسمك الكامل" required>
-                </div>
-                <div class="form-group">
-                    <label for="registerEmail">البريد الإلكتروني *</label>
-                    <input type="email" id="registerEmail" placeholder="example@email.com" required>
-                </div>
-                <div class="form-group">
-                    <label for="registerPhone">رقم الهاتف *</label>
-                    <input type="tel" id="registerPhone" placeholder="967775082146" required>
-                </div>
-                <div class="form-group">
-                    <label for="registerPassword">كلمة المرور *</label>
-                    <input type="password" id="registerPassword" placeholder="أنشئ كلمة مرور قوية" required>
-                </div>
-                <div class="form-group">
-                    <label for="registerConfirmPassword">تأكيد كلمة المرور *</label>
-                    <input type="password" id="registerConfirmPassword" placeholder="أعد كتابة كلمة المرور" required>
-                </div>
-                <div class="form-group">
-                    <label class="checkbox-label">
-                        <input type="checkbox" id="agreeTerms" required>
-                        <span>أوافق على <a href="#">الشروط والأحكام</a> و<a href="#">سياسة الخصوصية</a></span>
-                    </label>
-                </div>
-                <button type="submit" class="btn btn-primary register-btn">إنشاء الحساب</button>
-            </form>
-            <div class="login-link">
-                <p>لديك حساب بالفعل؟ <a href="#" id="showLogin">سجل دخول</a></p>
-            </div>
-        </div>
-    </div>
-
-    <!-- التذييل -->
     <footer class="footer">
         <div class="container">
             <div class="footer-grid">
@@ -2202,9 +1907,6 @@
         </div>
     </footer>
 
-    <!-- ============================================ -->
-    <!-- الجافا سكريبت                                 -->
-    <!-- ============================================ -->
     <script>
     (function() {
         'use strict';
@@ -2221,7 +1923,8 @@
                 oldPrice: 40,
                 image: 'https://picsum.photos/seed/toothbrush1/400/400',
                 description: 'فرشة أسنان كهربائية بتقنية السونيك مع 5 أوضاع تنظيف مختلفة وشحن لاسلكي يدوم 30 يوماً.',
-                badge: 'sale'
+                badge: 'sale',
+                stock: 15
             },
             {
                 id: 2,
@@ -2231,7 +1934,8 @@
                 oldPrice: null,
                 image: 'https://picsum.photos/seed/toothpaste2/400/400',
                 description: 'معجين أسنان يحتوي على الفلورايد لتقوية المينا وحماية اللثة من التهابات.',
-                badge: 'new'
+                badge: 'new',
+                stock: 20
             },
             {
                 id: 3,
@@ -2241,7 +1945,8 @@
                 oldPrice: 7,
                 image: 'https://picsum.photos/seed/floss3/400/400',
                 description: 'خيط أسنان مغطى بالشمع لسهولة الاستخدام مع خاصية التبييض الخفيفة.',
-                badge: 'sale'
+                badge: 'sale',
+                stock: 50
             },
             {
                 id: 4,
@@ -2251,7 +1956,8 @@
                 oldPrice: 55,
                 image: 'https://picsum.photos/seed/whitening4/400/400',
                 description: 'طقم تبييض احترافي بتقنية LED يعطي نتائج واضحة خلال 7 أيام فقط.',
-                badge: 'hot'
+                badge: 'hot',
+                stock: 8
             },
             {
                 id: 5,
@@ -2261,7 +1967,8 @@
                 oldPrice: null,
                 image: 'https://picsum.photos/seed/oralb5/400/400',
                 description: 'فرشة أسنان يدوية بشعيرات ناعمة جداً مصممة للثة الحساسة.',
-                badge: null
+                badge: null,
+                stock: 30
             },
             {
                 id: 6,
@@ -2271,7 +1978,8 @@
                 oldPrice: 15,
                 image: 'https://picsum.photos/seed/charcoal6/400/400',
                 description: 'معجون أسنان عضوي بالفحم النشط لإزالة البقع وتنظيف عميق للأسنان.',
-                badge: 'new'
+                badge: 'new',
+                stock: 12
             },
             {
                 id: 7,
@@ -2281,7 +1989,8 @@
                 oldPrice: null,
                 image: 'https://picsum.photos/seed/miswak7/400/400',
                 description: 'مسواك خشب طبيعي 100% مع خصائص مضادة للبكتيريا ومدعم بالفلورايد.',
-                badge: null
+                badge: null,
+                stock: 100
             },
             {
                 id: 8,
@@ -2291,7 +2000,8 @@
                 oldPrice: 14,
                 image: 'https://picsum.photos/seed/tongue8/400/400',
                 description: 'جهاز مخصص لتنظيف اللسان وإزالة البكتيريا المسببة للرائحة الكريهة.',
-                badge: 'sale'
+                badge: 'sale',
+                stock: 18
             }
         ];
 
@@ -2306,20 +2016,64 @@
         }
 
         function updateCartCount() {
-            const count = cart.reduce((sum, item) => sum + item.qty, 0);
+            const count = cart.reduce((sum, item) => sum + (item.qty || 1), 0);
             document.getElementById('cartCount').textContent = count;
         }
 
+        // ============================================
+        //  إدارة المستخدمين والجلسة
+        // ============================================
+        function getSession() {
+            try {
+                return JSON.parse(localStorage.getItem('twessy_session'));
+            } catch(e) {
+                return null;
+            }
+        }
+
+        function getInitials(name) {
+            if (!name) return '؟';
+            var parts = name.trim().split(/\s+/);
+            if (parts.length >= 2) return parts[0][0] + parts[1][0];
+            return parts[0].substring(0, 2);
+        }
+
+        function updateNavUserArea() {
+            var userIcon = document.getElementById('userIcon');
+            var session = getSession();
+            
+            if (session && session.userName) {
+                var initials = getInitials(session.userName);
+                userIcon.innerHTML = '<div class="nav-user-badge"><div class="user-avatar-sm">' + initials + '</div><span class="user-name-sm">' + session.userName + '</span></div>';
+                userIcon.href = 'dashboard.html';
+            } else {
+                userIcon.innerHTML = '<i class="fas fa-user"></i>';
+                userIcon.href = 'login.html';
+            }
+        }
+
+        // ============================================
+        //  إضافة إلى السلة
+        // ============================================
         function addToCart(product) {
             const existing = cart.find(item => item.id === product.id);
             if (existing) {
-                existing.qty++;
+                existing.qty = (existing.qty || 1) + 1;
             } else {
-                cart.push({ id: product.id, name: product.name, price: product.price, image: product.image, qty: 1 });
+                cart.push({ 
+                    id: product.id, 
+                    name: product.name, 
+                    price: product.price, 
+                    image: product.image, 
+                    qty: 1 
+                });
             }
             saveCart();
             showToast('تمت الإضافة إلى السلة', 'success');
             renderCart();
+            
+            // فتح السلة تلقائياً بعد الإضافة
+            openCartModal();
         }
 
         function removeFromCart(productId) {
@@ -2331,17 +2085,18 @@
         function changeQty(productId, delta) {
             const item = cart.find(i => i.id === productId);
             if (!item) return;
-            item.qty += delta;
-            if (item.qty <= 0) {
+            const newQty = (item.qty || 1) + delta;
+            if (newQty <= 0) {
                 removeFromCart(productId);
                 return;
             }
+            item.qty = newQty;
             saveCart();
             renderCart();
         }
 
         function getCartTotal() {
-            return cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            return cart.reduce((sum, item) => sum + (item.price * (item.qty || 1)), 0);
         }
 
         function renderCart() {
@@ -2365,7 +2120,7 @@
                         <div class="cart-item-price">${item.price}$</div>
                         <div class="cart-item-qty">
                             <button class="qty-btn" onclick="window._twessy.changeQty(${item.id}, -1)" aria-label="إنقاص">-</button>
-                            <span>${item.qty}</span>
+                            <span>${item.qty || 1}</span>
                             <button class="qty-btn" onclick="window._twessy.changeQty(${item.id}, 1)" aria-label="زيادة">+</button>
                         </div>
                     </div>
@@ -2378,8 +2133,7 @@
             totalEl.textContent = getCartTotal() + '$';
         }
 
-        // كشف الدوال للاستخدام من onclick
-        window._twessy = { addToCart, removeFromCart, changeQty };
+        window._twessy = { addToCart, removeFromCart, changeQty, showDetail, closeAllModals };
 
         // ============================================
         //  عرض المنتجات المميزة
@@ -2430,9 +2184,6 @@
             }).join('');
         }
 
-        // تصدير الدالة للاستخدام من خارج النطاق
-        window.renderFeaturedProducts = renderFeaturedProducts;
-
         function showDetail(product) {
             const content = document.getElementById('productDetailContent');
             const oldPriceHTML = product.oldPrice ? `<span class="old-price">${product.oldPrice}$</span>` : '';
@@ -2448,7 +2199,8 @@
                         <p class="detail-description">${product.description}</p>
                         <div class="detail-price">
                             ${oldPriceHTML}
-                            ${product.price}$                         </div>
+                            ${product.price}$
+                        </div>
                         <div class="detail-actions">
                             <button class="btn btn-primary" onclick="window._twessy.addToCart(${JSON.stringify(product).replace(/"/g, '&quot;')}); window._twessy.closeAllModals();">
                                 <i class="fas fa-cart-plus"></i> إضافة للسلة
@@ -2486,6 +2238,16 @@
 
         window._twessy.closeAllModals = closeAllModals;
 
+        // فتح وإغلاق السلة
+        function openCartModal() {
+            renderCart();
+            openModal('cartOverlay', 'cartModal');
+        }
+
+        function closeCartModal() {
+            closeModal('cartOverlay', 'cartModal');
+        }
+
         // ============================================
         //  قائمة الجوال
         // ============================================
@@ -2501,7 +2263,6 @@
             document.body.classList.toggle('modal-open', menuOpen);
         });
 
-        // إغلاق القائمة عند الضغط على رابط
         navLinks.querySelectorAll('a').forEach(function(link) {
             link.addEventListener('click', function() {
                 menuOpen = false;
@@ -2515,23 +2276,14 @@
         //  ربط أزرار المودالات
         // ============================================
 
-        // سلة التسوق
         document.getElementById('cartIcon').addEventListener('click', function(e) {
             e.preventDefault();
-            renderCart();
-            openModal('cartOverlay', 'cartModal');
+            openCartModal();
         });
-        document.getElementById('closeCart').addEventListener('click', function() {
-            closeModal('cartOverlay', 'cartModal');
-        });
-        document.getElementById('cartOverlay').addEventListener('click', function() {
-            closeModal('cartOverlay', 'cartModal');
-        });
-        document.getElementById('continueShopping').addEventListener('click', function() {
-            closeModal('cartOverlay', 'cartModal');
-        });
+        document.getElementById('closeCart').addEventListener('click', closeCartModal);
+        document.getElementById('cartOverlay').addEventListener('click', closeCartModal);
+        document.getElementById('continueShopping').addEventListener('click', closeCartModal);
 
-        // تفاصيل المنتج
         document.getElementById('closeDetail').addEventListener('click', function() {
             closeModal('productDetailOverlay', 'productDetailModal');
         });
@@ -2539,13 +2291,12 @@
             closeModal('productDetailOverlay', 'productDetailModal');
         });
 
-        // نموذج الطلب
         document.getElementById('checkoutBtn').addEventListener('click', function() {
             if (cart.length === 0) {
                 showToast('السلة فارغة', 'error');
                 return;
             }
-            closeModal('cartOverlay', 'cartModal');
+            closeCartModal();
             renderOrderSummary();
             openModal('checkoutOverlay', 'checkoutModal');
         });
@@ -2556,33 +2307,15 @@
             closeModal('checkoutOverlay', 'checkoutModal');
         });
 
-        // تسجيل الدخول
+        // أيقونة المستخدم - توجيه حسب حالة تسجيل الدخول
         document.getElementById('userIcon').addEventListener('click', function(e) {
             e.preventDefault();
-            openModal('loginOverlay', 'loginModal');
-        });
-        document.getElementById('closeLogin').addEventListener('click', function() {
-            closeModal('loginOverlay', 'loginModal');
-        });
-        document.getElementById('loginOverlay').addEventListener('click', function() {
-            closeModal('loginOverlay', 'loginModal');
-        });
-
-        // التبديل بين تسجيل الدخول وإنشاء حساب
-        document.getElementById('showRegister').addEventListener('click', function(e) {
-            e.preventDefault();
-            closeModal('loginOverlay', 'loginModal');
-            document.getElementById('registerModal').classList.add('active');
-            document.body.classList.add('modal-open');
-        });
-        document.getElementById('closeRegister').addEventListener('click', function() {
-            document.getElementById('registerModal').classList.remove('active');
-            document.body.classList.remove('modal-open');
-        });
-        document.getElementById('showLogin').addEventListener('click', function(e) {
-            e.preventDefault();
-            document.getElementById('registerModal').classList.remove('active');
-            openModal('loginOverlay', 'loginModal');
+            var session = getSession();
+            if (session && session.userName) {
+                window.location.href = 'dashboard.html';
+            } else {
+                window.location.href = 'login.html';
+            }
         });
 
         // ============================================
@@ -2593,9 +2326,10 @@
             const totalEl = document.getElementById('orderTotal');
 
             container.innerHTML = cart.map(function(item) {
+                var qty = item.qty || 1;
                 return `<div class="order-summary-item">
-                    <span>${item.name} x${item.qty}</span>
-                    <span>${item.price * item.qty}$</span>
+                    <span>${item.name} x${qty}</span>
+                    <span>${item.price * qty}$</span>
                 </div>`;
             }).join('');
 
@@ -2610,7 +2344,6 @@
             const address = document.getElementById('customerAddress').value.trim();
             const notes = document.getElementById('customerNotes').value.trim();
 
-            // التحقق من البيانات
             let valid = true;
             const nameError = document.getElementById('nameError');
             const phoneError = document.getElementById('phoneError');
@@ -2639,11 +2372,37 @@
             message += '\n*المنتجات:*\n';
 
             cart.forEach(function(item, index) {
-                message += (index + 1) + '. ' + item.name + ' x' + item.qty + ' = ' + (item.price * item.qty) + '$\n';
+                var qty = item.qty || 1;
+                message += (index + 1) + '. ' + item.name + ' x' + qty + ' = ' + (item.price * qty) + '$\n';
             });
 
             message += '\n*الإجمالي:* ' + getCartTotal() + '$';
             if (notes) message += '\n*ملاحظات:* ' + notes;
+
+            // حفظ الطلب في localStorage للأدمن
+            var orders = JSON.parse(localStorage.getItem('twessy_orders') || '[]');
+            var now = new Date();
+            var dateStr = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0');
+            var timeStr = String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
+            var orderId = 'ORD-' + String(orders.length + 1).padStart(4, '0');
+
+            var orderItems = cart.map(function(item) {
+                return { name: item.name, quantity: item.qty || 1, price: item.price, subtotal: (item.price * (item.qty || 1)) };
+            });
+
+            orders.push({
+                id: orderId,
+                customerName: name,
+                phone: phone,
+                address: address,
+                date: dateStr + ' ' + timeStr,
+                total: getCartTotal(),
+                status: 'قيد الانتظار',
+                items: orderItems,
+                notes: notes,
+                source: 'واتساب'
+            });
+            localStorage.setItem('twessy_orders', JSON.stringify(orders));
 
             const whatsappUrl = 'https://wa.me/967775082146?text=' + encodeURIComponent(message);
             window.open(whatsappUrl, '_blank');
@@ -2658,43 +2417,9 @@
         });
 
         // ============================================
-        //  نموذج تسجيل الدخول
-        // ============================================
-        document.getElementById('emailLoginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            showToast('تم تسجيل الدخول بنجاح', 'success');
-            closeModal('loginOverlay', 'loginModal');
-        });
-
-        // نموذج إنشاء حساب
-        document.getElementById('registerForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const password = document.getElementById('registerPassword').value;
-            const confirmPassword = document.getElementById('registerConfirmPassword').value;
-
-            if (password !== confirmPassword) {
-                showToast('كلمات المرور غير متطابقة', 'error');
-                return;
-            }
-
-            showToast('تم إنشاء الحساب بنجاح', 'success');
-            document.getElementById('registerModal').classList.remove('active');
-            document.body.classList.remove('modal-open');
-        });
-
-        // تسجيل الدخول الاجتماعي
-        document.getElementById('googleLogin').addEventListener('click', function() {
-            showToast('جارٍ الاتصال بجوجل...', 'success');
-        });
-        document.getElementById('facebookLogin').addEventListener('click', function() {
-            showToast('جارٍ الاتصال بفيسبوك...', 'success');
-        });
-
-        // ============================================
         //  إشعار التوست
         // ============================================
         function showToast(message, type) {
-            // إزالة أي توست سابق
             const existing = document.querySelector('.toast');
             if (existing) existing.remove();
 
@@ -2749,10 +2474,23 @@
             }
         }
 
+        // فئات المنتجات - توجيه إلى صفحة المنتجات
+        document.querySelectorAll('.category-card').forEach(function(card) {
+            card.addEventListener('click', function() {
+                var category = this.dataset.category;
+                if (category) {
+                    window.location.href = 'products.html?category=' + encodeURIComponent(category);
+                }
+            });
+        });
+
         // مزامنة فورية من لوحة التحكم
         window.addEventListener('storage', function(e) {
             if (e.key === 'twessy_store_products' || e.key === 'twessy_products') {
                 loadStoreProducts();
+            }
+            if (e.key === 'twessy_session') {
+                updateNavUserArea();
             }
         });
 
@@ -2763,6 +2501,7 @@
             updateCartCount();
             loadStoreProducts();
             initReveal();
+            updateNavUserArea();
         });
 
     })();

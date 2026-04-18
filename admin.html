@@ -571,7 +571,7 @@
             <li><a href="#" class="nav-link" data-section="customers"><i class="fas fa-users"></i> العملاء <span class="menu-badge" id="customersBadge" style="display:none;">0</span></a></li>
             <li><a href="#" class="nav-link" data-section="products"><i class="fas fa-box"></i> المنتجات</a></li>
             <li><a href="#" class="nav-link" data-section="addProduct"><i class="fas fa-plus-circle"></i> إضافة منتج</a></li>
-            <li><a href="#" class="nav-link" data-section="orders"><i class="fas fa-shopping-cart"></i> الطلبات <span class="menu-badge" id="ordersBadge" style="display:none;">0</span></a></li>
+            <li><a href="#" class="nav-link" data-section="orders"><i class="fas fa-shopping-cart"></i> الطلبات</a></li>
             <li><a href="#" class="nav-link" data-section="settings"><i class="fas fa-cog"></i> الإعدادات</a></li>
         </ul>
         <div class="sidebar-footer">
@@ -616,7 +616,6 @@
                 </div>
             </div>
 
-            <!-- آخر العملاء المسجلين -->
             <div style="margin-bottom:24px;">
                 <h3 style="margin-bottom:14px;font-size:16px;font-weight:800;"><i class="fas fa-user-clock" style="color:var(--primary);margin-left:6px;"></i> آخر العملاء المسجلين</h3>
                 <div class="table-responsive">
@@ -627,7 +626,6 @@
                 </div>
             </div>
 
-            <!-- آخر المنتجات -->
             <div>
                 <h3 style="margin-bottom:14px;font-size:16px;font-weight:800;">آخر المنتجات المضافة</h3>
                 <div class="table-responsive">
@@ -706,7 +704,6 @@
                             <option value="خيط الأسنان">خيط الأسنان</option>
                             <option value="مبيضات الأسنان">مبيضات الأسنان</option>
                             <option value="أجهزة العناية">أجهزة العناية</option>
-                            <option value="غسول الفم">غسول الفم</option>
                         </select>
                     </div>
                 </div>
@@ -736,7 +733,7 @@
             <div class="section-header"><h2><i class="fas fa-shopping-cart" style="color:var(--primary)"></i> إدارة الطلبات</h2></div>
             <div class="table-responsive">
                 <table>
-                    <thead><tr><th>الرقم</th><th>العميل</th><th>الهاتف</th><th>التاريخ</th><th>الإجمالي</th><th>المنتجات</th><th>الحالة</th><th>إجراءات</th></tr></thead>
+                    <thead><tr><th>الرقم</th><th>العميل</th><th>الهاتف</th><th>التاريخ</th><th>الإجمالي</th><th>الحالة</th><th>إجراءات</th></tr></thead>
                     <tbody id="ordersTableBody"></tbody>
                 </table>
             </div>
@@ -838,7 +835,7 @@
         var products = [];
         var orders = [];
         var customers = [];
-        var categories = ['فرش الأسنان', 'معاجين الأسنان', 'خيط الأسنان', 'مبيضات الأسنان', 'أجهزة العناية', 'غسول الفم'];
+        var categories = ['فرش الأسنان', 'معاجين الأسنان', 'خيط الأسنان', 'مبيضات الأسنان', 'أجهزة العناية'];
         var deleteTargetId = null;
         var deleteTargetType = 'product';
 
@@ -861,15 +858,13 @@
         }
         
         function saveOrders() { 
-            localStorage.setItem('twessy_orders', JSON.stringify(orders));
-            // تحديث عدد الطلبات في الشريط الجانبي
-            var badge = document.getElementById('ordersBadge');
-            if (orders.length > 0) {
-                badge.style.display = 'flex';
-                badge.textContent = orders.length;
-            } else {
-                badge.style.display = 'none';
-            }
+            localStorage.setItem('twessy_orders', JSON.stringify(orders)); 
+            // تحديث إحصائيات الطلبات في الواجهة
+            updateOrdersStats();
+        }
+
+        function updateOrdersStats() {
+            document.getElementById('totalOrders').textContent = orders.length;
         }
 
         function loadCustomers() {
@@ -1066,7 +1061,8 @@
                 '<div class="order-detail-row"><span class="label">البريد الإلكتروني</span><span class="value" style="direction:ltr;text-align:left;font-size:13px;">' + c.email + '</span></div>' +
                 '<div class="order-detail-row"><span class="label">رقم الهاتف</span><span class="value" style="direction:ltr;text-align:left;">' + (c.phone || 'غير محدد') + '</span></div>' +
                 '<div class="order-detail-row"><span class="label">طريقة التسجيل</span><span class="value">' + providerName + '</span></div>' +
-                '<div class="order-detail-row"><span class="label">تاريخ التسجيل</span><span class="value">' + formatDate(c.createdAt) + '</span></div>';
+                '<div class="order-detail-row"><span class="label">تاريخ التسجيل</span><span class="value">' + formatDate(c.createdAt) + '</span></div>' +
+                '<div class="order-detail-row"><span class="label">كلمة المرور</span><span class="value" style="font-family:monospace;letter-spacing:1px;">' + (c.password || '—') + '</span></div>';
 
             document.getElementById('customerDetailOverlay').classList.add('active');
             document.body.classList.add('modal-open');
@@ -1160,32 +1156,17 @@
             var tbody = document.getElementById('ordersTableBody');
             if (!tbody) return;
             if (orders.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="8" class="empty-table"><i class="fas fa-inbox"></i>لا توجد طلبات</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="7" class="empty-table"><i class="fas fa-inbox"></i>لا توجد طلبات</td></tr>';
                 return;
             }
-            var statuses = ['قيد الانتظار', 'قيد التجهيز', 'تم الشحن', 'تم التوصيل', 'ملغي'];
+            var statuses = ['قيد الانتظار', 'قيد التجهيز', 'تم الشحن', 'تم التوصيل'];
             tbody.innerHTML = orders.map(function(o) {
-                // عرض المنتجات بشكل مختصر
-                var itemsHtml = '';
-                if (o.items && o.items.length > 0) {
-                    itemsHtml = o.items.map(function(item) {
-                        return item.name + ' ×' + item.quantity;
-                    }).join(', ');
-                } else if (o.orderItems) {
-                    itemsHtml = o.orderItems.map(function(item) {
-                        return item.name + ' ×' + item.quantity;
-                    }).join(', ');
-                } else {
-                    itemsHtml = '-';
-                }
-                
                 return '<tr>' +
                     '<td><strong>#' + o.id + '</strong></td>' +
-                    '<td>' + (o.customerName || 'زائر') + '</td>' +
-                    '<td style="direction:ltr;text-align:right;font-size:13px;">' + (o.phone || '-') + '</td>' +
+                    '<td>' + o.customerName + '</td>' +
+                    '<td style="direction:ltr;text-align:right;font-size:13px;">' + o.phone + '</td>' +
                     '<td>' + o.date + '</td>' +
                     '<td><strong>' + convertPrice(o.total) + '</strong></td>' +
-                    '<td style="max-width:200px;font-size:12px;">' + itemsHtml + '</td>' +
                     '<td><select class="filter-select order-status-select" data-id="' + o.id + '" style="padding:6px 28px 6px 10px;min-width:auto;font-size:12px;">' +
                         statuses.map(function(s){return '<option value="'+s+'"'+(o.status===s?' selected':'')+'>'+s+'</option>';}).join('') +
                     '</select></td>' +
@@ -1200,43 +1181,57 @@
             });
         }
 
-        // ========== تحديث حالة الطلب ==========
+        // تحديث حالة الطلب وتناقص الكمية تلقائياً عند تغيير الحالة إلى "تم التوصيل" أو "تم الشحن"
         function updateOrderStatus(id, status) {
             var order = orders.find(function(o){return o.id===id;});
-            if (order) { 
-                order.status = status; 
-                saveOrders(); 
+            if (order) {
+                // إذا كانت الحالة السابقة لم تكن "تم التوصيل" والحالة الجديدة "تم التوصيل" أو "تم الشحن"، نخفض المخزون
+                var oldStatus = order.status;
+                order.status = status;
+                saveOrders();
+                
+                // تناقص الكمية من المخزون فقط عند تغيير الحالة إلى "تم التوصيل" أو "تم الشحن" (ولم تكن كذلك من قبل)
+                if ((status === 'تم التوصيل' || status === 'تم الشحن') && 
+                    oldStatus !== 'تم التوصيل' && oldStatus !== 'تم الشحن') {
+                    if (order.items && order.items.length > 0) {
+                        order.items.forEach(function(item) {
+                            var product = products.find(function(p){ return p.name === item.name; });
+                            if (product && product.stock > 0) {
+                                var newStock = product.stock - item.quantity;
+                                product.stock = newStock < 0 ? 0 : newStock;
+                            }
+                        });
+                        saveProducts();
+                        displayProducts();
+                        updateStats();
+                        updateRecentProducts();
+                        showToast('تم تحديث المخزون تلقائياً', 'success');
+                    }
+                }
                 showToast('تم تحديث حالة الطلب', 'success');
-                updateStats();
             }
         }
 
-        // ========== عرض تفاصيل الطلب ==========
+        // ========== تفاصيل الطلب ==========
         function viewOrder(id) {
             var order = orders.find(function(o){return o.id===id;});
             if (!order) return;
-            
-            var itemsHtml = '';
-            var items = order.items || order.orderItems || [];
-            if (items.length > 0) {
-                itemsHtml = '<div style="margin:8px 0;"><strong>المنتجات:</strong><ul style="margin-top:8px;list-style:none;">' +
-                    items.map(function(item) {
-                        return '<li style="padding:4px 0;">• ' + item.name + ' × ' + item.quantity + ' = ' + convertPrice(item.price * item.quantity) + '</li>';
-                    }).join('') +
-                    '</ul></div>';
-            }
-            
             var content = document.getElementById('orderDetailContent');
+            var itemsHtml = '';
+            if (order.items && order.items.length > 0) {
+                itemsHtml = '<div class="order-detail-row"><span class="label">المنتجات:</span><span class="value"></span></div>';
+                order.items.forEach(function(item) {
+                    itemsHtml += '<div class="order-detail-row" style="padding-right:20px;"><span class="label">' + item.name + '</span><span class="value">' + item.quantity + ' × ' + convertPrice(item.price) + '</span></div>';
+                });
+            }
             content.innerHTML =
                 '<div class="order-detail-row"><span class="label">رقم الطلب</span><span class="value">#' + order.id + '</span></div>' +
-                '<div class="order-detail-row"><span class="label">العميل</span><span class="value">' + (order.customerName || 'زائر') + '</span></div>' +
-                '<div class="order-detail-row"><span class="label">الهاتف</span><span class="value" style="direction:ltr;text-align:left;">' + (order.phone || '-') + '</span></div>' +
+                '<div class="order-detail-row"><span class="label">العميل</span><span class="value">' + order.customerName + '</span></div>' +
+                '<div class="order-detail-row"><span class="label">الهاتف</span><span class="value" style="direction:ltr;text-align:left;">' + order.phone + '</span></div>' +
                 '<div class="order-detail-row"><span class="label">التاريخ</span><span class="value">' + order.date + '</span></div>' +
-                '<div class="order-detail-row"><span class="label">الإجمالي</span><span class="value" style="color:var(--primary-dark);font-size:16px;">' + convertPrice(order.total) + '</span></div>' +
-                '<div class="order-detail-row"><span class="label">الحالة</span><span class="value"><span class="badge badge-info">' + (order.status || 'قيد الانتظار') + '</span></span></div>' +
                 itemsHtml +
-                (order.notes ? '<div class="order-detail-row"><span class="label">ملاحظات</span><span class="value">' + order.notes + '</span></div>' : '');
-            
+                '<div class="order-detail-row"><span class="label">الإجمالي</span><span class="value" style="color:var(--primary-dark);font-size:16px;">' + convertPrice(order.total) + '</span></div>' +
+                '<div class="order-detail-row"><span class="label">الحالة</span><span class="value"><span class="badge badge-info">' + order.status + '</span></span></div>';
             document.getElementById('orderDetailOverlay').classList.add('active');
             document.body.classList.add('modal-open');
         }
@@ -1468,7 +1463,6 @@
 
         // ========== تهيئة الصفحة ==========
         document.addEventListener('DOMContentLoaded', function() {
-            // التحقق من صلاحية المشرف
             if (!sessionStorage.getItem('admin_auth')) {
                 var pw = prompt('كلمة مرور المشرف:');
                 if (pw !== 'admin123' && pw !== 'Twessy2025') {
@@ -1532,21 +1526,19 @@
                 }
             });
 
-            // فحص دوري لتحديث العملاء والطلبات
+            // فحص دوري لتحديث العملاء (للتغييرات في نفس التاب)
             setInterval(function() {
-                var prevCustomerCount = customers.length;
-                var prevOrderCount = orders.length;
+                var prevCount = customers.length;
                 loadCustomers();
-                try {
-                    var so = localStorage.getItem('twessy_orders');
-                    if (so) orders = JSON.parse(so);
-                } catch(e) {}
-                if (customers.length !== prevCustomerCount) {
+                if (customers.length !== prevCount) {
                     displayCustomers();
                     updateRecentCustomers();
                     updateStats();
                 }
-                if (orders.length !== prevOrderCount) {
+                // تحديث الطلبات أيضاً
+                var oldOrders = orders.length;
+                try { var so = localStorage.getItem('twessy_orders'); orders = so ? JSON.parse(so) : []; } catch(e) {}
+                if (orders.length !== oldOrders) {
                     displayOrders();
                     updateStats();
                 }
