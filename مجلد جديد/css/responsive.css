@@ -1,0 +1,574 @@
+/* ========================================
+   TWESSY - RESPONSIVE.CSS
+   تصميم متجاوب لجميع الأجهزة
+   ======================================== */
+
+/* ========== نقاط التوقف ========== */
+/* 1200px - أجهزة سطح المكتب الكبيرة */
+@media (max-width: 1200px) {
+    :root {
+        --container-width: 960px;
+    }
+    
+    .hero h2 {
+        font-size: 2.5rem;
+    }
+    
+    .products-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    }
+}
+
+/* 992px - أجهزة التابلت الكبيرة وسطح المكتب المتوسطة */
+@media (max-width: 992px) {
+    :root {
+        --container-width: 720px;
+        --spacing-2xl: 60px;
+        --spacing-xl: 40px;
+    }
+    
+    h1 {
+        font-size: 2rem;
+    }
+    
+    h2 {
+        font-size: 1.75rem;
+    }
+    
+    .hero h2 {
+        font-size: 2rem;
+    }
+    
+    .hero p {
+        font-size: 1rem;
+    }
+    
+    .nav-links {
+        gap: var(--spacing-sm);
+    }
+    
+    .nav-links a {
+        padding: var(--spacing-xs);
+        font-size: 0.9rem;
+    }
+    
+    .dashboard-grid {
+        grid-template-columns: 220px 1fr;
+        gap: var(--spacing-md);
+    }
+    
+    .contact-section {
+        grid-template-columns: 1fr;
+    }
+    
+    .login-page-container {
+        grid-template-columns: 1fr;
+        max-width: 500px;
+    }
+    
+    .login-benefits {
+        order: -1;
+    }
+    
+    .values-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .footer-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .step:not(:last-child)::after {
+        display: none;
+    }
+}
+
+/* 768px - أجهزة التابلت الصغيرة والجوال الكبير */
+@media (max-width: 768px) {
+    :root {
+        --container-width: 540px;
+        --spacing-2xl: 40px;
+        --spacing-xl: 30px;
+        --spacing-lg: 20px;
+    }
+    
+    /* الشريط العلوي */
+    .top-bar .container {
+        flex-direction: column;
+        gap: var(--spacing-xs);
+    }
+    
+    .contact-info {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    /* شريط التنقل */
+    .navbar {
+        padding: var(--spacing-sm) 0;
+    }
+    
+    .nav-container {
+        position: relative;
+    }
+    
+    .menu-toggle {
+        display: block;
+    }
+    
+    .nav-links {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        left: 0;
+        background: var(--bg-white);
+        flex-direction: column;
+        padding: var(--spacing-md);
+        box-shadow: var(--shadow-lg);
+        border-radius: 0 0 var(--border-radius) var(--border-radius);
+        border: 1px solid var(--border-color);
+        display: none;
+        z-index: 999;
+    }
+    
+    .nav-links.active {
+        display: flex;
+    }
+    
+    .nav-links li {
+        width: 100%;
+    }
+    
+    .nav-links a {
+        display: block;
+        padding: 12px;
+        text-align: center;
+        border-bottom: 1px solid var(--border-color);
+    }
+    
+    .nav-links li:last-child a {
+        border-bottom: none;
+    }
+    
+    .nav-links a.active::after {
+        display: none;
+    }
+    
+    .nav-icons {
+        gap: var(--spacing-sm);
+    }
+    
+    /* القسم الرئيسي */
+    .hero {
+        padding: var(--spacing-xl) 0;
+    }
+    
+    .hero h2 {
+        font-size: 1.75rem;
+    }
+    
+    .hero-buttons {
+        flex-direction: column;
+        gap: var(--spacing-sm);
+    }
+    
+    /* المنتجات */
+    .products-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--spacing-md);
+    }
+    
+    .product-actions {
+        flex-direction: column;
+    }
+    
+    .product-actions .btn-outline {
+        padding: 10px;
+    }
+    
+    /* الفئات والخدمات */
+    .categories-grid,
+    .services-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    /* لوحة التحكم */
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .dashboard-sidebar {
+        margin-bottom: var(--spacing-md);
+    }
+    
+    .dashboard-menu {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--spacing-xs);
+    }
+    
+    .dashboard-menu li {
+        flex: 1 1 calc(33.333% - 10px);
+    }
+    
+    .dashboard-menu a {
+        justify-content: center;
+        flex-direction: column;
+        text-align: center;
+        font-size: 0.75rem;
+    }
+    
+    .dashboard-menu i {
+        font-size: 1.25rem;
+        margin-bottom: var(--spacing-xs);
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .orders-table {
+        display: block;
+        overflow-x: auto;
+    }
+    
+    /* نماذج التواصل */
+    .contact-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    /* خطوات الاستخدام */
+    .steps-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    /* عناوين المستخدم */
+    .addresses-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    /* مودالات */
+    .cart-modal,
+    .product-detail-modal,
+    .checkout-modal,
+    .login-modal,
+    .register-modal {
+        width: 95%;
+        max-height: 95vh;
+    }
+    
+    /* الفوتر */
+    .footer {
+        padding: var(--spacing-lg) 0 var(--spacing-md);
+    }
+}
+
+/* 576px - أجهزة الجوال الصغيرة */
+@media (max-width: 576px) {
+    :root {
+        --container-width: 100%;
+        --spacing-md: 15px;
+    }
+    
+    h1 {
+        font-size: 1.75rem;
+    }
+    
+    h2 {
+        font-size: 1.5rem;
+    }
+    
+    h3 {
+        font-size: 1.25rem;
+    }
+    
+    /* الشعار */
+    .logo h1 {
+        font-size: 1.5rem;
+    }
+    
+    .logo i {
+        font-size: 1.5rem;
+    }
+    
+    /* القسم الرئيسي */
+    .hero h2 {
+        font-size: 1.5rem;
+    }
+    
+    .page-header {
+        padding: var(--spacing-lg) 0;
+    }
+    
+    .page-header h1 {
+        font-size: 1.75rem;
+    }
+    
+    /* المنتجات */
+    .products-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .product-card {
+        max-width: 350px;
+        margin: 0 auto;
+    }
+    
+    /* الفئات والخدمات */
+    .categories-grid,
+    .services-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .category-card,
+    .service-card {
+        max-width: 350px;
+        margin: 0 auto;
+    }
+    
+    /* القيم */
+    .values-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .value-card {
+        max-width: 350px;
+        margin: 0 auto;
+    }
+    
+    /* لوحة التحكم */
+    .dashboard-menu li {
+        flex: 1 1 calc(50% - 10px);
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .order-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .order-actions {
+        flex-direction: column;
+    }
+    
+    .order-actions .btn {
+        width: 100%;
+    }
+    
+    /* نماذج التواصل */
+    .contact-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    /* نموذج التسجيل والدخول */
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-options {
+        flex-direction: column;
+        gap: var(--spacing-sm);
+    }
+    
+    /* خطوات الاستخدام */
+    .steps-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .step {
+        max-width: 300px;
+        margin: 0 auto;
+    }
+    
+    /* الفوتر */
+    .footer-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .footer-column {
+        text-align: center;
+    }
+    
+    .footer-column h3::after {
+        right: 50%;
+        transform: translateX(50%);
+    }
+    
+    .contact-info-list li {
+        justify-content: center;
+    }
+    
+    .social-icons {
+        justify-content: center;
+    }
+    
+    /* أزرار المودال */
+    .cart-buttons {
+        flex-direction: column;
+    }
+    
+    /* أزرار التواصل الاجتماعي */
+    .social-contact .social-icons {
+        align-items: stretch;
+    }
+    
+    .social-icon {
+        justify-content: center;
+    }
+    
+    /* خريطة الموقع */
+    .map-placeholder {
+        padding: var(--spacing-md);
+        min-height: 250px;
+    }
+}
+
+/* 400px - أجهزة الجوال الصغيرة جداً */
+@media (max-width: 400px) {
+    .top-bar {
+        font-size: 0.75rem;
+    }
+    
+    .contact-info span {
+        margin-left: var(--spacing-sm);
+    }
+    
+    .shipping-info {
+        font-size: 0.75rem;
+        padding: 3px 10px;
+    }
+    
+    .nav-icons {
+        gap: var(--spacing-xs);
+    }
+    
+    .nav-icons a {
+        font-size: 1rem;
+    }
+    
+    .dashboard-menu li {
+        flex: 1 1 100%;
+    }
+    
+    .btn {
+        padding: 10px 16px;
+        font-size: 0.875rem;
+    }
+    
+    .btn-sm {
+        padding: 6px 12px;
+        font-size: 0.75rem;
+    }
+}
+
+/* ========== تنسيقات خاصة للطباعة ========== */
+@media print {
+    .top-bar,
+    .navbar,
+    .footer,
+    .cart-overlay,
+    .product-detail-overlay,
+    .checkout-modal-overlay,
+    .login-overlay,
+    .cart-modal,
+    .product-detail-modal,
+    .checkout-modal,
+    .login-modal,
+    .register-modal,
+    .menu-toggle,
+    .nav-icons,
+    .hero-buttons,
+    .product-actions,
+    .btn {
+        display: none !important;
+    }
+    
+    body {
+        background: white;
+        color: black;
+        font-size: 12pt;
+    }
+    
+    .container {
+        max-width: 100%;
+        padding: 0;
+    }
+    
+    a {
+        text-decoration: none;
+        color: black;
+    }
+    
+    .product-card,
+    .category-card,
+    .service-card,
+    .value-card,
+    .content-section {
+        box-shadow: none;
+        border: 1px solid #ddd;
+        break-inside: avoid;
+    }
+    
+    .hero {
+        background: none;
+        color: black;
+        padding: 20px 0;
+    }
+    
+    .hero h2,
+    .hero p {
+        color: black;
+    }
+    
+    .footer {
+        background: none;
+        color: black;
+    }
+    
+    .footer-column h3,
+    .footer-column p,
+    .footer-column a,
+    .contact-info-list li {
+        color: black;
+    }
+    
+    .footer-column h3::after {
+        display: none;
+    }
+}
+
+/* ========== تحسينات للمتصفحات القديمة ========== */
+@supports not (backdrop-filter: blur(3px)) {
+    .cart-overlay,
+    .product-detail-overlay,
+    .checkout-modal-overlay,
+    .login-overlay {
+        background-color: rgba(0, 0, 0, 0.7);
+    }
+}
+
+/* ========== تحسينات للشاشات عالية الدقة ========== */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .hero::before {
+        background-size: 30px 30px;
+    }
+}
+
+/* ========== تحسينات التمرير ========== */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* ========== دعم الوضع الداكن ========== */
+@media (prefers-color-scheme: dark) {
+    /* يمكن إضافة أنماط الوضع الداكن هنا إذا رغبت */
+}

@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Twessy - اتصل بنا</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #0D9488;
+            --primary-dark: #0F766E;
+            --primary-darker: #115E59;
+            --primary-light: #CCFBF1;
+            --accent: #F59E0B;
+            --accent-dark: #D97706;
+            --bg: #F8FAFC;
+            --bg-white: #FFFFFF;
+            --text: #0F172A;
+            --text-secondary: #64748B;
+            --text-light: #94A3B8;
+            --border: #E2E8F0;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow: 0 1px 3px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 16px rgba(0,0,0,0.1);
+            --radius: 12px;
+            --radius-sm: 8px;
+            --radius-lg: 16px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --font: 'Tajawal', sans-serif;
+        }
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+        body {
+            font-family: var(--font); background: var(--bg); color: var(--text);
+            line-height: 1.7; overflow-x: hidden; -webkit-font-smoothing: antialiased;
+        }
+        a { text-decoration: none; color: inherit; transition: var(--transition); }
+        ul { list-style: none; }
+        img { max-width: 100%; height: auto; display: block; }
+        input, textarea, button, select { font-family: inherit; font-size: inherit; border: none; outline: none; }
+
+        .container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 16px; }
+
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            padding: 12px 28px; border-radius: var(--radius-sm); font-weight: 700;
+            font-size: 15px; cursor: pointer; transition: var(--transition);
+            white-space: nowrap; -webkit-tap-highlight-color: transparent;
+        }
+        .btn:active { transform: scale(0.96); }
+        .btn-primary { background: var(--primary); color: #fff; box-shadow: 0 4px 14px rgba(13,148,136,0.35); }
+        .btn-primary:hover { background: var(--primary-dark); }
+        .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
+        .btn-outline:hover { background: var(--primary); color: #fff; }
+        .btn-success { background: #059669; color: #fff; box-shadow: 0 4px 14px rgba(5,150,105,0.35); }
+        .btn-success:hover { background: #047857; }
+
+        /* الشريط العلوي */
+        .top-bar { background: var(--primary-dark); color: #fff; font-size: 13px; padding: 8px 0; display: none; }
+        .top-bar .container { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+        .contact-info { display: flex; gap: 16px; flex-wrap: wrap; }
+        .contact-info span { display: flex; align-items: center; gap: 6px; }
+        .shipping-info { font-weight: 700; background: var(--accent); padding: 4px 14px; border-radius: 20px; font-size: 12px; }
+        @media (min-width: 768px) { .top-bar { display: block; } }
+
+        /* شريط التنقل */
+        .navbar { background: var(--bg-white); position: sticky; top: 0; z-index: 1000; box-shadow: var(--shadow); }
+        .nav-container { display: flex; align-items: center; justify-content: space-between; height: 60px; }
+        .logo a { display: flex; align-items: center; gap: 8px; }
+        .logo i { font-size: 28px; color: var(--primary); }
+        .logo h1 {
+            font-size: 24px; font-weight: 900;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .nav-links {
+            display: none; flex-direction: column; position: fixed; top: 60px; right: 0; left: 0; bottom: 0;
+            background: var(--bg-white); padding: 20px; gap: 4px; z-index: 999; overflow-y: auto;
+            animation: slideDown 0.3s ease;
+        }
+        .nav-links.active { display: flex; }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        .nav-links li a { display: block; padding: 14px 16px; border-radius: var(--radius-sm); font-weight: 600; font-size: 16px; color: var(--text); }
+        .nav-links li a:hover, .nav-links li a.active { background: var(--primary-light); color: var(--primary-dark); }
+        .nav-icons { display: flex; align-items: center; gap: 6px; }
+        .nav-icons a {
+            width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
+            border-radius: 50%; color: var(--text-secondary); transition: var(--transition);
+            position: relative; -webkit-tap-highlight-color: transparent;
+        }
+        .nav-icons a:hover { background: var(--primary-light); color: var(--primary); }
+        .instagram-icon:hover { color: #E1306C !important; background: #FCE4EC !important; }
+        .cart-count {
+            position: absolute; top: 2px; left: 2px; background: var(--accent); color: #fff;
+            font-size: 10px; font-weight: 800; width: 18px; height: 18px;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center; line-height: 1;
+        }
+        .user-name { font-size: 12px; font-weight: 700; color: var(--primary); margin-right: 4px; display: none; }
+        .menu-toggle {
+            width: 42px; height: 42px; display: flex; align-items: center; justify-content: center;
+            border-radius: var(--radius-sm); cursor: pointer; color: var(--text); font-size: 20px;
+            transition: var(--transition); -webkit-tap-highlight-color: transparent;
+        }
+        .menu-toggle:hover { background: var(--primary-light); color: var(--primary); }
+        @media (min-width: 1024px) {
+            .menu-toggle { display: none; }
+            .nav-links { display: flex !important; flex-direction: row; position: static; background: transparent; padding: 0; gap: 4px; animation: none; }
+            .nav-links li a { padding: 8px 14px; font-size: 14px; }
+            .user-name { display: inline; }
+        }
+
+        /* رأس الصفحة */
+        .page-header {
+            position: relative; background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 50%, #14B8A6 100%);
+            padding: 44px 0; text-align: center; color: #fff; overflow: hidden;
+        }
+        .page-header::before {
+            content: ''; position: absolute; top: -40%; right: -15%; width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(255,255,255,0.07) 0%, transparent 70%);
+            border-radius: 50%; animation: heroGlow 6s ease-in-out infinite alternate;
+        }
+        .page-header::after {
+            content: ''; position: absolute; bottom: -30%; left: -10%; width: 300px; height: 300px;
+            background: radial-gradient(circle, rgba(245,158,11,0.1) 0%, transparent 70%);
+            border-radius: 50%; animation: heroGlow 8s ease-in-out infinite alternate-reverse;
+        }
+        @keyframes heroGlow { from { transform: scale(1); opacity: 0.6; } to { transform: scale(1.3); opacity: 1; } }
+        .page-header .container { position: relative; z-index: 2; }
+        .page-header h1 { font-size: 26px; font-weight: 900; margin-bottom: 8px; text-shadow: 0 2px 8px rgba(0,0,0,0.12); }
+        .page-header p { font-size: 14px; opacity: 0.9; max-width: 500px; margin: 0 auto; }
+        @media (min-width: 640px) { .page-header { padding: 56px 0; } .page-header h1 { font-size: 34px; } .page-header p { font-size: 16px; } }
+
+        /* بطاقات معلومات الاتصال */
+        .contact-page { padding: 36px 0 50px; }
+        .contact-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 28px; }
+        .contact-info-card {
+            background: var(--bg-white); border-radius: var(--radius); padding: 20px 16px;
+            text-align: center; box-shadow: var(--shadow-sm); border: 1px solid var(--border);
+            transition: var(--transition);
+        }
+        .contact-info-card:hover { box-shadow: var(--shadow-md); transform: translateY(-3px); }
+        .contact-icon {
+            width: 52px; height: 52px; margin: 0 auto 12px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            transition: var(--transition);
+        }
+        .contact-info-card:hover .contact-icon { transform: scale(1.1) rotate(5deg); box-shadow: 0 6px 20px rgba(13,148,136,0.3); }
+        .contact-icon i { font-size: 22px; color: #fff; }
+        .contact-info-card h3 { font-size: 15px; font-weight: 800; margin-bottom: 4px; color: var(--text); }
+        .contact-info-card p { font-size: 12px; color: var(--text-secondary); margin-bottom: 2px; }
+        @media (min-width: 480px) { .contact-grid { grid-template-columns: repeat(4, 1fr); gap: 16px; } }
+        @media (min-width: 768px) { .contact-page { padding: 48px 0 64px; } }
+
+        /* قسم الاتصال - النموذج والمعلومات */
+        .contact-section { display: grid; grid-template-columns: 1fr; gap: 20px; margin-bottom: 28px; }
+        .contact-form-container {
+            background: var(--bg-white); border-radius: var(--radius-lg); padding: 24px 20px;
+            box-shadow: var(--shadow-sm); border: 1px solid var(--border);
+        }
+        .contact-form-container h2 {
+            font-size: 20px; font-weight: 900; margin-bottom: 6px; color: var(--text);
+            position: relative; padding-bottom: 12px; display: inline-block;
+        }
+        .contact-form-container h2::after {
+            content: ''; position: absolute; bottom: 0; right: 0; width: 50px; height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--accent)); border-radius: 3px;
+        }
+        .contact-form-container > p { font-size: 14px; color: var(--text-secondary); margin-bottom: 20px; }
+        .contact-info-container {
+            background: var(--bg-white); border-radius: var(--radius-lg); padding: 24px 20px;
+            box-shadow: var(--shadow-sm); border: 1px; border-color: var(--border);
+        }
+        .contact-info-container h2 {
+            font-size: 20px; font-weight: 900; margin-bottom: 20px; color: var(--text);
+            position: relative; padding-bottom: 12px; display: inline-block;
+        }
+        .contact-info-container h2::after {
+            content: ''; position: absolute; bottom: 0; right: 0; width: 50px; height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--accent)); border-radius: 3px;
+        }
+        @media (min-width: 768px) {
+            .contact-section { grid-template-columns: 1.3fr 1fr; gap: 24px; margin-bottom: 36px; }
+            .contact-form-container, .contact-info-container { padding: 28px; }
+            .contact-form-container h2, .contact-info-container h2 { font-size: 22px; }
+        }
+
+        /* النماذج */
+        .form-group { margin-bottom: 16px; }
+        .form-group label {
+            display: block; margin-bottom: 6px; font-weight: 700; font-size: 14px; color: var(--text);
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%; padding: 12px 14px; border: 2px solid var(--border); border-radius: var(--radius-sm);
+            font-size: 14px; background: var(--bg-white); color: var(--text); transition: var(--transition);
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            border-color: var(--primary); box-shadow: 0 0 0 3px rgba(13,148,136,0.1);
+        }
+        .form-group input::placeholder, .form-group textarea::placeholder { color: var(--text-light); }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        @media (max-width: 480px) { .form-row { grid-template-columns: 1fr; gap: 0; } }
+
+        /* ساعات العمل */
+        .business-hours h3, .social-contact h3, .faq-section h3 {
+            font-size: 16px; font-weight: 800; margin-bottom: 14px; color: var(--text);
+            display: flex; align-items: center; gap: 8px;
+        }
+        .business-hours h3 i, .social-contact h3 i, .faq-section h3 i { color: var(--primary); }
+        .business-hours ul { margin-bottom: 24px; }
+        .business-hours li {
+            padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; color: var(--text-secondary);
+            display: flex; justify-content: space-between;
+        }
+        .business-hours li strong { color: var(--text); }
+
+        /* أزرار التواصل الاجتماعي */
+        .social-icons-row { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+        .social-btn {
+            display: flex; align-items: center; gap: 12px; padding: 14px 16px;
+            border-radius: var(--radius-sm); color: #fff; transition: var(--transition);
+            -webkit-tap-highlight-color: transparent;
+        }
+        .social-btn:hover { transform: translateX(-4px); filter: brightness(1.1); }
+        .social-btn i { font-size: 20px; width: 24px; text-align: center; }
+        .social-btn span { font-size: 14px; font-weight: 700; }
+        .social-btn.whatsapp { background: linear-gradient(135deg, #25D366, #128C7E); }
+        .social-btn.instagram { background: linear-gradient(135deg, #F58529, #DD2A7B); }
+        .social-btn.email { background: linear-gradient(135deg, var(--primary-dark), var(--primary-darker); }
+
+        /* الأسئلة المتكررة */
+        .faq-section { margin-bottom: 0; }
+        .faq-item { background: var(--bg); border-radius: var(--radius-sm); margin-bottom: 8px; border: 1px solid var(--border); overflow: hidden; transition: var(--transition); }
+        .faq-item.active { border-color: var(--primary-light); }
+        .faq-item h4 {
+            padding: 14px 16px; font-size: 14px; font-weight: 700; color: var(--text);
+            cursor: pointer; display: flex; align-items: center; justify-content: space-between;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .faq-item h4::after {
+            content: '\f078'; font-family: 'Font Awesome 6 Free'; font-weight: 900;
+            font-size: 12px; color: var(--primary); transition: transform 0.3s ease;
+            min-width: 20px; text-align: center;
+        }
+        .faq-item.active h4::after { transform: rotate(180deg); }
+        .faq-item h4:hover { color: var(--primary); }
+        .faq-item p {
+            padding: 0 16px 14px; font-size: 13px; color: var(--text-secondary); line-height: 1.8;
+            max-height: 0; overflow: hidden; transition: max-height 0.3s ease;
+        }
+        .faq-item.active p { max-height: 200px; }
+        .faq-section .btn { margin-top: 12px; width: 100%; }
+
+        /* الخريطة */
+        .map-section { margin-bottom: 0; }
+        .map-section > h2 {
+            font-size: 22px; font-weight: 900; margin-bottom: 16px; color: var(--text);
+        }
+        .map-placeholder {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary), #14B8A6);
+            border-radius: var(--radius-lg); padding: 28px 20px; color: #fff; position: relative; overflow: hidden;
+        }
+        .map-placeholder::before {
+            content: ''; position: absolute; top: -30%; right: -15%; width: 300px; height: 300px;
+            background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        .map-info { position: relative; z-index: 2; }
+        .map-info h3 { color: #fff; margin-bottom: 10px; font-size: 18px; display: flex; align-items: center; gap: 8px; }
+        .map-info > p { color: rgba(255,255,255,0.9); font-size: 14px; margin-bottom: 16px; }
+        .delivery-box {
+            background: rgba(255,255,255,0.12); border-radius: var(--radius); padding: 16px;
+            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+        }
+        .delivery-box h4 {
+            font-size: 15px; font-weight: 700; margin-bottom: 12px;
+            display: flex; align-items: center; gap: 8px; color: #5EEAD4;
+        }
+        .delivery-box ul { list-style: none; }
+        .delivery-box li {
+            padding: 5px 0; font-size: 13px; color: rgba(255,255,255,0.85);
+            display: flex; align-items: center; gap: 8px;
+        }
+        .delivery-box li::before {
+            content: '\f00c'; font-family: 'Font Awesome 6 Free'; font-weight: 900;
+            display: flex; align-items: center; justify-content: center;
+            width: 22px; height: 22px; min-width: 22px; border-radius: 50%;
+            background: rgba(255,255,255,0.15); font-size: 10px;
+        }
+        @media (min-width: 640px) { .map-placeholder { padding: 36px 28px; } .map-info h3 { font-size: 20px; } }
+
+        /* التذييل */
+        .footer { background: var(--text); color: #CBD5E1; padding: 48px 0 0; }
+        .footer-grid { display: grid; grid-template-columns: 1fr; gap: 32px; padding-bottom: 32px; }
+        .footer-column h3 { font-size: 18px; font-weight: 800; color: #fff; margin-bottom: 16px; position: relative; padding-bottom: 10px; }
+        .footer-column h3::after { content: ''; position: absolute; bottom: 0; right: 0; width: 40px; height: 3px; background: linear-gradient(90deg, var(--primary), var(--accent)); border-radius: 3px; }
+        .footer-column p { font-size: 14px; line-height: 1.8; color: #94A3B8; }
+        .social-icons { display: flex; gap: 10px; margin-top: 16px; }
+        .social-icons a { width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; font-size: 16px; color: #94A3B8; transition: var(--transition); }
+        .social-icons a:hover { background: var(--primary); color: #fff; transform: translateY(-3px); }
+        .footer-column ul li { margin-bottom: 8px; }
+        .footer-column ul li a { font-size: 14px; color: #94A3B8; transition: var(--transition); }
+        .footer-column ul li a:hover { color: var(--primary); padding-right: 6px; }
+        .contact-info-list li { display: flex; gap: 10px; font-size: 14px; color: #94A3B8; align-items: flex-start; margin-bottom: 10px; }
+        .contact-info-list li i { color: var(--primary); margin-top: 5px; flex-shrink: 0; }
+        .copyright { border-top: 1px solid rgba(255,255,255,0.08); padding: 20px 0; text-align: center; }
+        .copyright p { font-size: 13px; color: #64748B; }
+        @media (min-width: 640px) { .footer-grid { grid-template-columns: repeat(2, 1fr); gap: 36px; } }
+        @media (min-width: 1024px) { .footer-grid { grid-template-columns: 2fr 1fr 1fr 1.5fr; } }
+
+        /* سلة التسوق */
+        .cart-overlay {
+            position: fixed; inset: 0; background: rgba(15,23,42,0.5);
+            backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+            z-index: 2000; opacity: 0; visibility: hidden; transition: var(--transition);
+        }
+        .cart-overlay.active { opacity: 1; visibility: visible; }
+        .cart-modal {
+            position: fixed; top: 0; left: 0; bottom: 0; width: 100%; max-width: 420px;
+            background: var(--bg-white); z-index: 2001; transform: translateX(-100%);
+            transition: transform 0.35s cubic-bezier(0.4,0,0.2,1); display: flex; flex-direction: column;
+        }
+        .cart-modal.active { transform: translateX(0); }
+        @media (min-width: 1024px) { .cart-modal { right: 0; left: auto; transform: translateX(100%); } .cart-modal.active { transform: translateX(0); } }
+        .cart-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+        .cart-header h3 { font-size: 17px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+        .cart-header h3 i { color: var(--primary); }
+        .close-cart {
+            width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; background: var(--bg); color: var(--text-secondary); transition: var(--transition);
+        }
+        .close-cart:hover { background: #FEE2E2; color: #EF4444; }
+        .cart-content { flex: 1; overflow-y: auto; padding: 16px 20px; }
+        .empty-cart-msg { text-align: center; padding: 50px 0; color: var(--text-light); font-size: 15px; }
+        .cart-item { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); align-items: center; }
+        .cart-item-img { width: 56px; height: 56px; border-radius: var(--radius-sm); overflow: hidden; flex-shrink: 0; background: var(--bg); }
+        .cart-item-img img { width: 100%; height: 100%; object-fit: cover; }
+        .cart-item-info { flex: 1; min-width: 0; }
+        .cart-item-name { font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 4px; }
+        .cart-item-price { font-size: 14px; font-weight: 800; color: var(--primary-dark); }
+        .cart-item-del { color: var(--text-light); cursor: pointer; padding: 4px; transition: var(--transition); background: none; border: none; font-size: 14px; }
+        .cart-item-del:hover { color: #EF4444; }
+        .cart-summary { padding: 16px 20px; border-top: 1px solid var(--border); background: var(--bg); flex-shrink: 0; }
+        .cart-total { display: flex; justify-content: space-between; font-size: 18px; font-weight: 900; margin-bottom: 14px; }
+        .cart-total span:last-child { color: var(--primary-dark); }
+        .cart-summary .btn { width: 100%; padding: 13px; font-size: 15px; }
+
+        /* توست */
+        .toast {
+            position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(100px);
+            background: var(--text); color: #fff; padding: 14px 24px; border-radius: var(--radius-sm);
+            font-size: 14px; font-weight: 600; z-index: 5000; box-shadow: var(--shadow-md);
+            transition: transform 0.35s cubic-bezier(0.4,0,0.2,1); white-space: nowrap;
+            max-width: calc(100% - 32px); text-align: center;
+        }
+        .toast.show { transform: translateX(-50%) translateY(0); }
+        .toast.success { background: #059669; }
+        .toast.error { background: #EF4444; }
+        .toast.info { background: #0284C7; }
+
+        /* حركة ظهور */
+        .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+
+        /* مودال تسجيل الدخول */
+        .auth-overlay {
+            position: fixed; inset: 0; background: rgba(15,23,42,0.6);
+            backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+            z-index: 3000; display: flex; align-items: center; justify-content: center;
+            opacity: 0; visibility: hidden; transition: var(--transition); padding: 20px;
+        }
+        .auth-overlay.active { opacity: 1; visibility: visible; }
+        .auth-modal {
+            background: var(--bg-white); border-radius: var(--radius-lg); width: 100%; max-width: 420px; max-height: 90vh;
+            overflow-y: auto; transform: scale(0.9); transition: transform 0.3s ease;
+        }
+        .auth-overlay.active .auth-modal { transform: scale(1); }
+        .auth-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 18px 20px; border-bottom: 1px solid var(--border);
+        }
+        .auth-header h3 { font-size: 17px; font-weight: 800; }
+        .close-auth {
+            width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; background: var(--bg); color: var(--text-secondary); transition: var(--transition);
+        }
+        .close-auth:hover { background: #FEE2E2; color: #EF4444; }
+        .auth-body { padding: 20px; }
+        .auth-btn {
+            width: 100%; padding: 13px; background: var(--primary); color: #fff; border-radius: var(--radius-sm);
+            font-weight: 700; font-size: 15px; cursor: pointer; transition: var(--transition);
+            box-shadow: 0 4px 14px rgba(13,148,136,0.3);
+        }
+        .auth-btn:active { transform: scale(0.96); }
+        .auth-switch { text-align: center; margin-top: 16px; font-size: 14px; color: var(--text-secondary); }
+        .auth-switch a { color: var(--primary); font-weight: 700; }
+
+        body.modal-open { overflow: hidden; }
+        @media (hover: none) { .contact-info-card:hover { transform: none; box-shadow: var(--shadow-sm); } .social-btn:hover { transform: none; } }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--text-light); border-radius: 3px; }
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">
+        <div class="container">
+            <div class="contact-info">
+                <span><i class="fas fa-phone"></i> +967 775 082 146</span>
+                <span><i class="fas fa-envelope"></i> Hadirynasser@gmail.com</span>
+            </div>
+            <div class="shipping-info">شحن مجاني داخل عدن</div>
+        </div>
+    </div>
+
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo"><a href="index.html"><i class="fas fa-tooth"></i><h1>Twessy</h1></a></div>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">الرئيسية</a></li>
+                <li><a href="products.html">المنتجات</a></li>
+                <li><a href="categories.html">الفئات</a></li>
+                <li><a href="about.html">من نحن</a></li>
+                <li><a href="services.html">الخدمات</a></li>
+                <li><a href="contact.html" class="active">اتصل بنا</a></li>
+                <li><a href="login.html"> تسجيل الدخول</a></li>
+                <li><a href="dashboard.html"> لوحة التحكم </a></li>
+            </ul>
+            <div class="nav-icons">
+                <a href="https://www.instagram.com/x5tai?igsh=cDV5Ym5vaTVleXJt" target="_blank" class="instagram-icon" aria-label="انستقرام"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="user-icon" id="userIcon" aria-label="حسابي"><i class="fas fa-user"></i><span class="user-name" id="userNameDisplay"></span></a>
+                <a href="#" class="cart-icon" id="cartIcon" aria-label="سلة"><i class="fas fa-shopping-cart"></i><span class="cart-count" id="cartCount">0</span></a>
+            </div>
+            <div class="menu-toggle" id="menuToggle" aria-label="القائمة"><i class="fas fa-bars" id="menuIcon"></i></div>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>اتصل بنا</h1>
+            <p>نحن هنا للإجابة على استفساراتكم وتلقي ملاحظاتكم. تواصلوا معنا بأي طريقة تناسبكم</p>
+        </div>
+    </header>
+
+    <!-- المحتوى الرئيسي -->
+    <main class="main-content" id="mainContent">
+        <section class="contact-page">
+            <div class="container">
+
+                <div class="contact-grid reveal">
+                    <div class="contact-info-card">
+                        <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
+                        <h3>العنوان</h3>
+                        <p>عدن - اليمن</p>
+                        <p>توصيل لجميع مناطق عدن</p>
+                    </div>
+                    <div class="contact-info-card">
+                        <div class="contact-icon" style="background:linear-gradient(135deg,#0EA5E9,#0284C7);"><i class="fas fa-phone"></i></div>
+                        <h3>الهاتف</h3>
+                        <p>+967 775 082 146</p>
+                        <p>الأحد - الخميس: 9 ص - 10 م</p>
+                    </div>
+                    <div class="contact-info-card">
+                        <div class="contact-icon" style="background:linear-gradient(135deg,#8B5CF6,#7C3AED);"><i class="fas fa-envelope"></i></div>
+                        <h3>البريد</h3>
+                        <p>Hadirynasser@gmail.com</p>
+                        <p>نرد خلال 24 ساعة</p>
+                    </div>
+                    <div class="contact-info-card">
+                        <div class="contact-icon" style="background:linear-gradient(135deg,#25D366,#128C7E);"><i class="fab fa-whatsapp"></i></div>
+                        <h3>واتساب</h3>
+                        <p>+967 775 082 146</p>
+                        <p>للاستفسارات السريعة</p>
+                    </div>
+                </div>
+
+                <div class="contact-section reveal">
+                    <div class="contact-form-container">
+                        <h2>أرسل رسالة</h2>
+                        <p>املأ النموذج التالي وسنرد عليك في أقرب وقت ممكن</p>
+
+                        <form id="contactForm">
+                            <div class="form-row">
+                                <div class="form-group"><label>الاسم الكامل *</label><input type="text" id="contactName" required placeholder="أدخل اسمك الكامل"></div>
+                                <div class="form-group"><label>البريد الإلكتروني *</label><input type="email" id="contactEmail" required placeholder="example@email.com"></div>
+                            </div>
+                            <div class="form-group"><label>رقم الهاتف</label><input type="tel" id="contactPhone" placeholder="+967XXXXXXXXX"></div>
+                            <div class="form-group">
+                                <label>الموضوع *</label>
+                                <select id="contactSubject" required>
+                                    <option value="">اختر موضوع الرسالة</option>
+                                    <option value="استفسار عن منتج">استفسار عن منتج</option>
+                                    <option value="مشكلة في طلب">مشكلة في طلب</option>
+                                    <option value="اقتراح أو شكوى">اقتراح أو شكوى</option>
+                                    <option value="تعاون أو شراكة">تعاون أو شراكة</option>
+                                    <option value="أخرى">أخرى</option>
+                                </select>
+                            </div>
+                            <div class="form-group"><label>الرسالة *</label><textarea id="contactMessage" rows="5" required placeholder="اكتب رسالتك هنا..."></textarea></div>
+                            <button type="submit" class="btn btn-success"><i class="fab fa-whatsapp"></i> إرسال عبر واتساب</button>
+                        </form>
+                    </div>
+
+                    <div class="contact-info-container">
+                        <h2><i class="fas fa-info-circle"></i> معلومات مفيدة</h2>
+
+                        <div class="business-hours">
+                            <h3><i class="fas fa-clock"></i> ساعات العمل</h3>
+                            <ul>
+                                <li><strong>الأحد - الخميس:</strong> 9:00 ص - 10:00 م</li>
+                                <li><strong>الجمعة:</strong> 4:00 م - 10:00 م</li>
+                                <li><strong>السبت:</strong> 9:00 ص - 6:00 م</li>
+                            </ul>
+                        </div>
+
+                        <div class="social-contact">
+                            <h3><i class="fas fa-share-alt"></i> تواصل مباشرة</h3>
+                            <div class="social-icons-row">
+                                <a href="https://wa.me/967775082146" target="_blank" class="social-btn whatsapp"><i class="fab fa-whatsapp"></i><span>الواتساب</span></a>
+                                <a href="https://www.instagram.com/x5tai?igsh=cDV5Ym5vaTVleXJt" target="_blank" class="social-btn instagram"><i class="fab fa-instagram"></i><span>إنستقرام</span></a>
+                                <a href="mailto:Hadirynasser@gmail.com" class="social-btn email"><i class="fas fa-envelope"></i><span>البريد الإلكتروني</span></a>
+                            </div>
+                        </div>
+
+                        <div class="faq-section">
+                            <h3><i class="fas fa-question-circle"></i> أسئلة متكررة</h3>
+                            <div class="faq-item">
+                                <h4>كيف أتأكد من صحة منتجاتكم؟</h4>
+                                <p>جميع منتجاتنا أصلية ومرفق معها شهادات الجودة من جهات موثوقة.</p>
+                            </div>
+                            <div class="faq-item">
+                                <h4>ماذا لو لم أكن راضياً عن المنتج؟</h4>
+                                <p>نقدم سياسة إرجاع واستبدال خلال 3 أيام من تاريخ الاستلام بشرط أن يكون المنتج بحالته الأصلية.</p>
+                            </div>
+                            <a href="services.html" class="btn btn-outline">المزيد من الأسئلة</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- الخريطة -->
+                <div class="map-section reveal">
+                    <h2><i class="fas fa-map-marked-alt" style="color:var(--primary);margin-left:8px;"></i> موقعنا</h2>
+                    <div class="map-placeholder">
+                        <div class="map-info">
+                            <h3><i class="fas fa-map-marker-alt"></i> عدن - اليمن</h3>
+                            <p>نقدم خدمة التوصيل لجميع مناطق عدن. للمناطق الأخرى تواصل معنا لمعرفة إمكانية التوصيل.</p>
+                            <div class="delivery-box">
+                                <h4><i class="fas fa-shipping-fast"></i> معلومات التوصيل:</h4>
+                                <ul>
+                                    <li>توصيل مجاني داخل عدن</li>
+                                    <li>خلال 24-48 ساعة عمل</li>
+                                    <li>تتبع الطلب عبر الرابط المرسل</li>
+                                    <li>الدفع عند الاستلام متاح</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <!-- التذييل -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-column">
+                    <h3>Twessy</h3>
+                    <p>متجر متخصص في توفير منتجات طب الأسنان بجودة عالية وأسعار مناسبة.</p>
+                    <div class="social-icons">
+                        <a href="https://wa.me/967775082146" target="_blank" aria-label="واتساب"><i class="fab fa-whatsapp"></i></a>
+                        <a href="https://www.instagram.com/x5tai?igsh=cDV5Ym5vaTVleXJt" target="_blank" aria-label="انستقرام"><i class="fab fa-instagram"></i></a>
+                        <a href="mailto:Hadirynasser@gmail.com" aria-label="بريد"><i class="fas fa-envelope"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column"><h3>روابط سريعة</h3><ul><li><a href="index.html">الرئيسية</a></li><li><a href="products.html">المنتجات</a></li><li><a href="categories.html">الفئات</a></li><li><a href="about.html">من نحن</a></li><li><a href="services.html">الخدمات</a></li><li><a href="contact.html">اتصل بنا</a></li></ul></div>
+                <div class="footer-column"><h3>فئات المنتجات</h3><ul><li><a href="categories.html?category=فرش الأسنان">فرش الأسنان</a></li><li><a href="categories.html?category=معاجين الأسنان">معاجين الأسنان</a></li><li><a href="categories.html?category=خيط الأسنان">خيط الأسنان</a></li><li><a href="categories.html?category=مبيضات الأسنان">مبيضات الأسنان</a></li><li><a href="categories.html?category=أجهزة العناية">أجهزة العناية</a></li></ul></div>
+                <div class="footer-column"><h3>معلومات الاتصال</h3><ul class="contact-info-list"><li><i class="fas fa-map-marker-alt"></i> عدن - اليمن</li><li><i class="fas fa-phone"></i> +967 775 082 146</li><li><i class="fas fa-envelope"></i> Hadirynasser@gmail.com</li><li><i class="fas fa-clock"></i> من الأحد إلى الخميس: 9 ص - 10 م</li></ul></div>
+            </div>
+            <div class="copyright"><p>&copy; 2026 Twessy. جميع الحقوق محفوظة.</p></div>
+        </div>
+    </footer>
+
+    <!-- سلة التسوق -->
+    <div class="cart-overlay" id="cartOverlay"></div>
+    <div class="cart-modal" id="cartModal">
+        <div class="cart-header"><h3><i class="fas fa-shopping-cart"></i> سلة التسوق</h3><button class="close-cart" id="closeCart" aria-label="إغلاق"><i class="fas fa-times"></i></button></div>
+        <div class="cart-content" id="cartItems"><p class="empty-cart-msg">سلة التسوق فارغة</p></div>
+        <div class="cart-summary" id="cartSummary" style="display:none;">
+            <div class="cart-total"><span>الإجمالي:</span><span id="cartTotal">0$</span></div>
+            <button class="btn btn-primary" id="checkoutBtn" style="background:#25D366;box-shadow:0 4px 14px rgba(37,211,102,0.35);"><i class="fab fa-whatsapp"></i> إتمام الشراء</button>
+        </div>
+    </div>
+
+    <!-- تسجيل الدخول -->
+    <div class="auth-overlay" id="authOverlay">
+        <div class="auth-modal">
+            <div class="auth-header"><h3 id="authTitle">تسجيل الدخول</h3><button class="close-auth" id="closeAuthBtn" aria-label="إغلاق"><i class="fas fa-times"></i></button></div>
+            <div class="auth-body" id="authBody"></div>
+        </div>
+    </div>
+
+    <script>
+    (function() {
+        'use strict';
+
+        // ============================================
+        //  إدارة المستخدمين
+        // ============================================
+        var USERS_KEY = 'twessy_users';
+        var defaultUsers = [
+            { id: '1', name: 'أحمد محمد', email: 'ahmed@example.com', phone: '777888999', password: '123456', createdAt: new Date().toISOString() }
+        ];
+
+        function loadUsers() {
+            var saved = localStorage.getItem(USERS_KEY);
+            if (saved) return JSON.parse(saved);
+            localStorage.setItem(USERS_KEY, JSON.stringify(defaultUsers));
+            return defaultUsers;
+        }
+
+        function login(email, password) {
+            var users = loadUsers();
+            var user = users.find(function(u) { return u.email === email && u.password === password; });
+            if (user) {
+                var session = { userId: user.id, userName: user.name, userEmail: user.email, userPhone: user.phone, loginTime: Date.now() };
+                localStorage.setItem('twessy_current_user', JSON.stringify(session));
+                return { success: true, user: session };
+            }
+            return { success: false, message: 'البريد أو كلمة المرور غير صحيحة' };
+        }
+
+        function register(name, email, phone, password, confirmPassword) {
+            if (!name || !email || !phone || !password) return { success: false, message: 'الرجاء ملء جميع الحقول' };
+            if (password !== confirmPassword) return { success: false, message: 'كلم تتطابق كلمتا المرور' };
+            if (password.length < 6) return { success: false, message: 'كلمة المرور 6 أحرف على الأقل' };
+            var users = loadUsers();
+            if (users.find(function(u) { return u.email === email; })) return { success: false, message: 'البريد مسجل مسبقاً' };
+            users.push({ id: Date.now().toString(), name: name, email: email, phone: phone, password: password, createdAt: new Date().toISOString() });
+            localStorage.setItem(USERS_KEY, JSON.stringify(users));
+            return { success: true, message: 'تم إنشاء الحساب بنجاح!' };
+        }
+
+        function logout() { localStorage.removeItem('twessy_current_user'); window.location.href = 'index.html'; }
+        function checkAuth() { var s = localStorage.getItem('twessy_current_user'); return s ? JSON.parse(s) : null; }
+
+        // ============================================
+        //  توست
+        // ============================================
+        function showToast(msg, type) {
+            var e = document.querySelector('.toast'); if (e) e.remove();
+            var t = document.createElement('div'); t.className = 'toast ' + (type || '');
+            t.textContent = msg; document.body.appendChild(t);
+            requestAnimationFrame(function() { t.classList.add('show'); });
+            setTimeout(function() { t.classList.remove('show'); setTimeout(function() { t.remove(); }, 350); }, 2500);
+        }
+
+        // ============================================
+        //  مودال تسجيل الدخول
+        // ============================================
+        function showAuthModal() { document.getElementById('authOverlay').classList.add('active'); document.body.classList.add('modal-open'); }
+        function hideAuthModal() { document.getElementById('authOverlay').classList.remove('active'); document.body.classList.remove('modal-open'); }
+
+        function switchToLogin() {
+            document.getElementById('authTitle').textContent = 'تسجيل الدخول';
+            document.getElementById('authBody').innerHTML =
+                '<form id="loginFormContent">' +
+                    '<div class="form-group"><label>البريد الإلكتروني</label><input type="email" id="loginEmail" required placeholder="example@email.com"></div>' +
+                    '<div class="form-group"><label>كلمة المرور</label><input type="password" id="loginPassword" required placeholder="•••••••"></div>' +
+                    '<button type="submit" class="auth-btn">تسجيل الدخول</button>' +
+                '</form>' +
+                '<div class="auth-switch"><p>ليس لديك حساب؟ <a href="#" id="showRegisterBtn">إنشاء حساب</a></p></div>';
+            document.getElementById('loginFormContent').addEventListener('submit', function(e) {
+                e.preventDefault();
+                var r = login(document.getElementById('loginEmail').value, document.getElementById('loginPassword').value);
+                if (r.success) {
+                    showToast('تم تسجيل الدخول بنجاح', 'success');
+                    hideAuthModal();
+                    document.getElementById('mainContent').classList.add('visible');
+                    document.getElementById('userNameDisplay').textContent = r.user.userName;
+                    updateCartCount();
+                } else { showToast(r.message, 'error'); }
+            });
+            document.getElementById('showRegisterBtn').addEventListener('click', function(e) { e.preventDefault(); switchToRegister(); });
+        }
+
+        function switchToRegister() {
+            document.getElementById('authTitle').textContent = 'إنشاء حساب جديد';
+            document.getElementById('authBody').innerHTML =
+                '<form id="registerFormContent">' +
+                    '<div class="form-group"><label>الاسم الكامل</label><input type="text" id="regName" required placeholder="أدخل اسمك"></div>' +
+                    '<div class="form-group"><label>البريد الإلكتروني</label><input type="email" id="regEmail" required placeholder="example@email.com"></div>' +
+                    '<div class="form-group"><label>رقم الهاتف</label><input type="tel" id="regPhone" required placeholder="+967XXXXXXXXX"></div>' +
+                    '<div class="form-group"><label>كلمة المرور</label><input type="password" id="regPassword" required placeholder="•••••••"></div>' +
+                    '<div class="form-group"><label>تأكيد كلمة المرور</label><input type="password" id="regConfirm" required placeholder="•••••••"></div>' +
+                    '<button type="submit" class="auth-btn">إنشاء حساب</button>' +
+                '</form>' +
+                '<div class="auth-switch"><p>لديك حساب؟ <a href="#" id="showLoginBtn">تسجيل الدخول</a></p></div>';
+            document.getElementById('registerFormContent').addEventListener('submit', function(e) {
+                e.preventDefault();
+                var r = register(
+                    document.getElementById('regName').value,
+                    document.getElementById('regEmail').value,
+                    document.getElementById('regPhone').value,
+                    document.getElementById('regPassword').value,
+                    document.getElementById('regConfirm').value
+                );
+                if (r.success) { showToast(r.message, 'success'); switchToLogin(); }
+                else { showToast(r.message, 'error'); }
+            });
+            document.getElementById('showLoginBtn').addEventListener('click', function(e) { e.preventDefault(); switchToLogin(); });
+        }
+
+        // ============================================
+        //  السلة
+        // ============================================
+        var cart = JSON.parse(localStorage.getItem('twessy_cart') || '[]');
+        function saveCart() { localStorage.setItem('twessy_cart', JSON.stringify(cart)); updateCartCount(); }
+        function updateCartCount() {
+            document.getElementById('cartCount').textContent = cart.reduce(function(s,i){return s+i.qty;},0);
+        }
+
+        function renderCart() {
+            var c = document.getElementById('cartItems'), s = document.getElementById('cartSummary'), t = document.getElementById('cartTotal');
+            if (cart.length === 0) { c.innerHTML = '<p class="empty-cart-msg">سلة التسوق فارغة</p>'; s.style.display = 'none'; return; }
+            var total = 0;
+            c.innerHTML = cart.map(function(item) {
+                total += item.price * item.qty;
+                return '<div class="cart-item"><div class="cart-item-img"><img src="'+item.image+'" alt="'+item.name+'"></div><div class="cart-item-info"><div class="cart-item-name">'+item.name+'</div><div class="cart-item-price">'+item.price+'$ × '+item.qty+'</div></div><button class="cart-item-del" data-id="'+item.id+'"><i class="fas fa-trash-alt"></i></button></div>';
+            }).join('');
+            t.textContent = total + '$'; s.style.display = 'block';
+            c.querySelectorAll('.cart-item-del').forEach(function(b) {
+                b.addEventListener('click', function() {
+                    cart = cart.filter(function(i){return i.id!=this.dataset.id;}.bind(this));
+                    saveCart(); renderCart(); showToast('تم إزالة المنتج', 'error');
+                });
+            });
+        }
+
+        function openCartModal() { renderCart(); document.getElementById('cartModal').classList.add('active'); document.getElementById('cartOverlay').classList.add('active'); document.body.classList.add('modal-open'); }
+        function closeCartModal() { document.getElementById('cartModal').classList.remove('active'); document.getElementById('cartOverlay').classList.remove('active'); document.body.classList.remove('modal-open'); }
+
+        // ============================================
+        //  نموذج الاتصال
+        // ============================================
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            var name = document.getElementById('contactName').value;
+            var email = document.getElementById('contactEmail').value;
+            var phone = document.getElementById('contactPhone').value;
+            var subject = document.getElementById('contactSubject').value;
+            var message = document.getElementById('contactMessage').value;
+
+            if (!name.trim() || !email.trim() || !message.trim() || !subject) {
+                showToast('يرجى ملء جميع الحقول المطلوبة', 'error');
+                return;
+            }
+
+            var msg = '*رسالة جديدة من متجر Twessy*\n\n' +
+                'الاسم: ' + name + '\n' +
+                'البريد: ' + email + '\n' +
+                'الهاتف: ' + (phone || 'غير محدد') + '\n' +
+                'الموضوع: ' + subject + '\n\n' + message;
+            
+            window.open('https://wa.me/967775082146?text=' + encodeURIComponent(msg), '_blank');
+            showToast('تم توجيهك لواتساب', 'success');
+            this.reset();
+        });
+
+        // ============================================
+        //  تهيئة الصفحة
+        // ============================================
+        document.addEventListener('DOMContentLoaded', function() {
+            var currentUser = checkAuth();
+            if (currentUser) {
+                document.getElementById('mainContent').classList.add('visible');
+                document.getElementById('userNameDisplay').textContent = currentUser.userName;
+            } else {
+                showAuthModal();
+                switchToLogin();
+            }
+            updateCartCount();
+
+            document.getElementById('userIcon').addEventListener('click', function(e) {
+                e.preventDefault();
+                if (checkAuth()) { if (confirm('هل تريد تسجيل الخروج؟')) logout(); }
+                else { showAuthModal(); switchToLogin(); }
+            });
+
+            document.getElementById('cartIcon').addEventListener('click', function(e) {
+                e.preventDefault();
+                if (checkAuth()) { window.location.href = 'cart.html'; }
+                else { showToast('سجّل الدخول أولاً', 'error'); showAuthModal(); switchToLogin(); }
+            });
+
+            document.getElementById('closeCart').addEventListener('click', closeCartModal);
+            document.getElementById('cartOverlay').addEventListener('click', closeCartModal);
+            document.getElementById('closeAuthBtn').addEventListener('click', hideAuthModal);
+            document.getElementById('authOverlay').addEventListener('click', function(e) { if (e.target === this) hideAuthModal(); });
+
+            document.getElementById('checkoutBtn').addEventListener('click', function() {
+                if (cart.length === 0) { showToast('السلة فارغة', 'error'); return; }
+                closeCartModal();
+                var msg = '*طلب جديد من Twessy*\n\n'; var total = 0;
+                cart.forEach(function(item,i){ var sub=item.price*item.qty; total+=sub; msg += (i+1)+'. '+item.name+' x'+item.qty+' = '+sub+'$\n'; });
+                msg += '\n*الإجمالي:* '+total+'$';
+                window.open('https://wa.me/967775082146?text='+encodeURIComponent(msg),'_blank');
+            });
+
+            // قائمة الجوال
+            var menuOpen = false;
+            document.getElementById('menuToggle').addEventListener('click', function() {
+                menuOpen = !menuOpen;
+                document.getElementById('navLinks').classList.toggle('active');
+                document.getElementById('menuIcon').className = menuOpen ? 'fas fa-times' : 'fas fa-bars';
+                document.body.classList.toggle('modal-open', menuOpen);
+            });
+            document.querySelectorAll('#navLinks a').forEach(function(l) {
+                l.addEventListener('click', function() {
+                    menuOpen = false;
+                    document.getElementById('navLinks').classList.remove('active');
+                    document.getElementById('menuIcon').className = 'fas fa-bars';
+                    document.body.classList.remove('modal-open');
+                });
+            });
+        });
+
+        // حركة الظهور
+        var obs = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) { entry.target.classList.add('visible'); obs.unobserve(entry.target); }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+        document.querySelectorAll('.reveal').forEach(function(el) { obs.observe(el); });
+
+        updateCartCount();
+    })();
+    </script>
+</body>
+</html>
