@@ -8,6 +8,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
     <style>
         :root {
             --primary: #0D9488;
@@ -59,12 +62,12 @@
         .btn-primary:hover { background: var(--primary-dark); box-shadow: 0 6px 20px rgba(13,148,136,0.45); transform: translateY(-1px); }
         .btn-outline { background: transparent; color: var(--primary); border: 2px solid var(--primary); }
         .btn-outline:hover { background: var(--primary); color: #fff; }
-        .btn-whatsapp {
-            background: var(--whatsapp); color: #fff;
-            box-shadow: 0 4px 14px rgba(37,211,102,0.35);
+        .btn-checkout {
+            background: var(--primary); color: #fff;
+            box-shadow: 0 4px 14px rgba(13,148,136,0.35);
             font-size: 17px;
         }
-        .btn-whatsapp:hover { background: var(--whatsapp-dark); box-shadow: 0 6px 20px rgba(37,211,102,0.45); transform: translateY(-1px); }
+        .btn-checkout:hover { background: var(--primary-dark); box-shadow: 0 6px 20px rgba(13,148,136,0.45); transform: translateY(-1px); }
         .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
 
         .top-bar {
@@ -92,7 +95,7 @@
             animation: slideDown 0.3s ease;
         }
         .nav-links.active { display: flex; }
-        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity:1; transform: translateY(0); } }
         .nav-links li a { display: block; padding: 14px 16px; border-radius: var(--radius-sm); font-weight: 600; font-size: 16px; color: var(--text); transition: var(--transition); }
         .nav-links li a:hover, .nav-links li a.active { background: var(--primary-light); color: var(--primary-dark); }
         .nav-icons { display: flex; align-items: center; gap: 6px; }
@@ -118,7 +121,7 @@
         .cart-count {
             position: absolute; top: 2px; left: 2px; background: var(--accent); color: #fff;
             font-size: 10px; font-weight: 800; width: 18px; height: 18px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center; line-height: 1;
+            display: flex; align-items: center; justify-content: center; line-height:1;
         }
         .menu-toggle {
             width: 42px; height: 42px; display: flex; align-items: center; justify-content: center;
@@ -128,7 +131,7 @@
         .menu-toggle:hover { background: var(--primary-light); color: var(--primary); }
         @media (min-width: 1024px) {
             .menu-toggle { display: none; }
-            .nav-links { display: flex !important; flex-direction: row; position: static; background: transparent; padding: 0; gap: 4px; animation: none; }
+            .nav-links { display: flex !important; flex-direction: row; position: static; background: transparent; padding: 0; gap:4px; animation: none; }
             .nav-links li a { padding: 8px 14px; font-size: 14px; }
         }
 
@@ -309,8 +312,8 @@
         .cart-summary { padding: 16px 20px; border-top: 1px solid var(--border); background: var(--bg); flex-shrink: 0; }
         .cart-total { display: flex; justify-content: space-between; font-size: 18px; font-weight: 900; margin-bottom: 14px; }
         .cart-total span:last-child { color: var(--primary-dark); }
-        .checkout-btn { width: 100%; padding: 14px; font-size: 17px; background: var(--whatsapp); color: #fff; box-shadow: 0 4px 14px rgba(37,211,102,0.35); border-radius: var(--radius-sm); }
-        .checkout-btn:hover { background: var(--whatsapp-dark); box-shadow: 0 6px 20px rgba(37,211,102,0.45); transform: translateY(-1px); }
+        .checkout-btn { width: 100%; padding: 14px; font-size: 17px; background: var(--primary); color: #fff; box-shadow: 0 4px 14px rgba(13,148,136,0.35); border-radius: var(--radius-sm); }
+        .checkout-btn:hover { background: var(--primary-dark); box-shadow: 0 6px 20px rgba(13,148,136,0.45); transform: translateY(-1px); }
         .checkout-btn i { font-size: 20px; }
 
         .order-success-modal {
@@ -375,6 +378,29 @@
         @media (min-width: 640px) { .footer-grid { grid-template-columns: repeat(2, 1fr); gap: 36px; } }
         @media (min-width: 1024px) { .footer-grid { grid-template-columns: 2fr 1fr 1fr 1.5fr; } }
 
+        /* Login required modal */
+        .login-required-modal {
+            position: fixed; inset: 0; background: rgba(15,23,42,0.6); backdrop-filter: blur(6px);
+            z-index: 4000; display: flex; align-items: center; justify-content: center;
+            opacity: 0; visibility: hidden; transition: var(--transition); padding: 20px;
+        }
+        .login-required-modal.active { opacity: 1; visibility: visible; }
+        .login-required-box {
+            background: var(--bg-white); border-radius: var(--radius-lg); padding: 36px 28px;
+            max-width: 400px; width: 100%; text-align: center;
+            transform: scale(0.85); transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+        }
+        .login-required-modal.active .login-required-box { transform: scale(1); }
+        .login-required-icon {
+            width: 70px; height: 70px; border-radius: 50%; background: #FEE2E2;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 20px; font-size: 32px; color: #EF4444;
+        }
+        .login-required-box h3 { font-size: 20px; font-weight: 900; margin-bottom: 10px; }
+        .login-required-box p { font-size: 14px; color: var(--text-secondary); margin-bottom: 24px; }
+        .login-required-buttons { display: flex; gap: 12px; }
+        .login-required-buttons .btn { flex: 1; justify-content: center; }
+
         @media (max-width: 480px) {
             .products-header { flex-direction: column; align-items: stretch; }
             .sort-options { justify-content: space-between; }
@@ -384,6 +410,7 @@
             .product-actions-large { flex-direction: column; }
             .product-actions-large .btn { min-width: unset; }
             .order-success-actions { flex-direction: column; }
+            .login-required-buttons { flex-direction: column; }
         }
         @media (hover: none) {
             .product-card:hover { transform: none; box-shadow: var(--shadow); }
@@ -400,10 +427,10 @@
     <div class="top-bar">
         <div class="container">
             <div class="contact-info">
-                <span><i class="fas fa-phone"></i> +967 779 217 474</span>
+                <span><i class="fas fa-phone"></i> +967775082146</span>
                 <span><i class="fas fa-envelope"></i> Hadirynasser@gmail.com</span>
             </div>
-            <div class="shipping-info">شحن مجاني داخل عدن</div>
+            <div class="shipping-info">الشحن داخل عدن فقط</div>
         </div>
     </div>
 
@@ -417,7 +444,6 @@
                 <li><a href="about.html">من نحن</a></li>
                 <li><a href="services.html">الخدمات</a></li>
                 <li><a href="contact.html">اتصل بنا</a></li>
-                <li><a href="login.html">تسجيل الدخول</a></li>
                 <li><a href="dashboard.html">لوحة التحكم</a></li>
             </ul>
             <div class="nav-icons">
@@ -432,7 +458,7 @@
     <header class="page-header">
         <div class="container">
             <h1>جميع المنتجات</h1>
-            <p>اكتشف تشكيلتنا الواسعة من منتجات طب الأسنان بجودة عالية وأسعار مناسبة</p>
+            <p>اكتشف تشكيلتنا الواسعة من منتجات الطبية بجودة عالية وأسعار مناسبة</p>
         </div>
     </header>
 
@@ -464,7 +490,7 @@
             <div class="footer-grid">
                 <div class="footer-column">
                     <h3>Twessy</h3>
-                    <p>متجر متخصص في توفير منتجات طب الأسنان بجودة عالية وأسعار مناسبة.</p>
+                    <p>متجر متخصص في توفير منتجات الطبية بجودة عالية وأسعار مناسبة.</p>
                     <div class="social-icons">
                         <a href="https://wa.me/967775082146" target="_blank"><i class="fab fa-whatsapp"></i></a>
                         <a href="https://www.instagram.com/x5tai?igsh=cDV5Ym5vaTVleXJt" target="_blank"><i class="fab fa-instagram"></i></a>
@@ -502,7 +528,7 @@
                     </ul>
                 </div>
             </div>
-            <div class="copyright"><p>&copy; 2025 Twessy. جميع الحقوق محفوظة.</p></div>
+            <div class="copyright"><p>&copy; 2026 Twessy. جميع الحقوق محفوظة.</p></div>
         </div>
     </footer>
 
@@ -525,7 +551,7 @@
         <div class="cart-content" id="cartContent"><p class="empty-cart-message">سلة التسوق فارغة</p></div>
         <div class="cart-summary" id="cartSummary" style="display:none;">
             <div class="cart-total"><span>الإجمالي:</span><span id="cartTotal">0$</span></div>
-            <button class="btn checkout-btn" id="checkoutBtn"><i class="fab fa-whatsapp"></i> اطلب عبر واتساب</button>
+            <button class="btn btn-checkout checkout-btn" id="checkoutBtn"><i class="fas fa-check-circle"></i> تأكيد الطلب</button>
         </div>
     </div>
 
@@ -533,12 +559,24 @@
         <div class="order-success-box">
             <div class="success-icon"><i class="fas fa-check"></i></div>
             <h3>تم إرسال طلبك بنجاح</h3>
-            <p>تم تحويلك إلى واتساب لإرسال تفاصيل الطلب، وسيظهر الطلب في لوحة تحكم المتجر.</p>
+            <p>تم تأكيد الطلب .</p>
             <div class="order-number" id="orderNumberDisplay"></div>
-            <p style="font-size:13px;color:var(--text-light);">احتفظ برقم الطلب لتتبع حالته</p>
+            <p style="font-size:13px;color:var(--text-light);">يمكنك متابعة حالة الطلب في حسابك.</p>
             <div class="order-success-actions">
-                <button class="btn btn-whatsapp" id="successWhatsappBtn"><i class="fab fa-whatsapp"></i> متابعة على واتساب</button>
-                <button class="btn btn-outline" id="successCloseBtn"><i class="fas fa-shopping-bag"></i> متابعة التسوق</button>
+                <button class="btn btn-primary" id="successCloseBtn"><i class="fas fa-shopping-bag"></i> متابعة التسوق</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Required Modal -->
+    <div class="login-required-modal" id="loginRequiredModal">
+        <div class="login-required-box">
+            <div class="login-required-icon"><i class="fas fa-exclamation-triangle"></i></div>
+            <h3>تسجيل الدخول مطلوب</h3>
+            <p>يجب عليك تسجيل الدخول أولاً لإتمام عملية الشراء</p>
+            <div class="login-required-buttons">
+                <button class="btn btn-primary" id="goToLoginBtn">تسجيل الدخول</button>
+                <button class="btn btn-outline" id="closeLoginRequiredBtn">إلغاء</button>
             </div>
         </div>
     </div>
@@ -547,52 +585,136 @@
     (function() {
         'use strict';
 
-        var WHATSAPP_NUMBER = '967775082146';
-        var ORDERS_KEY = 'twessy_orders';
-        var CART_KEY = 'twessy_cart';
+        // ========== Firebase Configuration ==========
+        const FIREBASE_CONFIG = {
+            databaseURL: "https://medical-54ab4-default-rtdb.firebaseio.com/"
+        };
 
-        var allProducts = [];
-        var currentSort = 'default';
-        var currentCategory = null;
+        // Google Sheets Webhook URL
+        const GOOGLE_SHEETS_URL = "https://script.google.com/macros/s/AKfycbxY-7XhI_iJrFXur3Loa3a6T2HcZX2Tma6xYcTaPQQR87BWJ6DaQ5RYknJ3GKxDd_ut/exec";
 
-        function getDefaultProducts() {
-            return [
-                { id:'1', name:'فرشاة أسنان كهربائية سونيك', category:'فرش الأسنان', description:'فرشاة أسنان كهربائية بتقنية السونيك لتنظيف عميق وفعال، تعمل بالشحن وتأتي مع 3 رؤوس قابلة للتبديل.', price:25, oldPrice:35, stock:15, image:'https://picsum.photos/seed/prod-ebrush/400/400', badge:'sale', featured:true },
-                { id:'2', name:'معجون أسنان بالفلورايد المتطور', category:'معاجين الأسنان', description:'معجون أسنان متطور يحمي من التسوس ويقوي المينا، ينعش النفس ويمنع تراكم الجير.', price:8, oldPrice:null, stock:0, image:'https://picsum.photos/seed/prod-paste2/400/400', badge:null, featured:true },
-                { id:'3', name:'خيط أسنان طبي مشمع', category:'خيط الأسنان', description:'خيط أسنان طبي سهل الاستخدام لإزالة البلاك والبقايا بين الأسنان بفعالية عالية.', price:5, oldPrice:7, stock:50, image:'https://picsum.photos/seed/prod-floss3/400/400', badge:'sale', featured:false },
-                { id:'4', name:'مجموعة تبييض الأسنان الاحترافية', category:'مبيضات الأسنان', description:'مجموعة كاملة لتبييض الأسنان في المنزل بنتائج احترافية خلال 7 أيام فقط.', price:45, oldPrice:60, stock:8, image:'https://picsum.photos/seed/prod-white4/400/400', badge:'featured', featured:true },
-                { id:'5', name:'غسول فم منعش خالي الكحول', category:'أجهزة العناية', description:'غسول فم خالي من الكحول ينعش النفس ويقتل البكتيريا المسببة للرائحة الكريهة.', price:12, oldPrice:null, stock:25, image:'https://picsum.photos/seed/prod-mouth5/400/400', badge:'new', featured:false },
-                { id:'6', name:'فرشة أسنان ناعمة للأطفال', category:'فرش الأسنان', description:'فرشة أسنان مصممة خصيصاً للأطفال بشعيرات ناعمة جداً ومقبض مريح مضاد للانزلاق.', price:4, oldPrice:6, stock:30, image:'https://picsum.photos/seed/prod-kids6/400/400', badge:'new', featured:false },
-                { id:'7', name:'معجون تبييض بالفحم النشط', category:'معاجين الأسنان', description:'معجون أسنان بالفحم النشط الطبيعي لإزالة البقع الصعبة وتبييض الأسنان بلطف.', price:10, oldPrice:14, stock:20, image:'https://picsum.photos/seed/prod-char7/400/400', badge:'sale', featured:true },
-                { id:'8', name:'جهاز تنظيف اللسان الكهربائي', category:'أجهزة العناية', description:'جهاز كهربائي مخصص لتنظيف اللسان وإزالة البكتيريا بشكل يومي.', price:18, oldPrice:null, stock:12, image:'https://picsum.photos/seed/prod-tong8/400/400', badge:null, featured:false }
-            ];
-        }
+        let database = null;
+        let allProducts = [];
+        let currentSort = 'default';
+        let currentCategory = null;
+        let isLoading = true;
 
-        function loadProducts() {
-            var saved = localStorage.getItem('twessy_store_products') || localStorage.getItem('twessy_products');
-            if (saved) { try { allProducts = JSON.parse(saved); } catch(e) { allProducts = getDefaultProducts(); } }
-            else { allProducts = getDefaultProducts(); }
+        const CART_KEY = 'twessy_cart';
 
-            var urlParams = new URLSearchParams(window.location.search);
-            var cat = urlParams.get('category');
-            if (cat) {
-                currentCategory = decodeURIComponent(cat);
-                document.querySelector('.page-header p').textContent = 'عرض منتجات فئة: ' + currentCategory;
+        // ========== Initialize Firebase ==========
+        function initFirebase() {
+            try {
+                if (firebase && !firebase.apps.length) {
+                    firebase.initializeApp(FIREBASE_CONFIG);
+                    database = firebase.database();
+                    console.log('✅ Firebase initialized successfully');
+                    return true;
+                } else if (firebase && firebase.apps.length) {
+                    database = firebase.database();
+                    return true;
+                }
+            } catch (error) {
+                console.error('❌ Firebase initialization error:', error);
+                return false;
             }
-            displayProducts();
-            updateCartCount();
+            return false;
         }
 
+        // ========== Load Products from Firebase ==========
+        function loadProductsFromFirebase() {
+            const container = document.getElementById('allProducts');
+            if (container) {
+                container.innerHTML = '<div class="empty-products"><div class="loading-spinner"></div><h3>جاري تحميل المنتجات ...</h3></div>';
+            }
+            isLoading = true;
+
+            return new Promise((resolve) => {
+                if (!database) {
+                    console.warn('Firebase not initialized');
+                    allProducts = [];
+                    isLoading = false;
+                    displayProducts();
+                    resolve([]);
+                    return;
+                }
+
+                const productsRef = database.ref('products');
+                
+                productsRef.once('value').then((snapshot) => {
+                    const products = snapshot.val();
+                    
+                    if (products && Object.keys(products).length > 0) {
+                        allProducts = Object.keys(products).map(key => ({
+                            id: key,
+                            ...products[key]
+                        }));
+                        console.log(`✅ Loaded ${allProducts.length} products from Firebase`);
+                    } else {
+                        console.log('📦 No products found in Firebase.');
+                        allProducts = [];
+                    }
+                    
+                    isLoading = false;
+                    displayProducts();
+                    resolve(allProducts);
+                }).catch((error) => {
+                    console.error('Error loading from Firebase:', error);
+                    allProducts = [];
+                    isLoading = false;
+                    displayProducts();
+                    resolve([]);
+                });
+            });
+        }
+
+        // ========== Real-time listener for products ==========
+        function listenForRealTimeUpdates() {
+            if (!database) return;
+            
+            database.ref('products').on('value', (snapshot) => {
+                const products = snapshot.val();
+                
+                if (products && Object.keys(products).length > 0) {
+                    const newProducts = Object.keys(products).map(key => ({
+                        id: key,
+                        ...products[key]
+                    }));
+                    
+                    // Simple check to see if list changed significantly
+                    if (JSON.stringify(allProducts.map(p => p.id).sort()) !== JSON.stringify(newProducts.map(p => p.id).sort())) {
+                        allProducts = newProducts;
+                        displayProducts();
+                        showToast('📦 تم تحديث قائمة المنتجات', 'info');
+                    }
+                } else if (allProducts.length > 0) {
+                    allProducts = [];
+                    displayProducts();
+                }
+            });
+        }
+
+        // ========== Display products ==========
         function displayProducts() {
             var container = document.getElementById('allProducts');
             if (!container) return;
+            
+            if (isLoading) {
+                container.innerHTML = '<div class="empty-products"><div class="loading-spinner"></div><h3>جاري تحميل المنتجات...</h3></div>';
+                return;
+            }
+            
+            if (allProducts.length === 0) {
+                container.innerHTML = '<div class="empty-products"><i class="fas fa-box-open"></i><h3>لا توجد منتجات</h3><p>' + (currentCategory ? 'لا توجد منتجات في فئة "'+currentCategory+'"' : 'سيتم إضافة منتجات جديدة قريباً') + '</p></div>';
+                return;
+            }
+            
             var filtered = allProducts.slice();
             if (currentCategory) filtered = filtered.filter(function(p){ return p.category === currentCategory; });
 
             switch(currentSort) {
                 case 'price-low': filtered.sort(function(a,b){return a.price-b.price;}); break;
                 case 'price-high': filtered.sort(function(a,b){return b.price-a.price;}); break;
-                case 'name': filtered.sort(function(a,b){return a.name.localeCompare(b.name,'ar');}); break;
+                case 'name': filtered.sort(function(a,b){return (a.name || '').localeCompare(b.name || '', 'ar');}); break;
                 default: filtered.sort(function(a,b){return (b.featured?1:0)-(a.featured?1:0);});
             }
 
@@ -619,18 +741,28 @@
             var disabled = product.stock === 0 ? ' disabled' : '';
 
             return '<div class="product-card" data-product-id="'+product.id+'">' +
-                '<div class="product-image">'+badgeHtml+'<img src="'+(product.image||'https://picsum.photos/seed/fallback/400/400')+'" alt="'+product.name+'" loading="lazy"></div>' +
+                '<div class="product-image">'+badgeHtml+'<img src="'+(product.image||'https://picsum.photos/seed/fallback/400/400')+'" alt="'+escapeHtml(product.name)+'" loading="lazy" onerror="this.src=\'https://picsum.photos/seed/fallback/400/400\'"></div>' +
                 '<div class="product-info">' +
-                    '<div class="product-category">'+product.category+'</div>' +
-                    '<h3 class="product-name">'+product.name+'</h3>' +
+                    '<div class="product-category">'+escapeHtml(product.category)+'</div>' +
+                    '<h3 class="product-name">'+escapeHtml(product.name)+'</h3>' +
                     '<p class="product-description">'+(product.description||'منتج عالي الجودة للعناية بالأسنان')+'</p>' +
                     '<div class="product-price"><span class="current-price">'+product.price+'$</span>'+oldPriceHtml+discountHtml+'</div>' +
                     '<div class="product-stock"><span class="'+stockClass+'">'+stockText+'</span></div>' +
                     '<div class="product-actions">' +
-                        '<button class="btn btn-primary add-to-cart-btn" data-id="'+product.id+'" data-name="'+product.name+'" data-price="'+product.price+'" data-image="'+product.image+'" data-stock="'+product.stock+'"'+disabled+'><i class="fas fa-cart-plus"></i> أضف للسلة</button>' +
+                        '<button class="btn btn-primary add-to-cart-btn" data-id="'+product.id+'" data-name="'+escapeHtml(product.name)+'" data-price="'+product.price+'" data-image="'+(product.image||'')+'" data-stock="'+product.stock+'"'+disabled+'><i class="fas fa-cart-plus"></i> أضف للسلة</button>' +
                         '<button class="btn btn-outline view-detail-btn" data-id="'+product.id+'"><i class="fas fa-eye"></i> تفاصيل</button>' +
                     '</div>' +
                 '</div></div>';
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
         }
 
         function showProductDetail(productId) {
@@ -642,17 +774,17 @@
 
             document.getElementById('productDetailBody').innerHTML =
                 '<div class="product-detail-grid">' +
-                    '<div class="product-detail-image"><img src="'+(product.image||'https://picsum.photos/seed/fallback/400/400')+'" alt="'+product.name+'"></div>' +
+                    '<div class="product-detail-image"><img src="'+(product.image||'https://picsum.photos/seed/fallback/400/400')+'" alt="'+escapeHtml(product.name)+'" onerror="this.src=\'https://picsum.photos/seed/fallback/400/400\'"></div>' +
                     '<div class="product-detail-info">' +
-                        '<h2>'+product.name+'</h2>' +
-                        '<div class="product-meta"><span><i class="fas fa-tag"></i> '+product.category+'</span><span><i class="fas fa-barcode"></i> SKU: '+product.id+'</span></div>' +
+                        '<h2>'+escapeHtml(product.name)+'</h2>' +
+                        '<div class="product-meta"><span><i class="fas fa-tag"></i> '+escapeHtml(product.category)+'</span><span><i class="fas fa-barcode"></i> SKU: '+product.id+'</span></div>' +
                         '<div class="product-price-large"><span class="current-price">'+product.price+'$</span>'+(product.oldPrice?'<span class="old-price">'+product.oldPrice+'$</span>':'')+(discount>0?'<span class="discount-badge">-'+discount+'%</span>':'')+'</div>' +
                         '<div class="product-description-full"><p>'+(product.description||'منتج عالي الجودة للعناية بصحة الفم والأسنان.')+'</p></div>' +
                         '<div class="product-stock-info"><strong>حالة المخزون:</strong> <span style="color:'+stockColor+';">'+stockText+'</span></div>' +
                         (product.stock > 0 ?
                         '<div class="product-quantity"><label>الكمية:</label><div class="quantity-selector"><button class="qty-minus" type="button">-</button><input type="number" id="detailQuantity" value="1" min="1" max="'+product.stock+'"><button class="qty-plus" type="button">+</button></div></div>' : '') +
                         '<div class="product-actions-large">' +
-                            '<button class="btn btn-primary add-from-detail" data-id="'+product.id+'" data-name="'+product.name+'" data-price="'+product.price+'" data-image="'+product.image+'" data-stock="'+product.stock+'"'+(product.stock===0?' disabled':'')+'><i class="fas fa-shopping-cart"></i> أضف للسلة</button>' +
+                            '<button class="btn btn-primary add-from-detail" data-id="'+product.id+'" data-name="'+escapeHtml(product.name)+'" data-price="'+product.price+'" data-image="'+(product.image||'')+'" data-stock="'+product.stock+'"'+(product.stock===0?' disabled':'')+'><i class="fas fa-shopping-cart"></i> أضف للسلة</button>' +
                             '<button class="btn btn-outline close-detail-inner">إغلاق</button>' +
                         '</div>' +
                     '</div></div>';
@@ -662,22 +794,30 @@
 
             var qtyInput = document.getElementById('detailQuantity');
             if (qtyInput) {
-                document.querySelector('.qty-minus').addEventListener('click', function(){ if(parseInt(qtyInput.value)>1) qtyInput.value = parseInt(qtyInput.value)-1; });
-                document.querySelector('.qty-plus').addEventListener('click', function(){ if(parseInt(qtyInput.value)<product.stock) qtyInput.value = parseInt(qtyInput.value)+1; });
+                var minusBtn = document.querySelector('.qty-minus');
+                var plusBtn = document.querySelector('.qty-plus');
+                if (minusBtn) minusBtn.addEventListener('click', function(){ if(parseInt(qtyInput.value)>1) qtyInput.value = parseInt(qtyInput.value)-1; });
+                if (plusBtn) plusBtn.addEventListener('click', function(){ if(parseInt(qtyInput.value)<product.stock) qtyInput.value = parseInt(qtyInput.value)+1; });
             }
-            document.querySelector('.add-from-detail').addEventListener('click', function(){
-                var qty = parseInt(document.getElementById('detailQuantity').value) || 1;
-                addToCart(product.id, product.name, product.price, product.image, qty);
-                document.getElementById('productDetailModal').classList.remove('active');
-                document.body.classList.remove('modal-open');
-            });
-            document.querySelector('.close-detail-inner').addEventListener('click', function(){
-                document.getElementById('productDetailModal').classList.remove('active');
-                document.body.classList.remove('modal-open');
-            });
+            var addBtn = document.querySelector('.add-from-detail');
+            if (addBtn) {
+                addBtn.addEventListener('click', function(){
+                    var qty = parseInt(document.getElementById('detailQuantity').value) || 1;
+                    addToCart(product.id, product.name, product.price, product.image, qty);
+                    document.getElementById('productDetailModal').classList.remove('active');
+                    document.body.classList.remove('modal-open');
+                });
+            }
+            var closeInnerBtn = document.querySelector('.close-detail-inner');
+            if (closeInnerBtn) {
+                closeInnerBtn.addEventListener('click', function(){
+                    document.getElementById('productDetailModal').classList.remove('active');
+                    document.body.classList.remove('modal-open');
+                });
+            }
         }
 
-        // ========== السلة ==========
+        // ========== Cart Functions ==========
         function addToCart(productId, name, price, image, quantity) {
             quantity = quantity || 1;
             var cart = JSON.parse(localStorage.getItem(CART_KEY) || '[]');
@@ -686,9 +826,7 @@
             else { cart.push({id:productId, name:name, price:price, image:image, quantity:quantity}); }
             localStorage.setItem(CART_KEY, JSON.stringify(cart));
             updateCartCount();
-            showToast('تم إضافة المنتج إلى السلة', 'success');
-            // فتح السلة تلقائياً بعد الإضافة
-            openCart();
+            showToast('✅ تم إضافة المنتج إلى السلة', 'success');
         }
 
         function updateCartCount() {
@@ -713,9 +851,9 @@
                     var itemTotal = item.price * qty;
                     total += itemTotal;
                     return '<div class="cart-item" data-id="'+item.id+'">' +
-                        '<div class="cart-item-image"><img src="'+(item.image||'https://picsum.photos/seed/fallback/60')+'" alt="'+item.name+'"></div>' +
+                        '<div class="cart-item-image"><img src="'+(item.image||'https://picsum.photos/seed/fallback/60')+'" alt="'+escapeHtml(item.name)+'" onerror="this.src=\'https://picsum.photos/seed/fallback/60\'"></div>' +
                         '<div class="cart-item-info">' +
-                            '<div class="cart-item-name">'+item.name+'</div>' +
+                            '<div class="cart-item-name">'+escapeHtml(item.name)+'</div>' +
                             '<div class="cart-item-price">'+item.price+'$</div>' +
                             '<div class="cart-item-quantity"><button class="cart-qty-minus" data-id="'+item.id+'">-</button><span>'+qty+'</span><button class="cart-qty-plus" data-id="'+item.id+'">+</button></div>' +
                         '</div>' +
@@ -758,65 +896,116 @@
             localStorage.setItem(CART_KEY, JSON.stringify(cart));
             updateCartCount();
             openCart();
-            showToast('تم إزالة المنتج من السلة', 'info');
+            showToast('🗑️ تم إزالة المنتج من السلة', 'info');
         }
 
-        // ========== إرسال الطلب ==========
-        function generateOrderId() {
-            var orders = JSON.parse(localStorage.getItem(ORDERS_KEY) || '[]');
-            var num = orders.length + 1;
-            return 'ORD-' + String(num).padStart(4, '0');
+        // ========== Send to Google Sheets ==========
+        function sendToGoogleSheets(orderData) {
+            return fetch(GOOGLE_SHEETS_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(orderData)
+            }).then(function() {
+                console.log('✅ Order sent to Google Sheets:', orderData.orderId);
+                return true;
+            }).catch(function(error) {
+                console.error('Error sending to Google Sheets:', error);
+                return false;
+            });
         }
 
+        // ========== Save Order to Firebase ==========
+        function saveOrderToFirebase(orderData) {
+            if (!database) return Promise.resolve(false);
+            const ordersRef = database.ref('orders');
+            return ordersRef.push(orderData).then(() => {
+                console.log('✅ Order saved to Firebase');
+                return true;
+            }).catch(error => {
+                console.error('Error saving order:', error);
+                return false;
+            });
+        }
+
+        // ========== Check if user is logged in ==========
+        function getSession() {
+            try { return JSON.parse(localStorage.getItem('twessy_session')); } catch(e) { return null; }
+        }
+
+        // ========== Show login required modal ==========
+        function showLoginRequiredModal() {
+            document.getElementById('loginRequiredModal').classList.add('active');
+            document.body.classList.add('modal-open');
+        }
+
+        function closeLoginRequiredModal() {
+            document.getElementById('loginRequiredModal').classList.remove('active');
+            document.body.classList.remove('modal-open');
+        }
+
+        // ========== Checkout Logic (Modified - Removed WhatsApp Button) ==========
         function checkout() {
+            // Check if user is logged in
+            var session = getSession();
+            if (!session || !session.userName) {
+                showLoginRequiredModal();
+                return;
+            }
+
             var cart = JSON.parse(localStorage.getItem(CART_KEY) || '[]');
-            if (cart.length === 0) { showToast('سلة التسوق فارغة', 'info'); return; }
+            if (cart.length === 0) { showToast('🛒 سلة التسوق فارغة', 'info'); return; }
 
-            var orderId = generateOrderId();
+            var orderId = 'ORD-' + String(Math.floor(Math.random() * 10000)).padStart(4, '0');
             var total = 0;
-
-            var msg = '*طلب جديد من Twessy*\n';
-            msg += '*رقم الطلب:* ' + orderId + '\n';
-            msg += '\n*المنتجات:*\n';
             var orderItems = [];
 
-            cart.forEach(function(item, i) {
+            cart.forEach(function(item) {
                 var qty = item.quantity || 1;
                 var sub = item.price * qty;
                 total += sub;
-                msg += (i+1) + '. ' + item.name + '\n';
-                msg += '   الكمية: ' + qty + ' | السعر: ' + sub + '$\n';
                 orderItems.push({ name: item.name, quantity: qty, price: item.price, subtotal: sub });
             });
 
-            msg += '\n*الإجمالي:* ' + total + '$\n';
-            msg += '\n_تم الإرسال تلقائياً من متجر Twessy_';
-
-            var orders = JSON.parse(localStorage.getItem(ORDERS_KEY) || '[]');
             var now = new Date();
             var dateStr = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0');
             var timeStr = String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
 
-            orders.push({
+            var orderData = {
+                orderId: orderId,
                 id: orderId,
-                customerName: 'زائر',
-                phone: 'غير محدد',
-                email: '',
+                customerName: session.userName,
+                phone: session.phone || 'غير محدد',
+                email: session.email || '',
+                address: '',
                 date: dateStr + ' ' + timeStr,
+                timestamp: now.toISOString(),
                 total: total,
                 status: 'قيد الانتظار',
                 items: orderItems,
-                source: 'واتساب'
-            });
-            localStorage.setItem(ORDERS_KEY, JSON.stringify(orders));
+                source: 'Website'
+            };
 
+            // 1. Save to Firebase
+            saveOrderToFirebase(orderData);
+            
+            // 2. Send to Google Sheets
+            sendToGoogleSheets(orderData);
+
+            // 3. Save to localStorage (for user history)
+            var orders = JSON.parse(localStorage.getItem('twessy_orders') || '[]');
+            orders.push(orderData);
+            localStorage.setItem('twessy_orders', JSON.stringify(orders));
+
+            // 4. Clear Cart
             localStorage.setItem(CART_KEY, '[]');
             updateCartCount();
             closeCart();
 
-            var whatsappUrl = 'https://wa.me/' + WHATSAPP_NUMBER + '?text=' + encodeURIComponent(msg);
-            window.open(whatsappUrl, '_blank');
+            // 5. Open Admin Dashboard in new tab - Direct to admin page
+            window.open(ADMIN_URL, '_blank');
 
+            // 6. Show Success Modal
             document.getElementById('orderNumberDisplay').textContent = orderId;
             document.getElementById('orderSuccessModal').classList.add('active');
             document.body.classList.add('modal-open');
@@ -848,11 +1037,7 @@
             });
         }
 
-        // ========== إدارة المستخدمين وشريط التنقل ==========
-        function getSession() {
-            try { return JSON.parse(localStorage.getItem('twessy_session')); } catch(e) { return null; }
-        }
-
+        // ========== User Session Management ==========
         function getInitials(name) {
             if (!name) return '؟';
             var parts = name.trim().split(/\s+/);
@@ -866,7 +1051,7 @@
             
             if (session && session.userName) {
                 var initials = getInitials(session.userName);
-                userIcon.innerHTML = '<div class="nav-user-badge"><div class="user-avatar-sm">' + initials + '</div><span class="user-name-sm">' + session.userName + '</span></div>';
+                userIcon.innerHTML = '<div class="nav-user-badge"><div class="user-avatar-sm">' + initials + '</div><span class="user-name-sm">' + escapeHtml(session.userName) + '</span></div>';
                 userIcon.href = 'dashboard.html';
             } else {
                 userIcon.innerHTML = '<i class="fas fa-user"></i>';
@@ -874,38 +1059,28 @@
             }
         }
 
-        // ========== قائمة الجوال ==========
-        var menuOpen = false;
-        document.getElementById('menuToggle').addEventListener('click', function(){
-            menuOpen = !menuOpen;
-            document.getElementById('navLinks').classList.toggle('active');
-            document.getElementById('menuIcon').className = menuOpen ? 'fas fa-times' : 'fas fa-bars';
-            document.body.classList.toggle('modal-open', menuOpen);
-        });
-        document.querySelectorAll('#navLinks a').forEach(function(link){
-            link.addEventListener('click', function(){
-                menuOpen = false;
-                document.getElementById('navLinks').classList.remove('active');
-                document.getElementById('menuIcon').className = 'fas fa-bars';
-                document.body.classList.remove('modal-open');
-            });
-        });
-
-        // ========== أيقونة المستخدم ==========
-        document.getElementById('userIcon').addEventListener('click', function(e) {
-            e.preventDefault();
-            var session = getSession();
-            if (session && session.userName) {
-                window.location.href = 'dashboard.html';
-            } else {
-                window.location.href = 'login.html';
+        // ========== Initialize ==========
+        async function init() {
+            initFirebase();
+            await loadProductsFromFirebase();
+            listenForRealTimeUpdates();
+            
+            var urlParams = new URLSearchParams(window.location.search);
+            var cat = urlParams.get('category');
+            if (cat) {
+                currentCategory = decodeURIComponent(cat);
+                var headerP = document.querySelector('.page-header p');
+                if (headerP) headerP.textContent = 'عرض منتجات فئة: ' + currentCategory;
             }
-        });
-
-        // ========== التهيئة ==========
-        document.addEventListener('DOMContentLoaded', function(){
-            loadProducts();
+            
+            displayProducts();
+            updateCartCount();
             updateNavUserArea();
+        }
+
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', function(){
+            init();
 
             document.getElementById('sortProducts').addEventListener('change', function(e){
                 currentSort = e.target.value;
@@ -924,23 +1099,56 @@
                 if (e.target === this) { this.classList.remove('active'); document.body.classList.remove('modal-open'); }
             });
 
+            // Main Checkout Button (تأكيد الطلب فقط)
             document.getElementById('checkoutBtn').addEventListener('click', checkout);
 
             document.getElementById('successCloseBtn').addEventListener('click', function(){
                 document.getElementById('orderSuccessModal').classList.remove('active');
                 document.body.classList.remove('modal-open');
-            });
-            document.getElementById('successWhatsappBtn').addEventListener('click', function(){
-                document.getElementById('orderSuccessModal').classList.remove('active');
-                document.body.classList.remove('modal-open');
-                window.open('https://wa.me/' + WHATSAPP_NUMBER, '_blank');
+                window.location.href = 'products.html';
             });
             document.getElementById('orderSuccessModal').addEventListener('click', function(e){
                 if (e.target === this) { this.classList.remove('active'); document.body.classList.remove('modal-open'); }
             });
 
+            // Login required modal buttons
+            document.getElementById('goToLoginBtn').addEventListener('click', function(){
+                closeLoginRequiredModal();
+                window.location.href = 'login.html';
+            });
+            document.getElementById('closeLoginRequiredBtn').addEventListener('click', closeLoginRequiredModal);
+            document.getElementById('loginRequiredModal').addEventListener('click', function(e){
+                if (e.target === this) closeLoginRequiredModal();
+            });
+
+            // Mobile menu toggle
+            var menuOpen = false;
+            document.getElementById('menuToggle').addEventListener('click', function(){
+                menuOpen = !menuOpen;
+                document.getElementById('navLinks').classList.toggle('active');
+                document.getElementById('menuIcon').className = menuOpen ? 'fas fa-times' : 'fas fa-bars';
+                document.body.classList.toggle('modal-open', menuOpen);
+            });
+            document.querySelectorAll('#navLinks a').forEach(function(link){
+                link.addEventListener('click', function(){
+                    menuOpen = false;
+                    document.getElementById('navLinks').classList.remove('active');
+                    document.getElementById('menuIcon').className = 'fas fa-bars';
+                    document.body.classList.remove('modal-open');
+                });
+            });
+
+            document.getElementById('userIcon').addEventListener('click', function(e) {
+                e.preventDefault();
+                var session = getSession();
+                if (session && session.userName) {
+                    window.location.href = 'dashboard.html';
+                } else {
+                    window.location.href = 'login.html';
+                }
+            });
+
             window.addEventListener('storage', function(e){
-                if (e.key === 'twessy_store_products' || e.key === 'twessy_products') loadProducts();
                 if (e.key === 'twessy_session') updateNavUserArea();
             });
         });

@@ -8,6 +8,12 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Leaflet CSS (الخريطة المجانية) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
     <style>
         :root {
@@ -64,6 +70,54 @@
         .btn-danger { background: #FEE2E2; color: #DC2626; border: 2px solid #FECACA; }
         .btn-danger:hover { background: #EF4444; color: #fff; border-color: #EF4444; }
         .btn-sm { padding: 8px 14px; font-size: 13px; }
+        
+        /* حالة الطلب */
+        .order-status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+        .status-pending { background: #FEF3C7; color: #92400E; border-right: 3px solid #F59E0B; }
+        .status-processing { background: #DBEAFE; color: #1E40AF; border-right: 3px solid #3B82F6; }
+        .status-shipped { background: #CCFBF1; color: #0F766E; border-right: 3px solid #0D9488; }
+        .status-delivered { background: #D1FAE5; color: #065F46; border-right: 3px solid #059669; }
+        .status-cancelled { background: #FEE2E2; color: #991B1B; border-right: 3px solid #EF4444; }
+
+        /* شريط تتبع الطلب */
+        .order-tracking {
+            background: var(--bg); border-radius: var(--radius-sm);
+            padding: 16px; margin: 12px 0;
+        }
+        .tracking-steps {
+            display: flex; justify-content: space-between; flex-wrap: wrap;
+            gap: 8px; position: relative;
+        }
+        .tracking-step {
+            flex: 1; text-align: center; position: relative; z-index: 1;
+        }
+        .tracking-step .step-icon {
+            width: 40px; height: 40px; border-radius: 50%; background: var(--bg-white);
+            border: 2px solid var(--border); display: flex; align-items: center;
+            justify-content: center; margin: 0 auto 8px; transition: all 0.3s ease;
+            position: relative; z-index: 2;
+        }
+        .tracking-step .step-icon i { font-size: 16px; color: var(--text-light); }
+        .tracking-step .step-label { font-size: 11px; font-weight: 600; color: var(--text-secondary); }
+        .tracking-step.active .step-icon { background: var(--primary); border-color: var(--primary); transform: scale(1.1); }
+        .tracking-step.active .step-icon i { color: #fff; }
+        .tracking-step.active .step-label { color: var(--primary); font-weight: 800; }
+        .tracking-step.completed .step-icon { background: #059669; border-color: #059669; }
+        .tracking-step.completed .step-icon i { color: #fff; }
+        .tracking-line { position: absolute; top: 20px; left: 10%; right: 10%; height: 2px; background: var(--border); z-index: 1; }
+        @media (max-width: 640px) {
+            .tracking-step .step-label { font-size: 9px; }
+            .tracking-step .step-icon { width: 32px; height: 32px; }
+            .tracking-step .step-icon i { font-size: 12px; }
+            .tracking-line { top: 16px; }
+        }
 
         .top-bar { background: var(--primary-dark); color: #fff; font-size: 13px; padding: 8px 0; display: none; }
         .top-bar .container { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
@@ -116,7 +170,6 @@
             color: #fff; display: flex; align-items: center; justify-content: center;
             font-size: 11px; font-weight: 800; overflow: hidden;
         }
-        .nav-user-badge .user-avatar-sm img { width: 100%; height: 100%; object-fit: cover; }
         .nav-user-badge .user-name-sm { font-size: 12px; font-weight: 700; color: var(--primary-dark); }
         .menu-toggle {
             width: 42px; height: 42px; display: flex; align-items: center; justify-content: center;
@@ -237,19 +290,15 @@
         .order-item {
             background: var(--bg); border-radius: var(--radius-sm); padding: 14px;
             margin-bottom: 10px; border: 1px solid var(--border);
+            transition: var(--transition);
         }
+        .order-item:hover { box-shadow: var(--shadow-sm); }
         .order-header { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
         .order-id { font-weight: 800; font-size: 14px; color: var(--text); }
         .order-date { font-size: 12px; color: var(--text-light); }
-        .order-status { padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; margin-right: auto; }
-        .status-delivered { background: #D1FAE5; color: #065F46; }
-        .status-processing { background: #FEF3C7; color: #92400E; }
-        .status-cancelled { background: #FEE2E2; color: #991B1B; }
-        .status-shipped { background: #CCFBF1; color: var(--primary-darker); }
         .order-details p { font-size: 13px; color: var(--text-secondary); }
         .order-total { font-weight: 700; color: var(--primary-dark); margin-top: 4px; }
         .order-actions { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
-        @media (min-width: 480px) { .order-actions { flex-direction: row; } }
 
         .orders-table-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: var(--radius-sm); border: 1px solid var(--border); }
         .orders-table { width: 100%; border-collapse: collapse; min-width: 500px; }
@@ -282,13 +331,29 @@
         .address-actions { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
         @media (min-width: 640px) { .addresses-grid { grid-template-columns: repeat(2, 1fr); } }
 
+        /* Address Form & Map Styling */
+        .address-form-modal {
+            background: #fff; padding: 24px; border-radius: var(--radius);
+            margin-bottom: 20px; border: 1px solid var(--border); box-shadow: var(--shadow);
+        }
+        .address-form-modal h3 { margin-bottom: 16px; font-weight: 800; color: var(--primary); }
+        .map-container {
+            width: 100%; height: 350px; background: #eee; border-radius: var(--radius-sm);
+            margin-bottom: 16px; position: relative; z-index: 1; /* Ensure map is below modals if any */
+        }
+        /* Fix for Leaflet z-index issue */
+        .leaflet-pane { z-index: 400 !important; }
+        .leaflet-bottom { z-index: 500 !important; }
+
         .form-group { margin-bottom: 16px; }
         .form-group label { display: block; margin-bottom: 6px; font-weight: 700; font-size: 14px; color: var(--text); }
         .form-group input, .form-group textarea, .form-group select {
             width: 100%; padding: 11px 14px; border: 2px solid var(--border); border-radius: var(--radius-sm);
             font-size: 14px; background: var(--bg-white); color: var(--text); transition: var(--transition);
         }
-        .form-group input:focus, .form-group select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(13,148,136,0.1); }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { 
+            border-color: var(--primary); box-shadow: 0 0 0 3px rgba(13,148,136,0.1); 
+        }
         .form-group input:disabled { background: var(--bg); color: var(--text-light); cursor: not-allowed; }
         .form-text { font-size: 12px; color: var(--text-light); margin-top: 4px; display: block; }
         .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
@@ -347,7 +412,6 @@
         .toast.success { background: var(--success); }
         .toast.error { background: var(--danger); }
 
-        /* نافذة تأكيد الخروج */
         .logout-modal-overlay {
             position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(6px);
             z-index: 3000; display: none; align-items: center; justify-content: center; padding: 20px;
@@ -365,6 +429,24 @@
         .logout-modal p { color: var(--text-secondary); font-size: 14px; margin-bottom: 20px; line-height: 1.6; }
         .logout-modal .modal-actions { display: flex; gap: 10px; }
         .logout-modal .modal-actions .btn { flex: 1; padding: 12px; }
+
+        .order-detail-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);
+            z-index: 3000; display: flex; align-items: center; justify-content: center; padding: 20px;
+        }
+        .order-detail-box {
+            background: #fff; border-radius: var(--radius-lg); padding: 24px;
+            max-width: 500px; width: 100%; max-height: 85vh; overflow-y: auto;
+        }
+        .order-detail-box h3 { font-size: 18px; font-weight: 800; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+        .order-detail-box h3 i { color: var(--primary); }
+        .order-detail-row {
+            display: flex; justify-content: space-between; padding: 10px 0;
+            border-bottom: 1px solid var(--border); font-size: 14px;
+        }
+        .order-detail-row:last-child { border-bottom: none; }
+        .order-detail-row .label { color: var(--text-secondary); font-weight: 600; }
+        .order-detail-row .value { font-weight: 700; }
 
         .footer { background: var(--text); color: #CBD5E1; padding: 48px 0 0; }
         .footer-grid { display: grid; grid-template-columns: 1fr; gap: 32px; padding-bottom: 32px; }
@@ -459,25 +541,26 @@
                     <div class="dashboard-section active" id="dashboardSection">
                         <h2><i class="fas fa-chart-line" style="color:var(--primary);margin-left:8px;"></i> نظرة عامة</h2>
                         <div class="stats-grid">
-                            <div class="stat-card"><div class="stat-icon teal"><i class="fas fa-shopping-bag"></i></div><div class="stat-info"><h3>0</h3><p>الطلبات</p></div></div>
-                            <div class="stat-card"><div class="stat-icon rose"><i class="fas fa-heart"></i></div><div class="stat-info"><h3>0</h3><p>المفضلة</p></div></div>
+                            <div class="stat-card"><div class="stat-icon teal"><i class="fas fa-shopping-bag"></i></div><div class="stat-info"><h3 id="ordersCount">0</h3><p>الطلبات</p></div></div>
+                            <div class="stat-card"><div class="stat-icon rose"><i class="fas fa-heart"></i></div><div class="stat-info"><h3 id="wishlistCount">0</h3><p>المفضلة</p></div></div>
                             <div class="stat-card"><div class="stat-icon amber"><i class="fas fa-star"></i></div><div class="stat-info"><h3>—</h3><p>التقييم</p></div></div>
                             <div class="stat-card"><div class="stat-icon blue"><i class="fas fa-coins"></i></div><div class="stat-info"><h3>0</h3><p>نقاط المكافآت</p></div></div>
                         </div>
                         <div class="recent-orders">
                             <h3>آخر الطلبات</h3>
-                            <div style="text-align:center;padding:40px 0;color:var(--text-light);">
-                                <i class="fas fa-box-open" style="font-size:40px;margin-bottom:12px;display:block;"></i>
-                                <p>لا توجد طلبات بعد. <a href="products.html" style="color:var(--primary);font-weight:700;">تصفح المنتجات</a></p>
-                            </div>
+                            <div id="recentOrdersList"></div>
                         </div>
                     </div>
 
                     <div class="dashboard-section" id="ordersSection">
                         <h2><i class="fas fa-shopping-bag" style="color:var(--primary);margin-left:8px;"></i> طلباتي</h2>
-                        <div style="text-align:center;padding:40px 0;color:var(--text-light);">
-                            <i class="fas fa-shopping-bag" style="font-size:40px;margin-bottom:12px;display:block;"></i>
-                            <p>لا توجد طلبات بعد</p>
+                        <div class="orders-table-wrapper">
+                            <table class="orders-table">
+                                <thead>
+                                    <tr><th>رقم الطلب</th><th>التاريخ</th><th>الإجمالي</th><th>الحالة</th><th></th></tr>
+                                </thead>
+                                <tbody id="ordersTableBody"></tbody>
+                            </table>
                         </div>
                     </div>
 
@@ -490,21 +573,56 @@
 
                     <div class="dashboard-section" id="addressesSection">
                         <h2><i class="fas fa-map-marker-alt" style="color:var(--primary);margin-left:8px;"></i> عناويني</h2>
+                        
+                        <!-- نموذج إضافة عنوان (مخفي افتراضياً) -->
+                        <div id="addressFormContainer" style="display:none;">
+                            <div class="address-form-modal">
+                                <h3><i class="fas fa-map-pin"></i> تحديد العنوان على الخريطة</h3>
+                                <p style="margin-bottom:10px;font-size:13px;color:var(--text-secondary);">انقر على الخريطة لتحديد الموقع الدقيق.</p>
+                                
+                                <div class="map-container" id="map"></div>
+                                
+                                <form id="newAddressForm">
+                                    <input type="hidden" id="addrLat">
+                                    <input type="hidden" id="addrLng">
+                                    <div class="form-group">
+                                        <label>اسم العنوان (المنزل، العمل)</label>
+                                        <input type="text" id="addrTitle" placeholder="مثال: المنزل" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>العنوان التفصيلي</label>
+                                        <textarea id="addrDesc" rows="2" placeholder="اسم الشارع، رقم المبنى، رقم الطابق..." required></textarea>
+                                    </div>
+                                    <div class="form-group" style="display:flex;gap:10px;">
+                                        <button type="submit" class="btn btn-primary" style="flex:1;"><i class="fas fa-save"></i> حفظ العنوان</button>
+                                        <button type="button" class="btn btn-outline" id="cancelAddrBtn" style="flex:0 0 auto;"><i class="fas fa-times"></i> إلغاء</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
                         <div class="addresses-grid" id="addressesGrid">
                             <div style="text-align:center;padding:40px 0;color:var(--text-light);grid-column:1/-1;">
                                 <i class="fas fa-map-marker-alt" style="font-size:40px;margin-bottom:12px;display:block;"></i>
                                 <p>لا توجد عناوين محفوظة</p>
                             </div>
                         </div>
-                        <button class="btn btn-primary" id="addAddressBtn"><i class="fas fa-plus"></i> إضافة عنوان جديد</button>
+                        
+                        <button class="btn btn-primary" id="addAddressBtn" style="width:100%;"><i class="fas fa-plus"></i> إضافة عنوان جديد</button>
                     </div>
 
                     <div class="dashboard-section" id="profileSection">
                         <h2><i class="fas fa-user-edit" style="color:var(--primary);margin-left:8px;"></i> الملف الشخصي</h2>
                         <form id="profileForm">
                             <div class="form-row">
-                                <div class="form-group"><label>الاسم الكامل</label><input type="text" id="profileName" required></div>
-                                <div class="form-group"><label>رقم الهاتف</label><input type="tel" id="profilePhone" placeholder="7XXXXXXXX"></div>
+                                <div class="form-group">
+                                    <label>الاسم الكامل</label>
+                                    <input type="text" id="profileName" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>رقم الهاتف</label>
+                                    <input type="tel" id="profilePhone" placeholder="7XXXXXXXX" required>
+                                </div>
                             </div>
                             <div class="form-group">
                                 <label>البريد الإلكتروني</label>
@@ -547,18 +665,16 @@
         </div>
     </footer>
 
-    <!-- سلة التسوق -->
     <div class="cart-overlay" id="cartOverlay"></div>
     <div class="cart-modal" id="cartModal">
         <div class="cart-header"><h3><i class="fas fa-shopping-cart"></i> سلة التسوق</h3><button class="close-cart" id="closeCart"><i class="fas fa-times"></i></button></div>
         <div class="cart-content" id="cartItems"><p class="empty-cart-msg">سلة التسوق فارغة</p></div>
         <div class="cart-summary" id="cartSummary" style="display:none;">
             <div class="cart-total"><span>الإجمالي:</span><span id="cartTotal">0$</span></div>
-            <button class="btn btn-primary" id="checkoutBtn" style="background:#25D366;box-shadow:0 4px 14px rgba(37,211,102,0.35);"><i class="fab fa-whatsapp"></i> إتمام الشراء</button>
+            <button class="btn btn-primary" id="checkoutBtn"><i class="fas fa-shopping-cart"></i> تأكيد الطلب</button>
         </div>
     </div>
 
-    <!-- نافذة تأكيد الخروج -->
     <div class="logout-modal-overlay" id="logoutModal">
         <div class="logout-modal">
             <div class="logout-icon"><i class="fas fa-sign-out-alt"></i></div>
@@ -571,41 +687,138 @@
         </div>
     </div>
 
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <!-- Leaflet JS Script -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <script>
     (function() {
         'use strict';
 
-        /* ===== إعدادات Firebase — نفس المشروع ===== */
-        var FIREBASE_CONFIG = {
-            apiKey: "AIzaSyCYC4CIXdOwCAzFiJdVKvgHWoQbC2xbpaQ",
-            authDomain: "medical-54ab4.firebaseapp.com",
-            projectId: "medical-54ab4",
-            storageBucket: "medical-54ab4.firebasestorage.app",
-            messagingSenderId: "161709036265",
-            appId: "1:161709036265:web:e993a530316e71f9ab5678"
+        // ========== Firebase Configuration ==========
+        const FIREBASE_CONFIG = {
+            databaseURL: "https://medical-54ab4-default-rtdb.firebaseio.com/"
         };
 
+        let database = null;
+        let firebaseOrders = [];
+        let map = null;
+        let marker = null;
+
+        // ========== Initialize Firebase ==========
+        function initFirebase() {
+            try {
+                if (firebase && !firebase.apps.length) {
+                    firebase.initializeApp(FIREBASE_CONFIG);
+                    database = firebase.database();
+                    console.log('✅ Firebase initialized in dashboard');
+                    return true;
+                } else if (firebase && firebase.apps.length) {
+                    database = firebase.database();
+                    return true;
+                }
+            } catch (error) {
+                console.error('❌ Firebase initialization error:', error);
+                return false;
+            }
+            return false;
+        }
+
+        // ========== Local Storage Keys ==========
         var SESSION_KEY = 'twessy_session';
         var PROFILES_KEY = 'twessy_user_profiles';
         var CART_KEY = 'twessy_cart';
-        var auth = null;
+        var ORDERS_KEY = 'twessy_orders';
+        var WISHLIST_KEY = 'twessy_wishlist';
+        var ADDRESSES_KEY = 'twessy_addresses';
+        
         var currentSession = null;
 
-        try {
-            firebase.initializeApp(FIREBASE_CONFIG);
-            auth = firebase.auth();
-        } catch(e) { console.error('Firebase error:', e); }
+        // ========== Helper Functions ==========
+        function getSession() { 
+            try { return JSON.parse(localStorage.getItem(SESSION_KEY)); } 
+            catch(e) { return null; } 
+        }
+        
+        function saveSession(session) { 
+            localStorage.setItem(SESSION_KEY, JSON.stringify(session)); 
+        }
+        
+        function clearSession() { 
+            localStorage.removeItem(SESSION_KEY); 
+        }
+        
+        function getProfile(uid) { 
+            try { var p = JSON.parse(localStorage.getItem(PROFILES_KEY))||{}; return p[uid]||null; } 
+            catch(e) { return null; } 
+        }
+        
+        function saveProfile(uid, data) { 
+            var p = {}; 
+            try { p = JSON.parse(localStorage.getItem(PROFILES_KEY))||{}; } 
+            catch(e){} 
+            p[uid] = {...data, updatedAt: Date.now()}; 
+            localStorage.setItem(PROFILES_KEY, JSON.stringify(p)); 
+        }
 
-        /* ===== أدوات ===== */
-        function getSession() { try { return JSON.parse(localStorage.getItem(SESSION_KEY)); } catch(e) { return null; } }
-        function getProfile(uid) { try { var p = JSON.parse(localStorage.getItem(PROFILES_KEY))||{}; return p[uid]||null; } catch(e) { return null; } }
-        function saveProfile(uid, data) { var p = {}; try { p = JSON.parse(localStorage.getItem(PROFILES_KEY))||{}; } catch(e){} p[uid] = {...data, updatedAt: Date.now()}; localStorage.setItem(PROFILES_KEY, JSON.stringify(p)); }
-        function clearSession() { localStorage.removeItem(SESSION_KEY); }
-        function getInitials(name) { if(!name) return '؟'; var p = name.trim().split(/\s+/); return p.length >= 2 ? p[0][0]+p[1][0] : p[0].substring(0,2); }
+        // ===== Address Management Functions =====
+        function getUserAddresses(uid) {
+            try {
+                var all = JSON.parse(localStorage.getItem(ADDRESSES_KEY)) || {};
+                return all[uid] || [];
+            } catch(e) { return []; }
+        }
+
+        function saveUserAddresses(uid, addresses) {
+            var all = {};
+            try { all = JSON.parse(localStorage.getItem(ADDRESSES_KEY)) || {}; } catch(e) {}
+            all[uid] = addresses;
+            localStorage.setItem(ADDRESSES_KEY, JSON.stringify(all));
+        }
+
+        function addNewAddress(uid, addressObj) {
+            let list = getUserAddresses(uid);
+            let newId = Date.now().toString();
+            let newAddr = { id: newId, ...addressObj, isDefault: list.length === 0 };
+            list.push(newAddr);
+            saveUserAddresses(uid, list);
+            return list;
+        }
+
+        function deleteAddressById(uid, addrId) {
+            let list = getUserAddresses(uid).filter(a => a.id != addrId);
+            if (list.length && !list.some(a => a.isDefault)) list[0].isDefault = true;
+            saveUserAddresses(uid, list);
+            return list;
+        }
+        
+        function setDefaultAddress(uid, addrId) {
+            let list = getUserAddresses(uid).map(a => ({...a, isDefault: a.id === addrId}));
+            saveUserAddresses(uid, list);
+            return list;
+        }
+
+        function getUserPhone(uid) {
+            let profile = getProfile(uid);
+            return profile?.phone || '';
+        }
+        
+        function updateUserPhone(uid, phone) {
+            let profile = getProfile(uid) || {};
+            profile.phone = phone;
+            saveProfile(uid, profile);
+            if (currentSession) {
+                currentSession.userPhone = phone;
+                saveSession(currentSession);
+            }
+        }
+        // ============================================
+
+        function getInitials(name) {
+            if (!name) return '؟';
+            var parts = name.trim().split(/\s+/);
+            if (parts.length >= 2) return parts[0][0] + parts[1][0];
+            return parts[0].substring(0, 2);
+        }
 
         function getProviderInfo(provider) {
             if (provider === 'google.com') return { cls:'provider-google', icon:'fab fa-google', label:'جوجل' };
@@ -621,97 +834,332 @@
             setTimeout(function(){ t.classList.remove('show'); setTimeout(function(){ t.remove(); }, 350); }, 2500);
         }
 
-        /* ===== ملء بيانات المستخدم ===== */
-        function populateUI(session) {
-            currentSession = session;
-            var pi = getProviderInfo(session.provider || 'email');
-
-            // الهيدر
-            document.getElementById('headerUserName').textContent = session.userName;
-
-            // الشريط الجانبي
-            var avatarWrap = document.getElementById('sidebarAvatar');
-            if (session.photoURL) {
-                avatarWrap.innerHTML = '<img src="'+session.photoURL+'" alt="">';
-            } else {
-                avatarWrap.innerHTML = getInitials(session.userName);
+        // ========== Orders Functions ==========
+        function loadOrdersFromFirebase(userEmail, userName) {
+            if (!database) {
+                loadOrdersFromLocalStorage(userEmail, userName);
+                return;
             }
-            document.getElementById('sidebarName').textContent = session.userName;
-            document.getElementById('sidebarEmail').textContent = session.userEmail;
-            document.getElementById('sidebarProvider').innerHTML =
-                '<span class="user-provider-badge '+pi.cls+'"><i class="'+pi.icon+'"></i> '+pi.label+'</span>';
 
-            // شريط التنقل
-            var navArea = document.getElementById('navUserArea');
-            var navAvatar = session.photoURL
-                ? '<img src="'+session.photoURL+'" alt="">'
-                : getInitials(session.userName);
-            navArea.innerHTML = '<div class="nav-user-badge"><div class="user-avatar-sm">'+navAvatar+'</div><span class="user-name-sm">'+session.userName+'</span></div>';
+            const ordersRef = database.ref('orders');
+            ordersRef.once('value').then((snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    firebaseOrders = Object.keys(data).map(key => ({ firebaseKey: key, ...data[key] }));
+                } else {
+                    firebaseOrders = [];
+                }
+                mergeAndDisplayOrders(userEmail, userName);
+            }).catch(() => loadOrdersFromLocalStorage(userEmail, userName));
 
-            // الملف الشخصي
-            document.getElementById('profileName').value = session.userName;
-            document.getElementById('profileEmail').value = session.userEmail;
-            document.getElementById('profilePhone').value = session.userPhone || '';
+            ordersRef.on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    firebaseOrders = Object.keys(data).map(key => ({ firebaseKey: key, ...data[key] }));
+                } else {
+                    firebaseOrders = [];
+                }
+                mergeAndDisplayOrders(userEmail, userName);
+            });
         }
 
-        /* ===== التحقق من الجلسة عند التحميل ===== */
-        function checkAuth() {
-            if (!auth) { redirectToLogin(); return; }
+        function loadOrdersFromLocalStorage(userEmail, userName) {
+            var localOrders = JSON.parse(localStorage.getItem(ORDERS_KEY) || '[]');
+            var userOrders = localOrders.filter(function(o) { 
+                return o.customerEmail === userEmail || o.customerName === userName;
+            });
+            displayUserOrders(userOrders);
+        }
 
-            auth.onAuthStateChanged(function(user) {
-                if (user) {
-                    // مستخدم مسجل في Firebase — نبني الجلسة
-                    var profile = getProfile(user.uid);
-                    var provider = user.providerData[0] ? user.providerData[0].providerId : 'email';
-                    var session = {
-                        uid: user.uid,
-                        userName: profile ? profile.name : (user.displayName || 'مستخدم'),
-                        userEmail: user.email,
-                        userPhone: profile ? profile.phone : '',
-                        photoURL: user.photoURL || '',
-                        provider: provider,
-                        loginTime: getSession()?.loginTime || Date.now()
-                    };
-                    localStorage.setItem(SESSION_KEY, JSON.stringify(session));
-                    populateUI(session);
-                    document.body.style.display = '';
-                } else {
-                    // غير مسجل — تحقق من الجلسة المحلية فقط
-                    var localSession = getSession();
-                    if (localSession && localSession.userEmail) {
-                        populateUI(localSession);
-                        document.body.style.display = '';
-                    } else {
-                        redirectToLogin();
-                    }
+        function mergeAndDisplayOrders(userEmail, userName) {
+            var localOrders = JSON.parse(localStorage.getItem(ORDERS_KEY) || '[]');
+            var localUserOrders = localOrders.filter(o => o.customerEmail === userEmail || o.customerName === userName);
+            var firebaseUserOrders = firebaseOrders.filter(o => o.customerEmail === userEmail || o.customerName === userName);
+            
+            var allOrders = [...firebaseUserOrders];
+            localUserOrders.forEach(localOrder => {
+                var exists = allOrders.some(o => o.id === localOrder.id);
+                if (!exists) allOrders.push(localOrder);
+            });
+            allOrders.sort((a, b) => new Date(b.timestamp || b.date) - new Date(a.timestamp || a.date));
+            displayUserOrders(allOrders);
+        }
+
+        function getStatusClass(status) {
+            switch(status) {
+                case 'قيد الانتظار': return 'status-pending';
+                case 'قيد التجهيز': return 'status-processing';
+                case 'تم الشحن': return 'status-shipped';
+                case 'تم التوصيل': return 'status-delivered';
+                default: return 'status-pending';
+            }
+        }
+
+        function getStatusText(status) {
+            switch(status) {
+                case 'قيد الانتظار': return '⏳ قيد الانتظار';
+                case 'قيد التجهيز': return '🔧 قيد التجهيز';
+                case 'تم الشحن': return '🚚 تم الشحن';
+                case 'تم التوصيل': return '✅ تم التوصيل';
+                default: return status || 'قيد الانتظار';
+            }
+        }
+
+        function displayUserOrders(userOrders) {
+            var tbody = document.getElementById('ordersTableBody');
+            var recentContainer = document.getElementById('recentOrdersList');
+            document.getElementById('ordersCount').textContent = userOrders.length;
+            
+            if (userOrders.length === 0) {
+                var emptyMsg = '<tr><td colspan="5" style="text-align:center;padding:40px;"><i class="fas fa-box-open" style="font-size:40px;margin-bottom:12px;display:block;"></i>لا توجد طلبات بعد</td></tr>';
+                if (tbody) tbody.innerHTML = emptyMsg;
+                if (recentContainer) recentContainer.innerHTML = '<div style="text-align:center;padding:40px 0;color:var(--text-light);"><i class="fas fa-box-open" style="font-size:40px;margin-bottom:12px;display:block;"></i><p>لا توجد طلبات بعد. <a href="products.html" style="color:var(--primary);font-weight:700;">تصفح المنتجات</a></p></div>';
+                return;
+            }
+            
+            var recentOrders = userOrders.slice(0, 3);
+            if (recentContainer) {
+                recentContainer.innerHTML = recentOrders.map(function(order) {
+                    var statusClass = getStatusClass(order.status);
+                    var statusText = getStatusText(order.status);
+                    return '<div class="order-item">' +
+                        '<div class="order-header">' +
+                            '<span class="order-id">#' + (order.id || order.orderId || 'N/A') + '</span>' +
+                            '<span class="order-date">' + (order.date || '—') + '</span>' +
+                            '<span class="order-status ' + statusClass + '">' + statusText + '</span>' +
+                        '</div>' +
+                        '<div class="order-details"><p>' + (order.items ? order.items.length : 0) + ' منتج</p></div>' +
+                        '<div class="order-total">الإجمالي: ' + (order.total || 0) + '$</div>' +
+                        '<div class="order-actions"><button class="btn btn-outline btn-sm view-order" data-id="' + (order.id || order.orderId) + '"><i class="fas fa-eye"></i> تفاصيل</button></div>' +
+                    '</div>';
+                }).join('');
+            }
+            
+            if (tbody) {
+                tbody.innerHTML = userOrders.map(function(order) {
+                    var statusClass = getStatusClass(order.status);
+                    var statusText = getStatusText(order.status);
+                    return '<tr>' +
+                        '<td><strong>#' + (order.id || order.orderId || 'N/A') + '</strong></td>' +
+                        '<td>' + (order.date || '—') + '</td>' +
+                        '<td><strong>' + (order.total || 0) + '$</strong></td>' +
+                        '<td><span class="order-status ' + statusClass + '">' + statusText + '</span></td>' +
+                        '<td><button class="btn btn-outline btn-sm view-order" data-id="' + (order.id || order.orderId) + '"><i class="fas fa-eye"></i> تفاصيل</button></td>' +
+                    '</tr>';
+                }).join('');
+            }
+            
+            document.querySelectorAll('.view-order').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    var orderId = this.dataset.id;
+                    var order = userOrders.find(function(o) { return (o.id === orderId || o.orderId === orderId); });
+                    if (order) showOrderDetail(order);
+                });
+            });
+        }
+
+        function showOrderDetail(order) {
+            var itemsHtml = '';
+            if (order.items && order.items.length > 0) {
+                order.items.forEach(function(item) {
+                    itemsHtml += '<div class="order-detail-row" style="padding-right:20px;"><span class="label">' + (item.name || '—') + '</span><span class="value">' + (item.quantity || 1) + ' × ' + (item.price || 0) + '$</span></div>';
+                });
+            }
+            
+            var statuses = ['قيد الانتظار', 'قيد التجهيز', 'تم الشحن', 'تم التوصيل'];
+            var currentStatus = order.status || 'قيد الانتظار';
+            var currentIndex = statuses.indexOf(currentStatus);
+            
+            var trackingHtml = '<div class="order-tracking"><div class="tracking-steps">';
+            statuses.forEach(function(status, index) {
+                var isCompleted = index <= currentIndex;
+                var isActive = index === currentIndex;
+                var iconHtml = '';
+                if (status === 'قيد الانتظار') iconHtml = '<i class="fas fa-clock"></i>';
+                else if (status === 'قيد التجهيز') iconHtml = '<i class="fas fa-cogs"></i>';
+                else if (status === 'تم الشحن') iconHtml = '<i class="fas fa-truck"></i>';
+                else if (status === 'تم التوصيل') iconHtml = '<i class="fas fa-check-circle"></i>';
+                
+                var stepClass = '';
+                if (isCompleted) stepClass = 'completed';
+                if (isActive) stepClass = 'active';
+                
+                trackingHtml += '<div class="tracking-step ' + stepClass + '">' +
+                    '<div class="step-icon">' + iconHtml + '</div>' +
+                    '<div class="step-label">' + status + '</div>' +
+                '</div>';
+            });
+            trackingHtml += '<div class="tracking-line"></div></div></div>';
+            
+            var modalHtml = '<div class="order-detail-overlay" id="tempOrderDetail">' +
+                '<div class="order-detail-box">' +
+                    '<h3><i class="fas fa-receipt"></i> تفاصيل الطلب #' + (order.id || order.orderId) + '</h3>' +
+                    trackingHtml +
+                    '<div class="order-detail-row"><span class="label">تاريخ الطلب</span><span class="value">' + (order.date || '—') + '</span></div>' +
+                    '<div class="order-detail-row"><span class="label">اسم العميل</span><span class="value">' + (order.customerName || '—') + '</span></div>' +
+                    '<div class="order-detail-row"><span class="label">رقم الهاتف</span><span class="value" style="direction:ltr;text-align:left;">' + (order.phone || '—') + '</span></div>' +
+                    (order.address ? '<div class="order-detail-row"><span class="label">العنوان</span><span class="value">' + order.address + '</span></div>' : '') +
+                    itemsHtml +
+                    (order.notes ? '<div class="order-detail-row"><span class="label">ملاحظات</span><span class="value">' + order.notes + '</span></div>' : '') +
+                    '<div class="order-detail-row"><span class="label">الإجمالي</span><span class="value" style="color:var(--primary-dark);font-size:16px;">' + (order.total || 0) + '$</span></div>' +
+                    '<div class="order-detail-row"><span class="label">الحالة</span><span class="value"><span class="order-status ' + getStatusClass(order.status) + '">' + getStatusText(order.status) + '</span></span></div>' +
+                    '<button class="btn btn-primary" style="margin-top:20px;width:100%;" onclick="this.closest(\'.order-detail-overlay\').remove(); document.body.classList.remove(\'modal-open\');">إغلاق</button>' +
+                '</div></div>';
+            
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+            document.body.classList.add('modal-open');
+            
+            var overlay = document.getElementById('tempOrderDetail');
+            overlay.addEventListener('click', function(e) {
+                if (e.target === overlay) {
+                    overlay.remove();
+                    document.body.classList.remove('modal-open');
                 }
             });
         }
 
-        function redirectToLogin() {
-            window.location.replace('login.html');
+        // ========== Wishlist Functions ==========
+        function loadWishlist() {
+            var wishlist = JSON.parse(localStorage.getItem(WISHLIST_KEY) || '[]');
+            var grid = document.getElementById('wishlistGrid');
+            var wishlistCount = document.getElementById('wishlistCount');
+            
+            if (wishlist.length === 0) {
+                grid.innerHTML = '<div class="wishlist-empty"><i class="far fa-heart"></i><p>لا توجد منتجات في المفضلة حالياً</p></div>';
+                if (wishlistCount) wishlistCount.textContent = '0';
+                return;
+            }
+            
+            if (wishlistCount) wishlistCount.textContent = wishlist.length;
+            
+            grid.innerHTML = wishlist.map(function(item) {
+                return '<div class="wishlist-item" data-id="'+item.id+'">' +
+                    '<div class="wishlist-item-img"><img src="'+item.image+'" alt="'+item.name+'"></div>' +
+                    '<div class="wishlist-item-info">' +
+                        '<h4>'+item.name+'</h4>' +
+                        '<div class="price">'+item.price+'$</div>' +
+                        '<button class="remove-wish" data-id="'+item.id+'"><i class="fas fa-trash-alt"></i> إزالة</button>' +
+                    '</div>' +
+                '</div>';
+            }).join('');
+            
+            grid.querySelectorAll('.remove-wish').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    var wishlist = JSON.parse(localStorage.getItem(WISHLIST_KEY) || '[]');
+                    wishlist = wishlist.filter(function(i) { return i.id != this.dataset.id; }.bind(this));
+                    localStorage.setItem(WISHLIST_KEY, JSON.stringify(wishlist));
+                    loadWishlist();
+                    showToast('تم إزالة المنتج من المفضلة', 'success');
+                });
+            });
         }
 
-        /* ===== تسجيل الخروج ===== */
-        async function performLogout() {
-            document.getElementById('logoutModal').classList.remove('active');
-            try { if (auth) await auth.signOut(); } catch(e) {}
-            clearSession();
-            showToast('تم تسجيل الخروج بنجاح', 'success');
-            setTimeout(function(){ window.location.replace('login.html'); }, 800);
+        // ========== Addresses UI Rendering ==========
+        function renderAddressesUI(uid) {
+            let addresses = getUserAddresses(uid);
+            let container = document.getElementById('addressesGrid');
+            if (!container) return;
+            
+            if (addresses.length === 0) {
+                container.innerHTML = '<div style="text-align:center;padding:40px 0;color:var(--text-light);grid-column:1/-1;"><i class="fas fa-map-marker-alt" style="font-size:40px;margin-bottom:12px;display:block;"></i><p>لا توجد عناوين محفوظة</p></div>';
+                return;
+            }
+            
+            container.innerHTML = addresses.map(addr => `
+                <div class="address-card" data-id="${addr.id}">
+                    <div class="address-header">
+                        <h3>${addr.title || 'عنوان'}</h3>
+                        ${addr.isDefault ? '<span class="default-badge">افتراضي</span>' : ''}
+                    </div>
+                    <div class="address-details">
+                        <p><strong>📍 العنوان:</strong> ${addr.fullAddress}</p>
+                        ${addr.notes ? `<p><strong>📝 ملاحظات:</strong> ${addr.notes}</p>` : ''}
+                        ${addr.lat ? `<p style="font-size:11px;"><a href="https://www.openstreetmap.org/?mlat=${addr.lat}&mlon=${addr.lng}#map=15/${addr.lat}/${addr.lng}" target="_blank" style="color:var(--primary);">🗺️ عرض في الخريطة</a></p>` : ''}
+                    </div>
+                    <div class="address-actions">
+                        ${!addr.isDefault ? `<button class="btn btn-outline btn-sm set-default-addr" data-id="${addr.id}"><i class="fas fa-check-circle"></i> تعيين كافتراضي</button>` : ''}
+                        <button class="btn btn-danger btn-sm delete-addr" data-id="${addr.id}"><i class="fas fa-trash"></i> حذف</button>
+                    </div>
+                </div>
+            `).join('');
+            
+            document.querySelectorAll('.set-default-addr').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    let id = btn.dataset.id;
+                    setDefaultAddress(uid, id);
+                    renderAddressesUI(uid);
+                    showToast('تم تعيين العنوان الافتراضي', 'success');
+                });
+            });
+            
+            document.querySelectorAll('.delete-addr').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    let id = btn.dataset.id;
+                    deleteAddressById(uid, id);
+                    renderAddressesUI(uid);
+                    showToast('تم حذف العنوان', 'error');
+                });
+            });
         }
 
-        /* ===== السلة ===== */
+        // ========== Leaflet Map Logic ==========
+        function initMap() {
+            // Default to Aden, Yemen
+            if (!document.getElementById('map')) return;
+            
+            // Check if map already initialized
+            if (map !== null) {
+                map.invalidateSize();
+                return;
+            }
+
+            map = L.map('map').setView([12.8000, 45.0333], 13);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+
+            marker = L.marker([12.8000, 45.0333], {draggable: true}).addTo(map);
+
+            // Map Click Event
+            map.on('click', function(e) {
+                var latlng = e.latlng;
+                marker.setLatLng(latlng);
+                updateAddressFields(latlng.lat, latlng.lng);
+            });
+
+            // Marker Drag Event
+            marker.on('dragend', function(e) {
+                var latlng = marker.getLatLng();
+                updateAddressFields(latlng.lat, latlng.lng);
+            });
+        }
+
+        function updateAddressFields(lat, lng) {
+            document.getElementById('addrLat').value = lat;
+            document.getElementById('addrLng').value = lng;
+            // Since we don't have a free reverse geocoding API without a key,
+            // we just show the coordinates in the textarea or leave it for user input.
+            var currentText = document.getElementById('addrDesc').value;
+            if (!currentText || currentText.includes('الإحداثيات:')) {
+                 document.getElementById('addrDesc').value = 'الإحداثيات المحددة: ' + lat.toFixed(5) + ', ' + lng.toFixed(5);
+            }
+            showToast('تم تحديد الموقع بنجاح', 'success');
+        }
+
+        // ========== Cart and Checkout (with mandatory validation & No WhatsApp) ==========
         var cart = JSON.parse(localStorage.getItem(CART_KEY) || '[]');
-        function saveCart() { localStorage.setItem(CART_KEY, JSON.stringify(cart)); updateCartCount(); }
-        function updateCartCount() { document.getElementById('cartCount').textContent = cart.reduce(function(s,i){return s+(i.quantity||i.qty||1);},0); }
-
+        function updateCartCount() { 
+            var count = cart.reduce(function(s,i){return s+(i.quantity||1);},0);
+            document.getElementById('cartCount').textContent = count; 
+        }
+        
         function renderCart() {
             var c = document.getElementById('cartItems'), s = document.getElementById('cartSummary'), t = document.getElementById('cartTotal');
             if (cart.length === 0) { c.innerHTML = '<p class="empty-cart-msg">سلة التسوق فارغة</p>'; s.style.display = 'none'; return; }
             var total = 0;
             c.innerHTML = cart.map(function(item) {
-                var qty = item.quantity || item.qty || 1;
+                var qty = item.quantity || 1;
                 var sub = item.price * qty; total += sub;
                 return '<div class="cart-item"><div class="cart-item-img"><img src="'+item.image+'" alt="'+item.name+'"></div><div class="cart-item-info"><div class="cart-item-name">'+item.name+'</div><div class="cart-item-price">'+item.price+'$ × '+qty+'</div></div><button class="cart-item-del" data-id="'+item.id+'"><i class="fas fa-trash-alt"></i></button></div>';
             }).join('');
@@ -719,15 +1167,134 @@
             c.querySelectorAll('.cart-item-del').forEach(function(b) {
                 b.addEventListener('click', function() {
                     cart = cart.filter(function(i){ return i.id !== this.dataset.id; }.bind(this));
-                    saveCart(); renderCart(); showToast('تم إزالة المنتج', 'error');
+                    localStorage.setItem(CART_KEY, JSON.stringify(cart));
+                    updateCartCount();
+                    renderCart();
+                    showToast('تم إزالة المنتج', 'error');
                 });
             });
         }
-
+        
         function openCartModal() { renderCart(); document.getElementById('cartModal').classList.add('active'); document.getElementById('cartOverlay').classList.add('active'); document.body.classList.add('modal-open'); }
         function closeCartModal() { document.getElementById('cartModal').classList.remove('active'); document.getElementById('cartOverlay').classList.remove('active'); document.body.classList.remove('modal-open'); }
+        
+        function processCheckout() {
+            if (!currentSession) {
+                showToast('الرجاء تسجيل الدخول أولاً', 'error');
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            let userPhone = currentSession.userPhone || getUserPhone(currentSession.uid);
+            if (!userPhone || userPhone.trim() === '') {
+                showToast('⚠️ رقم الهاتف مطلوب لإتمام الطلب', 'error');
+                document.querySelectorAll('#dashboardMenu a').forEach(a => a.classList.remove('active'));
+                document.querySelector('#dashboardMenu a[data-section="profile"]').classList.add('active');
+                document.querySelectorAll('.dashboard-section').forEach(s => s.classList.remove('active'));
+                document.getElementById('profileSection').classList.add('active');
+                return;
+            }
+            
+            let addresses = getUserAddresses(currentSession.uid);
+            let defaultAddress = addresses.find(a => a.isDefault) || addresses[0];
+            if (!defaultAddress) {
+                showToast('⚠️ عنوان التوصيل مطلوب لإتمام الطلب', 'error');
+                document.querySelectorAll('#dashboardMenu a').forEach(a => a.classList.remove('active'));
+                document.querySelector('#dashboardMenu a[data-section="addresses"]').classList.add('active');
+                document.querySelectorAll('.dashboard-section').forEach(s => s.classList.remove('active'));
+                document.getElementById('addressesSection').classList.add('active');
+                return;
+            }
+            
+            if (cart.length === 0) {
+                showToast('السلة فارغة', 'error');
+                return;
+            }
+            
+            let orderId = 'ORD-' + Date.now();
+            let totalAmount = cart.reduce((sum, item) => sum + (item.price * (item.quantity || 1)), 0);
+            
+            let newOrder = {
+                id: orderId,
+                orderId: orderId,
+                customerName: currentSession.userName,
+                customerEmail: currentSession.userEmail,
+                phone: userPhone,
+                address: defaultAddress.fullAddress,
+                items: cart.map(item => ({ id: item.id, name: item.name, price: item.price, quantity: item.quantity || 1 })),
+                total: totalAmount,
+                date: new Date().toLocaleDateString('ar-EG'),
+                timestamp: Date.now(),
+                status: 'قيد الانتظار'
+            };
+            
+            let existingOrders = JSON.parse(localStorage.getItem(ORDERS_KEY) || '[]');
+            existingOrders.push(newOrder);
+            localStorage.setItem(ORDERS_KEY, JSON.stringify(existingOrders));
+            
+            if (database) {
+                database.ref('orders/' + orderId).set(newOrder).catch(e => console.warn);
+            }
+            
+            // Clear cart
+            cart = [];
+            localStorage.setItem(CART_KEY, JSON.stringify(cart));
+            updateCartCount();
+            closeCartModal();
+            
+            // WhatsApp redirection removed as requested.
+            showToast('✅ تم إنشاء طلبك بنجاح! سيتم التواصل معك عبر رقم الهاتف: ' + userPhone, 'success');
+            
+            // Refresh orders list
+            setTimeout(() => {
+                loadOrdersFromFirebase(currentSession.userEmail, currentSession.userName);
+            }, 1000);
+        }
 
-        /* ===== أقسام لوحة التحكم ===== */
+        // ========== Check Auth and Populate UI ==========
+        function checkAuthAndRedirect() {
+            var session = getSession();
+            if (!session || !session.userEmail) {
+                window.location.replace('login.html');
+                return null;
+            }
+            return session;
+        }
+        
+        function populateUI(session) {
+            currentSession = session;
+            var pi = getProviderInfo(session.provider || 'email');
+            var initials = getInitials(session.userName);
+            
+            document.getElementById('headerUserName').textContent = session.userName;
+            
+            var avatarWrap = document.getElementById('sidebarAvatar');
+            if (session.photoURL) {
+                avatarWrap.innerHTML = '<img src="'+session.photoURL+'" alt="">';
+            } else {
+                avatarWrap.innerHTML = initials;
+            }
+            
+            document.getElementById('sidebarName').textContent = session.userName;
+            document.getElementById('sidebarEmail').textContent = session.userEmail;
+            document.getElementById('sidebarProvider').innerHTML = 
+                '<span class="user-provider-badge '+pi.cls+'"><i class="'+pi.icon+'"></i> '+pi.label+'</span>';
+            
+            var navArea = document.getElementById('navUserArea');
+            navArea.innerHTML = '<div class="nav-user-badge"><div class="user-avatar-sm">'+initials+'</div><span class="user-name-sm">'+session.userName+'</span></div>';
+            
+            document.getElementById('profileName').value = session.userName;
+            document.getElementById('profileEmail').value = session.userEmail;
+            let savedPhone = getUserPhone(session.uid);
+            document.getElementById('profilePhone').value = savedPhone || session.userPhone || '';
+            
+            renderAddressesUI(session.uid);
+            
+            loadOrdersFromFirebase(session.userEmail, session.userName);
+            loadWishlist();
+        }
+
+        // ========== Switch Section ==========
         function switchSection(name) {
             document.querySelectorAll('#dashboardMenu a').forEach(function(a){ a.classList.remove('active'); });
             var link = document.querySelector('#dashboardMenu a[data-section="'+name+'"]');
@@ -735,20 +1302,19 @@
             document.querySelectorAll('.dashboard-section').forEach(function(s){ s.classList.remove('active'); });
             var section = document.getElementById(name + 'Section');
             if (section) section.classList.add('active');
-            if (window.innerWidth < 768) {
-                document.querySelector('.dashboard-content').scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
+            if (name === 'addresses' && currentSession) renderAddressesUI(currentSession.uid);
         }
-
-        /* ===== تهيئة ===== */
+        
+        // ========== Initialize ==========
         document.addEventListener('DOMContentLoaded', function() {
-            // إخفاء الصفحة حتى التحقق من الجلسة
-            document.body.style.display = 'none';
-
+            var session = checkAuthAndRedirect();
+            if (!session) return;
+            
+            initFirebase();
+            populateUI(session);
             updateCartCount();
-            checkAuth();
-
-            // قائمة الجوال
+            
+            // Mobile menu
             var menuOpen = false;
             document.getElementById('menuToggle').addEventListener('click', function() {
                 menuOpen = !menuOpen;
@@ -762,100 +1328,104 @@
                     document.getElementById('menuIcon').className = 'fas fa-bars'; document.body.classList.remove('modal-open');
                 });
             });
-
-            // أقسام لوحة التحكم
+            
+            // Dashboard sections
             document.querySelectorAll('#dashboardMenu a').forEach(function(link) {
                 link.addEventListener('click', function(e) { e.preventDefault(); switchSection(this.dataset.section); });
             });
-
-            // سلة
+            
+            // Cart
             document.getElementById('cartIcon').addEventListener('click', function(e){ e.preventDefault(); openCartModal(); });
             document.getElementById('closeCart').addEventListener('click', closeCartModal);
             document.getElementById('cartOverlay').addEventListener('click', closeCartModal);
-            document.getElementById('checkoutBtn').addEventListener('click', function() {
-                if (cart.length === 0) { showToast('السلة فارغة','error'); return; }
-                closeCartModal();
-                var msg = '*طلب جديد من Twessy*\n\n'; var total = 0;
-                var uname = currentSession ? currentSession.userName : 'عميل';
-                var uphone = currentSession ? (currentSession.userPhone || '') : '';
-                if (uphone) msg += '*الاسم:* ' + uname + '\n*الهاتف:* ' + uphone + '\n\n';
-                cart.forEach(function(item,i){ var qty=item.quantity||item.qty||1; var sub=item.price*qty; total+=sub; msg+=(i+1)+'. '+item.name+' ×'+qty+' = '+sub+'$\n'; });
-                msg += '\n*الإجمالي:* '+total+'$';
-                window.open('https://wa.me/967779217474?text='+encodeURIComponent(msg),'_blank');
-            });
-
-            // تسجيل الخروج
+            document.getElementById('checkoutBtn').addEventListener('click', processCheckout);
+            
+            // Logout
             document.getElementById('logoutBtn').addEventListener('click', function() {
                 document.getElementById('logoutModal').classList.add('active');
             });
             document.getElementById('cancelLogout').addEventListener('click', function() {
                 document.getElementById('logoutModal').classList.remove('active');
             });
-            document.getElementById('confirmLogout').addEventListener('click', performLogout);
+            document.getElementById('confirmLogout').addEventListener('click', function() {
+                clearSession();
+                showToast('تم تسجيل الخروج', 'success');
+                setTimeout(function(){ window.location.replace('login.html'); }, 800);
+            });
             document.getElementById('logoutModal').addEventListener('click', function(e) {
                 if (e.target === this) this.classList.remove('active');
             });
-
-            // حفظ الملف الشخصي
+            
+            // Profile form
             document.getElementById('profileForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 if (!currentSession) return;
                 var newName = document.getElementById('profileName').value.trim();
                 var newPhone = document.getElementById('profilePhone').value.trim();
                 if (newName.length < 3) { showToast('الاسم يجب أن يكون 3 أحرف على الأقل', 'error'); return; }
-                // حفظ في localStorage
+                
                 saveProfile(currentSession.uid, { name: newName, phone: newPhone });
-                // تحديث الاسم في Firebase إذا ممكن
-                if (auth.currentUser) {
-                    auth.currentUser.updateProfile({ displayName: newName }).then(function() {
-                        currentSession.userName = newName;
-                        currentSession.userPhone = newPhone;
-                        localStorage.setItem(SESSION_KEY, JSON.stringify(currentSession));
-                        populateUI(currentSession);
-                        showToast('تم حفظ التغييرات بنجاح', 'success');
-                    }).catch(function() {
-                        currentSession.userName = newName;
-                        currentSession.userPhone = newPhone;
-                        localStorage.setItem(SESSION_KEY, JSON.stringify(currentSession));
-                        populateUI(currentSession);
-                        showToast('تم حفظ التغييرات محلياً', 'success');
-                    });
-                } else {
-                    currentSession.userName = newName;
-                    currentSession.userPhone = newPhone;
-                    localStorage.setItem(SESSION_KEY, JSON.stringify(currentSession));
-                    populateUI(currentSession);
-                    showToast('تم حفظ التغييرات', 'success');
+                currentSession.userName = newName;
+                currentSession.userPhone = newPhone;
+                saveSession(currentSession);
+                populateUI(currentSession);
+                showToast('تم حفظ التغييرات بنجاح', 'success');
+            });
+            
+            // Address Form Toggle & Map Init
+            document.getElementById('addAddressBtn').addEventListener('click', function() {
+                var form = document.getElementById('addressFormContainer');
+                form.style.display = form.style.display === 'none' ? 'block' : 'none';
+                // Scroll to form
+                if (form.style.display === 'block') {
+                    form.scrollIntoView({ behavior: 'smooth' });
+                    // Initialize Map only when container is visible
+                    setTimeout(() => {
+                        initMap();
+                    }, 200);
                 }
             });
+            document.getElementById('cancelAddrBtn').addEventListener('click', function() {
+                document.getElementById('addressFormContainer').style.display = 'none';
+            });
+            
+            // Submit Address
+            document.getElementById('newAddressForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                if (!currentSession) return;
+                let title = document.getElementById('addrTitle').value;
+                let desc = document.getElementById('addrDesc').value;
+                let lat = document.getElementById('addrLat').value;
+                let lng = document.getElementById('addrLng').value;
 
-            // الإعدادات
+                if (!lat || !lng) {
+                    showToast('يرجى تحديد الموقع على الخريطة بالنقر عليها', 'error');
+                    return;
+                }
+
+                addNewAddress(currentSession.uid, {
+                    title: title,
+                    fullAddress: desc,
+                    lat: lat,
+                    lng: lng
+                });
+
+                renderAddressesUI(currentSession.uid);
+                document.getElementById('newAddressForm').reset();
+                document.getElementById('addressFormContainer').style.display = 'none';
+                showToast('تم إضافة العنوان بنجاح', 'success');
+            });
+            
+            // Settings
             document.getElementById('saveSettingsBtn').addEventListener('click', function() { showToast('تم حفظ الإعدادات','success'); });
-            document.getElementById('changePasswordBtn').addEventListener('click', function() {
-                // إعادة توجيه لصفحة إعادة التعيين في login.html
-                window.location.href = 'login.html?action=reset';
-            });
+            document.getElementById('changePasswordBtn').addEventListener('click', function() { window.location.href = 'login.html?action=reset'; });
             document.getElementById('deleteAccountBtn').addEventListener('click', function() { showToast('لحذف الحساب تواصل مع الدعم الفني','error'); });
-            document.getElementById('addAddressBtn').addEventListener('click', function() { showToast('نموذج إضافة عنوان قيد التطوير','info'); });
-
-            // أزرار ديناميكية
-            document.addEventListener('click', function(e) {
-                var btn = e.target.closest('.order-actions .btn, .address-actions .btn');
-                if (!btn) return;
-                var text = btn.textContent.trim();
-                if (text.indexOf('تفاصيل') !== -1) showToast('صفحة تفاصيل الطلب قيد التطوير','info');
-                else if (text.indexOf('إعادة') !== -1) showToast('تم إضافة المنتجات للسلة','success');
-                else if (text.indexOf('تتبع') !== -1) showToast('تتبع الطلب قيد التطوير','info');
-                else if (text.indexOf('تعديل') !== -1) showToast('نموذج التعديل قيد التطوير','info');
-                else if (text.indexOf('حذف') !== -1) { btn.closest('.address-card').style.display='none'; showToast('تم حذف العنوان','error'); }
-                else if (text.indexOf('افتراضي') !== -1) showToast('تم تعيين العنوان كافتراضي','success');
-            });
-
-            // Escape
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') {
-                    closeCartModal();
-                    document.getElementById('logoutModal').classList.remove('active');
+            
+            window.addEventListener('storage', function(e) {
+                if (e.key === SESSION_KEY) {
+                    var newSession = getSession();
+                    if (!newSession) window.location.replace('login.html');
+                    else populateUI(newSession);
                 }
             });
         });

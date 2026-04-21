@@ -9,6 +9,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
     <style>
         :root {
             --primary: #0D9488;
@@ -474,10 +478,10 @@
     <div class="top-bar">
         <div class="container">
             <div class="contact-info">
-                <span><i class="fas fa-phone"></i> +967 779 217 474</span>
+                <span><i class="fas fa-phone"></i> +967775082146</span>
                 <span><i class="fas fa-envelope"></i> Hadirynasser@gmail.com</span>
             </div>
-            <div class="shipping-info">شحن مجاني داخل عدن</div>
+            <div class="shipping-info">الشحن داخل عدن فقط</div>
         </div>
     </div>
 
@@ -494,7 +498,6 @@
                 <li><a href="about.html">من نحن</a></li>
                 <li><a href="services.html">الخدمات</a></li>
                 <li><a href="contact.html">اتصل بنا</a></li>
-                <li><a href="login.html"> تسجيل الدخول</a></li>
                 <li><a href="dashboard.html"> لوحة التحكم </a></li>
             </ul>
             <div class="nav-icons">
@@ -535,7 +538,7 @@
 
             <div class="content-section reveal">
                 <h2>كيف تختار المنتج المناسب؟</h2>
-                <p>لضمان صحة أسنانك ولثتك، ننصح باختيار المنتجات المناسبة لنوع أسنانك واحتياجاتك الخاصة:</p>
+                <p>لضمان صحتك، ننصح باختيار المنتجات المناسبة لنوع أسنانك واحتياجاتك الخاصة:</p>
                 <ul class="tips-list">
                     <li><strong>فرش الأسنان:</strong> اختر فرشاة ناعمة للأسنان الحساسة، وكهربائية للتنظيف العميق</li>
                     <li><strong>معاجين الأسنان:</strong> استخدم معجون بالفلورايد للحماية من التسوس، ومعجون مبيض للتبييض</li>
@@ -554,9 +557,9 @@
             <div class="footer-grid">
                 <div class="footer-column">
                     <h3>Twessy</h3>
-                    <p>متجر متخصص في توفير منتجات طب الأسنان بجودة عالية وأسعار مناسبة. نسعى لتحسين صحة الفم والأسنان للمجتمع.</p>
+                    <p>متجر متخصص في توفير منتجات الطبية بجودة عالية وأسعار مناسبة. نسعى لتحسين صحة المجتمع.</p>
                     <div class="social-icons">
-                        <a href="https://wa.me/967779217474" target="_blank" aria-label="واتساب"><i class="fab fa-whatsapp"></i></a>
+                        <a href="https://wa.me/967775082146" target="_blank" aria-label="واتساب"><i class="fab fa-whatsapp"></i></a>
                         <a href="https://www.instagram.com/x5tai?igsh=cDV5Ym5vaTVleXJt" target="_blank" aria-label="انستقرام"><i class="fab fa-instagram"></i></a>
                         <a href="mailto:Hadirynasser@gmail.com" aria-label="بريد إلكتروني"><i class="fas fa-envelope"></i></a>
                     </div>
@@ -613,20 +616,50 @@
         'use strict';
 
         // ============================================
-        //  بيانات الفئات - ألوان منسقة مع المتجر
+        //  Firebase Configuration
         // ============================================
-        var categoriesData = [
-            { name: 'فرش الأسنان', icon: 'fas fa-toothbrush', description: 'فرش أسنان يدوية وكهربائية لتنظيف مثالي', color: '#0D9488' },
-            { name: 'معاجين الأسنان', icon: 'fas fa-paste', description: 'معاجين متخصصة للحماية والتبييض', color: '#059669' },
-            { name: 'خيط الأسنان', icon: 'fas fa-thread', description: 'خيط طبي للتنظيف بين الأسنان', color: '#0284C7' },
-            { name: 'مبيضات الأسنان', icon: 'fas fa-star', description: 'منتجات تبييض احترافية وآمنة', color: '#D97706' },
-            { name: 'أجهزة العناية', icon: 'fas fa-microchip', description: 'أجهزة متطورة للعناية بالفم', color: '#7C3AED' },
-            { name: 'غسول الفم', icon: 'fas fa-tint', description: 'غسول منعش للفم يقضي على البكتيريا', color: '#0891B2' },
-            { name: 'فرش لسان', icon: 'fas fa-tongue', description: 'أدوات تنظيف اللسان للتخلص من الرائحة', color: '#DC2626' },
-            { name: 'منتجات تقويم', icon: 'fas fa-teeth', description: 'منتجات خاصة لمرتدي التقويم', color: '#0F766E' }
-        ];
+        const FIREBASE_CONFIG = {
+            databaseURL: "https://medical-54ab4-default-rtdb.firebaseio.com/"
+        };
 
-        var allProducts = [];
+        let database = null;
+        let allProducts = [];
+        let categoriesData = [];
+
+        // ألوان الفئات الافتراضية
+        const CATEGORY_COLORS = {
+            'فرش الأسنان': '#0D9488',
+            'معاجين الأسنان': '#059669',
+            'خيط الأسنان': '#0284C7',
+            'مبيضات الأسنان': '#D97706',
+            'أجهزة العناية': '#7C3AED',
+            'غسول الفم': '#0891B2',
+            'فرش لسان': '#DC2626',
+            'منتجات تقويم': '#0F766E'
+        };
+
+        const CATEGORY_ICONS = {
+            'فرش الأسنان': 'fas fa-toothbrush',
+            'معاجين الأسنان': 'fas fa-paste',
+            'خيط الأسنان': 'fas fa-thread',
+            'مبيضات الأسنان': 'fas fa-star',
+            'أجهزة العناية': 'fas fa-microchip',
+            'غسول الفم': 'fas fa-tint',
+            'فرش لسان': 'fas fa-tongue',
+            'منتجات تقويم': 'fas fa-teeth'
+        };
+
+        const CATEGORY_DESCRIPTIONS = {
+            'فرش الأسنان': 'فرش أسنان يدوية وكهربائية لتنظيف مثالي',
+            'معاجين الأسنان': 'معاجين متخصصة للحماية والتبييض',
+            'خيط الأسنان': 'خيط طبي للتنظيف بين الأسنان',
+            'مبيضات الأسنان': 'منتجات تبييض احترافية وآمنة',
+            'أجهزة العناية': 'أجهزة متطورة للعناية بالفم',
+            'غسول الفم': 'غسول منعش للفم يقضي على البكتيريا',
+            'فرش لسان': 'أدوات تنظيف اللسان للتخلص من الرائحة',
+            'منتجات تقويم': 'منتجات خاصة لمرتدي التقويم'
+        };
+
         var currentCurrency = 'USD';
         var exchangeRates = { SAR: 3.75, YER: 1250 };
 
@@ -638,13 +671,122 @@
         }
 
         // ============================================
-        //  تحميل البيانات
+        //  Initialize Firebase
         // ============================================
-        function loadProducts() {
+        function initFirebase() {
             try {
-                var saved = localStorage.getItem('twessy_store_products') || localStorage.getItem('twessy_products');
-                allProducts = saved ? JSON.parse(saved) : [];
-            } catch(e) { allProducts = []; }
+                if (firebase && !firebase.apps.length) {
+                    firebase.initializeApp(FIREBASE_CONFIG);
+                    database = firebase.database();
+                    console.log('✅ Firebase initialized successfully');
+                    return true;
+                } else if (firebase && firebase.apps.length) {
+                    database = firebase.database();
+                    return true;
+                }
+            } catch (error) {
+                console.error('❌ Firebase initialization error:', error);
+                return false;
+            }
+            return false;
+        }
+
+        // ============================================
+        //  Load Products from Firebase
+        // ============================================
+        function loadProductsFromFirebase() {
+            return new Promise((resolve) => {
+                if (!database) {
+                    console.warn('Firebase not initialized');
+                    allProducts = [];
+                    extractCategoriesFromProducts();
+                    resolve([]);
+                    return;
+                }
+
+                const productsRef = database.ref('products');
+                
+                productsRef.once('value').then((snapshot) => {
+                    const data = snapshot.val();
+                    
+                    if (data) {
+                        allProducts = Object.keys(data).map(key => ({
+                            id: key,
+                            ...data[key]
+                        }));
+                        console.log(`✅ Loaded ${allProducts.length} products from Firebase`);
+                    } else {
+                        console.log('No products found in Firebase');
+                        allProducts = [];
+                    }
+                    
+                    extractCategoriesFromProducts();
+                    displayCategories();
+                    displayFooterCategories();
+                    resolve(allProducts);
+                }).catch((error) => {
+                    console.error('Error loading from Firebase:', error);
+                    allProducts = [];
+                    extractCategoriesFromProducts();
+                    displayCategories();
+                    displayFooterCategories();
+                    resolve([]);
+                });
+            });
+        }
+
+        // ============================================
+        //  استخراج الفئات من المنتجات
+        // ============================================
+        function extractCategoriesFromProducts() {
+            // استخراج الفئات الفريدة من المنتجات
+            const uniqueCategories = [...new Set(allProducts.map(p => p.category).filter(c => c))];
+            
+            if (uniqueCategories.length === 0) {
+                // استخدام الفئات الافتراضية إذا لم توجد منتجات
+                categoriesData = [
+                    { name: 'فرش الأسنان', icon: 'fas fa-toothbrush', description: 'فرش أسنان يدوية وكهربائية لتنظيف مثالي', color: '#0D9488' },
+                    { name: 'معاجين الأسنان', icon: 'fas fa-paste', description: 'معاجين متخصصة للحماية والتبييض', color: '#059669' },
+                    { name: 'خيط الأسنان', icon: 'fas fa-thread', description: 'خيط طبي للتنظيف بين الأسنان', color: '#0284C7' },
+                    { name: 'مبيضات الأسنان', icon: 'fas fa-star', description: 'منتجات تبييض احترافية وآمنة', color: '#D97706' },
+                    { name: 'أجهزة العناية', icon: 'fas fa-microchip', description: 'أجهزة متطورة للعناية بالفم', color: '#7C3AED' },
+                    { name: 'غسول الفم', icon: 'fas fa-tint', description: 'غسول منعش للفم يقضي على البكتيريا', color: '#0891B2' },
+                    { name: 'فرش لسان', icon: 'fas fa-tongue', description: 'أدوات تنظيف اللسان للتخلص من الرائحة', color: '#DC2626' },
+                    { name: 'منتجات تقويم', icon: 'fas fa-teeth', description: 'منتجات خاصة لمرتدي التقويم', color: '#0F766E' }
+                ];
+            } else {
+                // بناء كائنات الفئات من الفئات الموجودة
+                categoriesData = uniqueCategories.map(catName => ({
+                    name: catName,
+                    icon: CATEGORY_ICONS[catName] || 'fas fa-box',
+                    description: CATEGORY_DESCRIPTIONS[catName] || 'منتجات عالية الجودة للعناية بالأسنان',
+                    color: CATEGORY_COLORS[catName] || '#0D9488'
+                }));
+            }
+        }
+
+        // ============================================
+        //  Listen for Real-time Updates
+        // ============================================
+        function listenForRealTimeUpdates() {
+            if (!database) return;
+            
+            database.ref('products').on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    allProducts = Object.keys(data).map(key => ({
+                        id: key,
+                        ...data[key]
+                    }));
+                } else {
+                    allProducts = [];
+                }
+                
+                extractCategoriesFromProducts();
+                displayCategories();
+                displayFooterCategories();
+                console.log('✅ Categories updated in real-time');
+            });
         }
 
         function loadCurrencySettings() {
@@ -668,6 +810,11 @@
         function displayCategories() {
             var container = document.getElementById('categoriesGrid');
             if (!container) return;
+
+            if (categoriesData.length === 0) {
+                container.innerHTML = '<div class="loading-state"><p>لا توجد فئات حالياً</p></div>';
+                return;
+            }
 
             container.innerHTML = categoriesData.map(function(cat) {
                 var count = getProductCount(cat.name);
@@ -693,9 +840,16 @@
         function displayFooterCategories() {
             var list = document.getElementById('footerCategoriesList');
             if (!list) return;
+            
+            if (categoriesData.length === 0) {
+                list.innerHTML = '<li><a href="#">لا توجد فئات</a></li>';
+                return;
+            }
+            
             list.innerHTML = categoriesData.map(function(cat) {
                 return '<li><a href="#" data-cat="' + cat.name + '">' + cat.name + '</a></li>';
             }).join('');
+            
             list.querySelectorAll('a').forEach(function(a) {
                 a.addEventListener('click', function(e) {
                     e.preventDefault();
@@ -858,18 +1012,23 @@
         // ============================================
         window.addEventListener('storage', function(e) {
             if (e.key === 'twessy_store_products' || e.key === 'twessy_products') {
-                loadProducts();
+                // المنتجات تتغير عبر localStorage
+                var saved = localStorage.getItem('twessy_store_products') || localStorage.getItem('twessy_products');
+                allProducts = saved ? JSON.parse(saved) : [];
+                extractCategoriesFromProducts();
                 displayCategories();
+                displayFooterCategories();
             }
         });
 
         // ============================================
         //  تهيئة
         // ============================================
+        initFirebase();
         loadCurrencySettings();
-        loadProducts();
-        displayCategories();
-        displayFooterCategories();
+        loadProductsFromFirebase().then(() => {
+            listenForRealTimeUpdates();
+        });
         updateCartCount();
 
     })();
