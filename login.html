@@ -243,11 +243,6 @@
             color: #065F46;
         }
 
-        .message.info {
-            background: #DBEAFE;
-            color: #1E40AF;
-        }
-
         .loading-spinner {
             display: none;
             text-align: center;
@@ -279,6 +274,14 @@
         @keyframes spin {
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
+        }
+
+        /* Phone hint */
+        .phone-hint {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 5px;
+            display: block;
         }
 
         @media (max-width: 480px) {
@@ -370,7 +373,7 @@
                     <div class="form-group">
                         <label><i class="fas fa-phone"></i> رقم الجوال</label>
                         <input type="tel" id="regPhone" placeholder="77xxxxxxx أو 78xxxxxxx" required>
-                        <small style="color: var(--text-secondary);">يجب أن يبدأ بـ 77 أو 78 (مثال: 771234567)</small>
+                        <small class="phone-hint">📱 يجب أن يبدأ بـ 77 أو 78 ويتكون من 9 أرقام (مثال: 771234567)</small>
                     </div>
                     
                     <div class="form-row">
@@ -450,14 +453,17 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 
     <script>
-        // Firebase Configuration
+        // ========================================
+        // 🔴 هام: استبدل هذه القيم بقيم مشروعك من Firebase Console
+        // اذهب إلى: https://console.firebase.google.com/project/medical-54ab4/settings/general
+        // ========================================
         const firebaseConfig = {
-            apiKey: "YOUR_API_KEY", // يجب إضافة API Key من Firebase Console
+            apiKey: "AIzaSyBxxxxxxxxxxxxxxxxxxxxx",  // 🔴 ضع API Key الخاص بك هنا
             authDomain: "medical-54ab4.firebaseapp.com",
             projectId: "medical-54ab4",
             storageBucket: "medical-54ab4.appspot.com",
-            messagingSenderId: "YOUR_SENDER_ID",
-            appId: "YOUR_APP_ID",
+            messagingSenderId: "1234567890",         // 🔴 ضع Sender ID الخاص بك
+            appId: "1:1234567890:web:abcdef123456",  // 🔴 ضع App ID الخاص بك
             databaseURL: "https://medical-54ab4-default-rtdb.firebaseio.com/"
         };
         
@@ -466,14 +472,20 @@
         const auth = firebase.auth();
         const database = firebase.database();
 
-        // Google Provider
+        // إعداد مزود Google
         const googleProvider = new firebase.auth.GoogleAuthProvider();
+        googleProvider.setCustomParameters({
+            prompt: 'select_account'
+        });
         
-        // Facebook Provider
+        // إعداد مزود Facebook
         const facebookProvider = new firebase.auth.FacebookAuthProvider();
         facebookProvider.addScope('email');
         facebookProvider.addScope('public_profile');
 
+        // ========================================
+        // دوال مساعدة
+        // ========================================
         function switchTab(tab) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('.form-panel').forEach(panel => panel.classList.remove('active'));
@@ -505,32 +517,10 @@
             }
         }
 
-        function showToast(message, isError = false) {
-            const toast = document.createElement('div');
-            toast.style.cssText = `
-                position: fixed;
-                bottom: 20px;
-                right: 20px;
-                left: 20px;
-                background: ${isError ? '#EF4444' : '#27ae60'};
-                color: white;
-                padding: 12px 20px;
-                border-radius: 50px;
-                text-align: center;
-                z-index: 9999;
-                animation: slideUp 0.3s ease;
-                font-size: 14px;
-            `;
-            toast.innerHTML = isError ? '❌ ' + message : '✅ ' + message;
-            document.body.appendChild(toast);
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                setTimeout(() => toast.remove(), 300);
-            }, 3000);
-        }
-
-        // تسجيل الدخول العادي
-        function handleLogin() {
+        // ========================================
+        // تسجيل الدخول العادي (Email/Password)
+        // ========================================
+        async function handleLogin() {
             const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
             
@@ -543,151 +533,178 @@
 
             document.getElementById('loginLoading').classList.add('show');
 
-            auth.signInWithEmailAndPassword(email, password)
-                .then((userCredential) => {
-                    const user = userCredential.user;
-                    
-                    // جلب بيانات المستخدم من قاعدة البيانات
-                    return database.ref(`users/${user.uid}`).once('value').then((snapshot) => {
-                        const userData = snapshot.val() || {};
-                        
-                        const userInfo = {
-                            id: user.uid,
-                            email: user.email,
-                            firstName: userData.firstName || '',
-                            lastName: userData.lastName || '',
-                            fullName: userData.firstName ? `${userData.firstName} ${userData.lastName}` : user.displayName || user.email,
-                            role: userData.role || 'customer',
-                            phone: userData.phone || '',
-                            provider: 'email'
-                        };
-                        
-                        localStorage.setItem('user', JSON.stringify(userInfo));
-                        showMessage('loginSuccess', '✅ تم تسجيل الدخول بنجاح!');
-                        
-                        setTimeout(() => {
-                            if (userInfo.role === 'admin') {
-                                window.location.href = 'admin.html';
-                            } else {
-                                window.location.href = 'index.html';
-                            }
-                        }, 800);
-                    });
-                })
-                .catch((error) => {
-                    document.getElementById('loginLoading').classList.remove('show');
-                    let errorMessage = 'خطأ في تسجيل الدخول';
-                    if (error.code === 'auth/user-not-found') errorMessage = 'البريد الإلكتروني غير مسجل';
-                    else if (error.code === 'auth/wrong-password') errorMessage = 'كلمة المرور غير صحيحة';
-                    else if (error.code === 'auth/invalid-email') errorMessage = 'البريد الإلكتروني غير صحيح';
-                    showMessage('loginError', `❌ ${errorMessage}`);
-                });
+            try {
+                const userCredential = await auth.signInWithEmailAndPassword(email, password);
+                const user = userCredential.user;
+                
+                const snapshot = await database.ref(`users/${user.uid}`).once('value');
+                const userData = snapshot.val() || {};
+                
+                const userInfo = {
+                    id: user.uid,
+                    email: user.email,
+                    firstName: userData.firstName || '',
+                    lastName: userData.lastName || '',
+                    fullName: userData.firstName ? `${userData.firstName} ${userData.lastName}` : user.email,
+                    role: userData.role || 'customer',
+                    phone: userData.phone || '',
+                    provider: 'email'
+                };
+                
+                localStorage.setItem('user', JSON.stringify(userInfo));
+                showMessage('loginSuccess', '✅ تم تسجيل الدخول بنجاح!');
+                
+                setTimeout(() => {
+                    if (userInfo.role === 'admin') {
+                        window.location.href = 'admin.html';
+                    } else {
+                        window.location.href = 'index.html';
+                    }
+                }, 800);
+                
+            } catch (error) {
+                document.getElementById('loginLoading').classList.remove('show');
+                let errorMessage = 'خطأ في تسجيل الدخول';
+                if (error.code === 'auth/user-not-found') errorMessage = 'البريد الإلكتروني غير مسجل';
+                else if (error.code === 'auth/wrong-password') errorMessage = 'كلمة المرور غير صحيحة';
+                else if (error.code === 'auth/invalid-email') errorMessage = 'البريد الإلكتروني غير صحيح';
+                else if (error.code === 'auth/too-many-requests') errorMessage = 'تم تعطيل الحساب مؤقتاً، حاول لاحقاً';
+                showMessage('loginError', `❌ ${errorMessage}`);
+            }
         }
 
+        // ========================================
         // تسجيل الدخول بـ Google
-        function handleGoogleLogin() {
+        // ========================================
+        async function handleGoogleLogin() {
             hideAllMessages();
             document.getElementById('loginLoading').classList.add('show');
             
-            auth.signInWithPopup(googleProvider)
-                .then((result) => {
-                    const user = result.user;
-                    
-                    // التحقق من وجود المستخدم في قاعدة البيانات
-                    return database.ref(`users/${user.uid}`).once('value').then((snapshot) => {
-                        if (!snapshot.exists()) {
-                            // إنشاء حساب جديد للمستخدم
-                            const newUser = {
-                                firstName: user.displayName?.split(' ')[0] || '',
-                                lastName: user.displayName?.split(' ')[1] || '',
-                                email: user.email,
-                                phone: user.phoneNumber || '',
-                                role: 'customer',
-                                provider: 'google',
-                                createdAt: Date.now(),
-                                lastLogin: Date.now()
-                            };
-                            return database.ref(`users/${user.uid}`).set(newUser).then(() => newUser);
-                        }
-                        return snapshot.val();
-                    }).then((userData) => {
-                        const userInfo = {
-                            id: user.uid,
-                            email: user.email,
-                            firstName: userData.firstName || '',
-                            lastName: userData.lastName || '',
-                            fullName: user.displayName || user.email,
-                            role: userData.role || 'customer',
-                            phone: userData.phone || '',
-                            provider: 'google'
-                        };
-                        
-                        localStorage.setItem('user', JSON.stringify(userInfo));
-                        showMessage('loginSuccess', '✅ تم تسجيل الدخول بنجاح!');
-                        
-                        setTimeout(() => {
-                            window.location.href = 'index.html';
-                        }, 800);
-                    });
-                })
-                .catch((error) => {
-                    document.getElementById('loginLoading').classList.remove('show');
-                    showMessage('loginError', '❌ فشل تسجيل الدخول بـ Google: ' + error.message);
-                });
+            try {
+                const result = await auth.signInWithPopup(googleProvider);
+                const user = result.user;
+                
+                const snapshot = await database.ref(`users/${user.uid}`).once('value');
+                let userData = snapshot.val();
+                
+                if (!userData) {
+                    userData = {
+                        firstName: user.displayName?.split(' ')[0] || '',
+                        lastName: user.displayName?.split(' ')[1] || '',
+                        email: user.email,
+                        phone: user.phoneNumber || '',
+                        role: 'customer',
+                        provider: 'google',
+                        createdAt: Date.now(),
+                        lastLogin: Date.now()
+                    };
+                    await database.ref(`users/${user.uid}`).set(userData);
+                } else {
+                    await database.ref(`users/${user.uid}`).update({ lastLogin: Date.now() });
+                }
+                
+                const userInfo = {
+                    id: user.uid,
+                    email: user.email,
+                    firstName: userData.firstName || '',
+                    lastName: userData.lastName || '',
+                    fullName: user.displayName || user.email,
+                    role: userData.role || 'customer',
+                    phone: userData.phone || '',
+                    provider: 'google'
+                };
+                
+                localStorage.setItem('user', JSON.stringify(userInfo));
+                showMessage('loginSuccess', '✅ تم تسجيل الدخول بنجاح!');
+                
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 800);
+                
+            } catch (error) {
+                console.error('Google Login Error:', error);
+                document.getElementById('loginLoading').classList.remove('show');
+                
+                let errorMessage = 'فشل تسجيل الدخول بـ Google';
+                if (error.code === 'auth/popup-closed-by-user') {
+                    errorMessage = 'تم إغلاق نافذة التسجيل';
+                } else if (error.code === 'auth/unauthorized-domain') {
+                    errorMessage = 'الرجاء إضافة هذا المجال في Firebase Console (Authentication → Settings → Authorized domains)';
+                } else if (error.code === 'auth/operation-not-allowed') {
+                    errorMessage = 'تسجيل الدخول بـ Google غير مفعل في Firebase Console';
+                } else if (error.code === 'auth/network-request-failed') {
+                    errorMessage = 'خطأ في الاتصال بالإنترنت';
+                }
+                showMessage('loginError', `❌ ${errorMessage}`);
+            }
         }
 
+        // ========================================
         // تسجيل الدخول بـ Facebook
-        function handleFacebookLogin() {
+        // ========================================
+        async function handleFacebookLogin() {
             hideAllMessages();
             document.getElementById('loginLoading').classList.add('show');
             
-            auth.signInWithPopup(facebookProvider)
-                .then((result) => {
-                    const user = result.user;
-                    
-                    return database.ref(`users/${user.uid}`).once('value').then((snapshot) => {
-                        if (!snapshot.exists()) {
-                            const newUser = {
-                                firstName: user.displayName?.split(' ')[0] || '',
-                                lastName: user.displayName?.split(' ')[1] || '',
-                                email: user.email,
-                                phone: '',
-                                role: 'customer',
-                                provider: 'facebook',
-                                createdAt: Date.now(),
-                                lastLogin: Date.now()
-                            };
-                            return database.ref(`users/${user.uid}`).set(newUser).then(() => newUser);
-                        }
-                        return snapshot.val();
-                    }).then((userData) => {
-                        const userInfo = {
-                            id: user.uid,
-                            email: user.email,
-                            firstName: userData.firstName || '',
-                            lastName: userData.lastName || '',
-                            fullName: user.displayName || user.email,
-                            role: userData.role || 'customer',
-                            phone: userData.phone || '',
-                            provider: 'facebook'
-                        };
-                        
-                        localStorage.setItem('user', JSON.stringify(userInfo));
-                        showMessage('loginSuccess', '✅ تم تسجيل الدخول بنجاح!');
-                        
-                        setTimeout(() => {
-                            window.location.href = 'index.html';
-                        }, 800);
-                    });
-                })
-                .catch((error) => {
-                    document.getElementById('loginLoading').classList.remove('show');
-                    showMessage('loginError', '❌ فشل تسجيل الدخول بـ Facebook: ' + error.message);
-                });
+            try {
+                const result = await auth.signInWithPopup(facebookProvider);
+                const user = result.user;
+                
+                const snapshot = await database.ref(`users/${user.uid}`).once('value');
+                let userData = snapshot.val();
+                
+                if (!userData) {
+                    userData = {
+                        firstName: user.displayName?.split(' ')[0] || '',
+                        lastName: user.displayName?.split(' ')[1] || '',
+                        email: user.email,
+                        phone: '',
+                        role: 'customer',
+                        provider: 'facebook',
+                        createdAt: Date.now(),
+                        lastLogin: Date.now()
+                    };
+                    await database.ref(`users/${user.uid}`).set(userData);
+                } else {
+                    await database.ref(`users/${user.uid}`).update({ lastLogin: Date.now() });
+                }
+                
+                const userInfo = {
+                    id: user.uid,
+                    email: user.email,
+                    firstName: userData.firstName || '',
+                    lastName: userData.lastName || '',
+                    fullName: user.displayName || user.email,
+                    role: userData.role || 'customer',
+                    phone: userData.phone || '',
+                    provider: 'facebook'
+                };
+                
+                localStorage.setItem('user', JSON.stringify(userInfo));
+                showMessage('loginSuccess', '✅ تم تسجيل الدخول بنجاح!');
+                
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 800);
+                
+            } catch (error) {
+                console.error('Facebook Login Error:', error);
+                document.getElementById('loginLoading').classList.remove('show');
+                
+                let errorMessage = 'فشل تسجيل الدخول بـ Facebook';
+                if (error.code === 'auth/account-exists-with-different-credential') {
+                    errorMessage = 'يوجد حساب بنفس البريد الإلكتروني مسجل بطريقة أخرى';
+                } else if (error.code === 'auth/operation-not-allowed') {
+                    errorMessage = 'تسجيل الدخول بـ Facebook غير مفعل في Firebase Console';
+                }
+                showMessage('loginError', `❌ ${errorMessage}`);
+            }
         }
 
-        // إنشاء حساب جديد
-        function handleRegister() {
+        // ========================================
+        // إنشاء حساب جديد (Email/Password)
+        // ========================================
+        async function handleRegister() {
             const firstName = document.getElementById('regFirstName').value.trim();
             const lastName = document.getElementById('regLastName').value.trim();
             const email = document.getElementById('regEmail').value.trim();
@@ -725,78 +742,94 @@
 
             document.getElementById('registerLoading').classList.add('show');
 
-            auth.createUserWithEmailAndPassword(email, password)
-                .then((userCredential) => {
-                    const user = userCredential.user;
-                    
-                    const newUser = {
-                        firstName: firstName,
-                        lastName: lastName,
-                        email: email,
-                        phone: phone,
-                        city: city,
-                        district: district,
-                        address: address,
-                        birthdate: birthdate,
-                        gender: gender,
-                        role: 'customer',
-                        provider: 'email',
-                        createdAt: Date.now(),
-                        lastLogin: Date.now()
-                    };
-                    
-                    return database.ref(`users/${user.uid}`).set(newUser).then(() => newUser);
-                })
-                .then((userData) => {
-                    document.getElementById('registerLoading').classList.remove('show');
-                    
-                    const userInfo = {
-                        id: userData.uid,
-                        email: email,
-                        firstName: firstName,
-                        lastName: lastName,
-                        fullName: `${firstName} ${lastName}`,
-                        role: 'customer',
-                        phone: phone,
-                        city: city,
-                        district: district,
-                        address: address
-                    };
-                    
-                    localStorage.setItem('user', JSON.stringify(userInfo));
-                    showMessage('registerSuccess', '✅ تم إنشاء الحساب بنجاح!');
-                    
-                    setTimeout(() => {
-                        window.location.href = 'index.html';
-                    }, 1000);
-                })
-                .catch((error) => {
-                    document.getElementById('registerLoading').classList.remove('show');
-                    let errorMessage = 'حدث خطأ';
-                    if (error.code === 'auth/email-already-in-use') errorMessage = 'البريد الإلكتروني مسجل بالفعل';
-                    else if (error.code === 'auth/invalid-email') errorMessage = 'البريد الإلكتروني غير صحيح';
-                    else if (error.code === 'auth/weak-password') errorMessage = 'كلمة المرور ضعيفة';
-                    showMessage('registerError', `❌ ${errorMessage}`);
-                });
+            try {
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                const user = userCredential.user;
+                
+                const newUser = {
+                    firstName: firstName,
+                    lastName: lastName,
+                    email: email,
+                    phone: phone,
+                    city: city,
+                    district: district,
+                    address: address,
+                    birthdate: birthdate,
+                    gender: gender,
+                    role: 'customer',
+                    provider: 'email',
+                    createdAt: Date.now(),
+                    lastLogin: Date.now()
+                };
+                
+                await database.ref(`users/${user.uid}`).set(newUser);
+                
+                document.getElementById('registerLoading').classList.remove('show');
+                
+                // تحديث الصورة الشخصية (اختياري)
+                await user.updateProfile({
+                    displayName: `${firstName} ${lastName}`
+                }).catch(() => {});
+                
+                const userInfo = {
+                    id: user.uid,
+                    email: email,
+                    firstName: firstName,
+                    lastName: lastName,
+                    fullName: `${firstName} ${lastName}`,
+                    role: 'customer',
+                    phone: phone,
+                    city: city,
+                    district: district,
+                    address: address
+                };
+                
+                localStorage.setItem('user', JSON.stringify(userInfo));
+                showMessage('registerSuccess', '✅ تم إنشاء الحساب بنجاح!');
+                
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1000);
+                
+            } catch (error) {
+                document.getElementById('registerLoading').classList.remove('show');
+                let errorMessage = 'حدث خطأ';
+                if (error.code === 'auth/email-already-in-use') {
+                    errorMessage = 'البريد الإلكتروني مسجل بالفعل';
+                } else if (error.code === 'auth/invalid-email') {
+                    errorMessage = 'البريد الإلكتروني غير صحيح';
+                } else if (error.code === 'auth/weak-password') {
+                    errorMessage = 'كلمة المرور ضعيفة';
+                }
+                showMessage('registerError', `❌ ${errorMessage}`);
+            }
         }
 
-        // إنشاء حساب بـ Google
+        // ========================================
+        // إنشاء حساب بـ Google و Facebook
+        // ========================================
         function handleGoogleRegister() {
             handleGoogleLogin();
         }
 
-        // إنشاء حساب بـ Facebook
         function handleFacebookRegister() {
             handleFacebookLogin();
         }
 
-        // التحقق من وجود جلسة سابقة
+        // ========================================
+        // التحقق من الجلسة الحالية
+        // ========================================
         document.addEventListener('DOMContentLoaded', () => {
+            // التحقق من وجود مستخدم مسجل دخوله
             const user = JSON.parse(localStorage.getItem('user'));
             if (user && user.role === 'admin') {
                 window.location.href = 'admin.html';
+            } else if (user) {
+                // إذا كان هناك مستخدم مسجل، اذهب للصفحة الرئيسية
+                // window.location.href = 'index.html';
             }
             
+            // تعبئة تاريخ الميلاد كحد أقصى (عمر 10 سنوات كحد أدنى)
             const birthdateInput = document.getElementById('regBirthdate');
             if (birthdateInput) {
                 const today = new Date();
