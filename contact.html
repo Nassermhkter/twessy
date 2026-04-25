@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>اتصل بنا - Healtha</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -53,7 +53,7 @@
             padding: 0 20px;
         }
 
-        /* Header */
+        /* Header Styles - متوافق مع باقي الصفحات */
         .header {
             background: var(--bg-white);
             box-shadow: var(--shadow);
@@ -62,35 +62,16 @@
             z-index: 1000;
         }
 
-        .header-top {
-            background: var(--primary);
-            color: white;
-            padding: 8px 0;
-            font-size: 14px;
-        }
-
-        .header-top .container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .contact-info span {
-            margin-left: 20px;
-        }
-
-        .contact-info i {
-            margin-left: 5px;
-        }
-
         .header-main {
-            padding: 15px 0;
+            padding: 12px 0;
         }
 
         .header-main .container {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
         }
 
         .logo {
@@ -102,46 +83,96 @@
 
         .logo img {
             height: 40px;
-            margin-left: 10px;
+            width: auto;
+            margin-left: 8px;
+            border-radius: 10px;
         }
 
         .logo h1 {
-            font-size: 28px;
+            font-size: 22px;
             font-weight: 900;
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
+        .search-bar {
+            flex: 1;
+            max-width: 450px;
+            min-width: 180px;
+            position: relative;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 11px 45px 11px 20px;
+            border: 2px solid var(--border);
+            border-radius: 50px;
+            font-family: var(--font);
+            font-size: 14px;
+            transition: var(--transition);
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-glow);
+        }
+
+        .search-bar button {
+            position: absolute;
+            left: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--primary);
+            color: white;
+            border: none;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .search-bar button:active {
+            transform: translateY(-50%) scale(0.95);
+        }
+
         .header-actions {
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 12px;
         }
 
         .header-action-btn {
             background: none;
             border: none;
-            font-size: 24px;
+            font-size: 22px;
             color: var(--text);
             cursor: pointer;
             position: relative;
             transition: var(--transition);
+            padding: 8px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .header-action-btn:hover {
-            color: var(--primary);
+        .header-action-btn:active {
+            background: var(--bg);
+            transform: scale(0.95);
         }
 
         .cart-count {
             position: absolute;
-            top: -8px;
-            left: -8px;
+            top: -5px;
+            left: -5px;
             background: var(--danger);
             color: white;
-            font-size: 12px;
-            width: 20px;
-            height: 20px;
+            font-size: 10px;
+            width: 18px;
+            height: 18px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -149,52 +180,51 @@
             font-weight: bold;
         }
 
+        /* Navigation */
         .nav {
             background: var(--bg-white);
             border-top: 1px solid var(--border);
             border-bottom: 1px solid var(--border);
         }
 
-        .nav .container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
         .nav-list {
             display: flex;
             list-style: none;
-            gap: 30px;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            padding: 0;
         }
 
         .nav-list a {
             text-decoration: none;
             color: var(--text);
-            padding: 15px 0;
+            padding: 12px 0;
             display: block;
             font-weight: 500;
             transition: var(--transition);
             border-bottom: 2px solid transparent;
+            font-size: 15px;
         }
 
-        .nav-list a:hover,
+        .nav-list a:active,
         .nav-list a.active {
             color: var(--primary);
             border-bottom-color: var(--primary);
         }
 
-        /* Contact Page Styles */
+        /* Contact Hero */
         .contact-hero {
             background: linear-gradient(135deg, var(--primary-light), #E0F2FE);
-            padding: 60px 0;
+            padding: 40px 0;
             text-align: center;
         }
 
         .contact-hero h2 {
-            font-size: 42px;
+            font-size: 32px;
             font-weight: 900;
             color: var(--text);
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
 
         .contact-hero h2 span {
@@ -202,164 +232,149 @@
         }
 
         .contact-hero p {
-            font-size: 18px;
+            font-size: 15px;
             color: var(--text-secondary);
         }
 
+        /* Contact Content */
         .contact-content {
-            padding: 60px 0;
+            padding: 50px 0;
         }
 
         .contact-grid {
             display: grid;
             grid-template-columns: 1fr 1.5fr;
-            gap: 40px;
+            gap: 30px;
         }
 
-        /* Contact Info */
+        /* Contact Info Cards */
         .contact-info-cards {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 15px;
         }
 
         .info-card {
             background: var(--bg-white);
-            padding: 30px;
+            padding: 20px;
             border-radius: var(--radius);
             box-shadow: var(--shadow);
             transition: var(--transition);
-            border-right: 4px solid var(--primary);
+            border-right: 3px solid var(--primary);
         }
 
-        .info-card:hover {
-            transform: translateX(-5px);
-            box-shadow: var(--shadow-lg);
+        .info-card:active {
+            transform: scale(0.98);
         }
 
         .info-card .info-icon {
-            font-size: 32px;
+            font-size: 28px;
             color: var(--primary);
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
 
         .info-card h4 {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 700;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         .info-card p {
             color: var(--text-secondary);
-            line-height: 1.8;
+            line-height: 1.6;
+            font-size: 13px;
         }
 
         .info-card .info-link {
             color: var(--primary);
             text-decoration: none;
             font-weight: 500;
-            transition: var(--transition);
-        }
-
-        .info-card .info-link:hover {
-            text-decoration: underline;
+            font-size: 14px;
         }
 
         /* Social Media */
         .social-media {
             background: var(--bg-white);
-            padding: 30px;
+            padding: 20px;
             border-radius: var(--radius);
             box-shadow: var(--shadow);
         }
 
         .social-media h4 {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 700;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             text-align: center;
         }
 
         .social-links {
             display: flex;
             justify-content: center;
-            gap: 15px;
+            gap: 12px;
+            flex-wrap: wrap;
         }
 
         .social-link {
-            width: 50px;
-            height: 50px;
+            width: 45px;
+            height: 45px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
+            font-size: 20px;
             color: white;
             text-decoration: none;
             transition: var(--transition);
         }
 
-        .social-link:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-md);
+        .social-link:active {
+            transform: scale(0.95);
         }
 
-        .social-link.whatsapp {
-            background: #25D366;
-        }
-
-        .social-link.twitter {
-            background: #1DA1F2;
-        }
-
-        .social-link.instagram {
-            background: #E4405F;
-        }
-
-        .social-link.facebook {
-            background: #1877F2;
-        }
-
-        .social-link.linkedin {
-            background: #0A66C2;
-        }
+        .social-link.whatsapp { background: #25D366; }
+        .social-link.twitter { background: #1DA1F2; }
+        .social-link.instagram { background: #E4405F; }
+        .social-link.facebook { background: #1877F2; }
+        .social-link.linkedin { background: #0A66C2; }
 
         /* Contact Form */
         .contact-form-container {
             background: var(--bg-white);
-            padding: 40px;
+            padding: 25px;
             border-radius: var(--radius-lg);
             box-shadow: var(--shadow-lg);
         }
 
         .contact-form-container h3 {
-            font-size: 28px;
+            font-size: 24px;
             font-weight: 900;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             color: var(--text);
         }
 
         .contact-form-container p {
             color: var(--text-secondary);
-            margin-bottom: 30px;
+            margin-bottom: 20px;
+            font-size: 13px;
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             font-weight: 700;
             color: var(--text);
+            font-size: 13px;
         }
 
         .form-group input,
         .form-group textarea,
         .form-group select {
             width: 100%;
-            padding: 12px 15px;
+            padding: 11px 15px;
             border: 2px solid var(--border);
             border-radius: var(--radius-sm);
             font-family: var(--font);
@@ -376,49 +391,52 @@
         }
 
         .form-group textarea {
-            height: 150px;
+            height: 120px;
             resize: vertical;
         }
 
         .btn {
-            display: inline-block;
-            padding: 14px 40px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 30px;
             border: none;
             border-radius: 50px;
             font-family: var(--font);
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 700;
             cursor: pointer;
             transition: var(--transition);
             text-decoration: none;
+            width: 100%;
         }
 
         .btn-primary {
             background: var(--primary);
             color: white;
-            width: 100%;
         }
 
-        .btn-primary:hover {
+        .btn-primary:active {
             background: var(--primary-dark);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
+            transform: scale(0.97);
         }
 
         .success-message {
             display: none;
             background: #D1FAE5;
             color: #065F46;
-            padding: 15px;
+            padding: 12px;
             border-radius: var(--radius-sm);
-            margin-top: 20px;
+            margin-top: 15px;
             text-align: center;
             font-weight: 500;
+            font-size: 13px;
         }
 
-        /* Map */
+        /* Map Section */
         .map-section {
-            padding: 60px 0;
+            padding: 40px 0;
             background: var(--bg-white);
         }
 
@@ -430,26 +448,31 @@
 
         .map-container iframe {
             width: 100%;
-            height: 400px;
+            height: 300px;
             border: none;
         }
 
-        /* FAQ */
+        /* FAQ Section */
         .faq-section {
-            padding: 80px 0;
+            padding: 50px 0;
             background: var(--primary-light);
         }
 
         .section-title {
             text-align: center;
-            margin-bottom: 50px;
+            margin-bottom: 35px;
         }
 
         .section-title h3 {
-            font-size: 32px;
+            font-size: 26px;
             font-weight: 900;
             color: var(--text);
-            margin-bottom: 10px;
+            margin-bottom: 8px;
+        }
+
+        .section-title p {
+            font-size: 14px;
+            color: var(--text-secondary);
         }
 
         .faq-list {
@@ -457,7 +480,7 @@
             margin: 0 auto;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 12px;
         }
 
         .faq-item {
@@ -468,17 +491,17 @@
         }
 
         .faq-question {
-            padding: 20px 30px;
+            padding: 16px 20px;
             cursor: pointer;
             display: flex;
             justify-content: space-between;
             align-items: center;
             font-weight: 700;
-            font-size: 18px;
+            font-size: 16px;
             transition: var(--transition);
         }
 
-        .faq-question:hover {
+        .faq-question:active {
             background: var(--primary-light);
         }
 
@@ -487,17 +510,18 @@
         }
 
         .faq-answer {
-            padding: 0 30px;
+            padding: 0 20px;
             max-height: 0;
             overflow: hidden;
             transition: max-height 0.3s ease, padding 0.3s ease;
             color: var(--text-secondary);
-            line-height: 1.8;
+            line-height: 1.7;
+            font-size: 13px;
         }
 
         .faq-item.active .faq-answer {
-            max-height: 500px;
-            padding: 20px 30px;
+            max-height: 300px;
+            padding: 0 20px 16px 20px;
         }
 
         .faq-item.active .faq-question i {
@@ -508,29 +532,30 @@
         .footer {
             background: var(--text);
             color: white;
-            padding: 60px 0 20px;
+            padding: 40px 0 20px;
         }
 
         .footer-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 40px;
-            margin-bottom: 40px;
+            gap: 30px;
+            margin-bottom: 30px;
         }
 
         .footer-about h4 {
-            font-size: 24px;
-            margin-bottom: 15px;
+            font-size: 20px;
+            margin-bottom: 12px;
         }
 
         .footer-about p {
             color: var(--text-light);
-            line-height: 1.8;
+            line-height: 1.7;
+            font-size: 13px;
         }
 
         .footer-links h4 {
-            margin-bottom: 20px;
-            font-size: 18px;
+            margin-bottom: 15px;
+            font-size: 16px;
         }
 
         .footer-links ul {
@@ -538,47 +563,210 @@
         }
 
         .footer-links ul li {
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         .footer-links ul li a {
             color: var(--text-light);
             text-decoration: none;
             transition: var(--transition);
+            font-size: 13px;
         }
 
-        .footer-links ul li a:hover {
+        .footer-links ul li a:active {
             color: var(--primary);
             padding-right: 5px;
         }
 
         .footer-bottom {
             text-align: center;
-            padding-top: 20px;
+            padding-top: 15px;
             border-top: 1px solid rgba(255,255,255,0.1);
             color: var(--text-light);
+            font-size: 12px;
+        }
+
+        /* Toast Notification */
+        .toast-notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            left: 20px;
+            background: var(--success);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 50px;
+            text-align: center;
+            font-weight: 500;
+            z-index: 9999;
+            animation: slideUp 0.3s ease;
+            box-shadow: var(--shadow-lg);
+            font-size: 14px;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Loading Spinner */
+        .loading-spinner {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .loading-spinner i {
+            font-size: 36px;
+            color: var(--primary);
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* ========== RESPONSIVE DESIGN ========== */
+        @media (max-width: 992px) {
+            .contact-grid {
+                grid-template-columns: 1fr;
+                gap: 25px;
+            }
+            
+            .search-bar {
+                order: 3;
+                max-width: 100%;
+                width: 100%;
+            }
+            
+            .header-main .container {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+            
+            .logo { order: 1; }
+            .header-actions { order: 2; margin-top: 0; }
+            
+            .nav-list {
+                gap: 12px;
+            }
+            
+            .nav-list a {
+                font-size: 13px;
+                padding: 10px 0;
+            }
         }
 
         @media (max-width: 768px) {
-            .contact-grid {
-                grid-template-columns: 1fr;
+            .contact-hero {
+                padding: 30px 0;
             }
-
+            
             .contact-hero h2 {
-                font-size: 32px;
+                font-size: 26px;
             }
-
-            .nav-list {
-                gap: 15px;
+            
+            .contact-hero p {
+                font-size: 13px;
+            }
+            
+            .contact-content {
+                padding: 35px 0;
+            }
+            
+            .contact-info-cards {
+                gap: 12px;
+            }
+            
+            .info-card {
+                padding: 16px;
+            }
+            
+            .info-card .info-icon {
+                font-size: 24px;
+            }
+            
+            .info-card h4 {
+                font-size: 16px;
+            }
+            
+            .contact-form-container {
+                padding: 20px;
+            }
+            
+            .contact-form-container h3 {
+                font-size: 20px;
+            }
+            
+            .section-title h3 {
+                font-size: 22px;
+            }
+            
+            .faq-question {
                 font-size: 14px;
+                padding: 14px 16px;
             }
-
-            .header-main .container {
-                flex-direction: column;
+            
+            .footer-grid {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 20px;
             }
+            
+            .logo h1 {
+                font-size: 18px;
+            }
+            
+            .logo img {
+                height: 32px;
+            }
+        }
 
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 15px;
+            }
+            
+            .header-actions {
+                gap: 8px;
+            }
+            
+            .header-action-btn {
+                font-size: 20px;
+                padding: 6px;
+            }
+            
+            .nav-list {
+                gap: 8px;
+            }
+            
+            .nav-list a {
+                font-size: 12px;
+                padding: 8px 4px;
+            }
+            
+            .contact-hero h2 {
+                font-size: 22px;
+            }
+            
             .social-links {
-                flex-wrap: wrap;
+                gap: 8px;
+            }
+            
+            .social-link {
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
+            }
+            
+            .map-container iframe {
+                height: 200px;
             }
         }
     </style>
@@ -586,23 +774,18 @@
 <body>
     <!-- Header -->
     <header class="header">
-        <div class="header-top">
-            <div class="container">
-                <div class="contact-info">
-                    <span><i class="fas fa-phone"></i> <span id="headerPhone">966-555-555</span></span>
-                    <span><i class="fas fa-envelope"></i> <span id="headerEmail">info@healtha.com</span></span>
-                </div>
-                <div>
-                    <span>شحن مجاني للطلبات فوق 500 ريال</span>
-                </div>
-            </div>
-        </div>
         <div class="header-main">
             <div class="container">
                 <a href="index.html" class="logo">
                     <img src="logo.png" alt="Healtha Logo" id="storeLogo">
-                    <h1>Healtha</h1>
+                    <h1 id="storeName">Healtha</h1>
                 </a>
+                <div class="search-bar">
+                    <input type="text" placeholder="ابحث عن المنتجات الطبية..." id="searchInput">
+                    <button onclick="searchProducts()">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
                 <div class="header-actions">
                     <button class="header-action-btn" onclick="window.location.href='login.html'">
                         <i class="fas fa-user"></i>
@@ -645,15 +828,15 @@
                         <div class="info-icon"><i class="fas fa-phone"></i></div>
                         <h4>اتصل بنا</h4>
                         <p><a href="tel:966555555555" class="info-link" id="contactPhone">966-555-555-555</a></p>
-                        <p style="margin-top: 5px;">متاحون من الأحد إلى الخميس</p>
-                        <p>9:00 صباحاً - 6:00 مساءً</p>
+                        <p>متاحون من الأحد إلى الخميس</p>
+                        <p>9:00 ص - 6:00 م</p>
                     </div>
 
                     <div class="info-card">
                         <div class="info-icon"><i class="fas fa-envelope"></i></div>
                         <h4>البريد الإلكتروني</h4>
                         <p><a href="mailto:info@healtha.com" class="info-link" id="contactEmail">info@healtha.com</a></p>
-                        <p style="margin-top: 5px;">نرد عادةً خلال 24 ساعة</p>
+                        <p>نرد عادةً خلال 24 ساعة</p>
                     </div>
 
                     <div class="info-card">
@@ -673,23 +856,13 @@
 
                     <!-- Social Media -->
                     <div class="social-media">
-                        <h4>تابعنا على وسائل التواصل</h4>
+                        <h4>تابعنا</h4>
                         <div class="social-links">
-                            <a href="#" class="social-link whatsapp" title="واتساب">
-                                <i class="fab fa-whatsapp"></i>
-                            </a>
-                            <a href="#" class="social-link twitter" title="تويتر">
-                                <i class="fab fa-twitter"></i>
-                            </a>
-                            <a href="#" class="social-link instagram" title="انستغرام">
-                                <i class="fab fa-instagram"></i>
-                            </a>
-                            <a href="#" class="social-link facebook" title="فيسبوك">
-                                <i class="fab fa-facebook-f"></i>
-                            </a>
-                            <a href="#" class="social-link linkedin" title="لينكد إن">
-                                <i class="fab fa-linkedin-in"></i>
-                            </a>
+                            <a href="#" class="social-link whatsapp"><i class="fab fa-whatsapp"></i></a>
+                            <a href="#" class="social-link twitter"><i class="fab fa-twitter"></i></a>
+                            <a href="#" class="social-link instagram"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="social-link facebook"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" class="social-link linkedin"><i class="fab fa-linkedin-in"></i></a>
                         </div>
                     </div>
                 </div>
@@ -697,7 +870,7 @@
                 <!-- Contact Form -->
                 <div class="contact-form-container">
                     <h3>أرسل لنا رسالة</h3>
-                    <p>يسعدنا تواصلك معنا - املأ النموذج التالي وسنرد عليك في أقرب وقت</p>
+                    <p>املأ النموذج التالي وسنرد عليك قريباً</p>
                     
                     <form id="contactForm">
                         <div class="form-group">
@@ -744,8 +917,7 @@
                     </form>
                     
                     <div class="success-message" id="successMessage">
-                        <i class="fas fa-check-circle"></i>
-                        تم إرسال رسالتك بنجاح! سنتواصل معك قريباً.
+                        <i class="fas fa-check-circle"></i> تم إرسال رسالتك بنجاح! سنتواصل معك قريباً.
                     </div>
                 </div>
             </div>
@@ -777,7 +949,7 @@
                         <i class="fas fa-chevron-down"></i>
                     </div>
                     <div class="faq-answer">
-                        <p>بعد شحن طلبك، سنرسل لك بريداً إلكترونياً يحتوي على رقم التتبع. يمكنك استخدام هذا الرقم لتتبع طلبك عبر موقع شركة الشحن. كما يمكنك التواصل معنا مباشرة للاستفسار عن حالة طلبك.</p>
+                        <p>بعد شحن طلبك، سنرسل لك بريداً إلكترونياً يحتوي على رقم التتبع. يمكنك استخدام هذا الرقم لتتبع طلبك عبر موقع شركة الشحن.</p>
                     </div>
                 </div>
                 
@@ -787,7 +959,7 @@
                         <i class="fas fa-chevron-down"></i>
                     </div>
                     <div class="faq-answer">
-                        <p>نوفر سياسة إرجاع واستبدال مرنة خلال 14 يوماً من تاريخ استلام المنتج، بشرط أن يكون المنتج في حالته الأصلية وغير مستخدم. للمنتجات المعيبة، نتحمل تكاليف الشحن. يرجى التواصل مع خدمة العملاء لبدء عملية الإرجاع.</p>
+                        <p>نوفر سياسة إرجاع خلال 14 يوماً من تاريخ الاستلام، بشرط أن يكون المنتج بحالته الأصلية. للمنتجات المعيبة، نتحمل تكاليف الشحن.</p>
                     </div>
                 </div>
                 
@@ -797,7 +969,7 @@
                         <i class="fas fa-chevron-down"></i>
                     </div>
                     <div class="faq-answer">
-                        <p>نقوم بتوصيل الطلبات خلال 2-5 أيام عمل داخل المملكة العربية السعودية. للطلبات العاجلة، نوفر خدمة التوصيل السريع خلال 24 ساعة بتكلفة إضافية. يمكنك اختيار خيار التوصيل المناسب عند إتمام الطلب.</p>
+                        <p>نقوم بتوصيل الطلبات خلال 2-5 أيام عمل داخل المملكة. نوفر خدمة التوصيل السريع خلال 24 ساعة بتكلفة إضافية.</p>
                     </div>
                 </div>
                 
@@ -807,7 +979,7 @@
                         <i class="fas fa-chevron-down"></i>
                     </div>
                     <div class="faq-answer">
-                        <p>نقبل الدفع عبر البطاقات الائتمانية (فيزا، ماستركارد، مدى)، التحويل البنكي، والدفع عند الاستلام. جميع المدفوعات الإلكترونية مشفرة وآمنة بالكامل.</p>
+                        <p>نقبل الدفع عبر البطاقات الائتمانية (فيزا، ماستركارد، مدى)، التحويل البنكي، والدفع عند الاستلام.</p>
                     </div>
                 </div>
                 
@@ -817,7 +989,7 @@
                         <i class="fas fa-chevron-down"></i>
                     </div>
                     <div class="faq-answer">
-                        <p>نعم، جميع منتجاتنا أصلية وتأتي مع ضمان المصنع. تختلف مدة الضمان حسب المنتج والشركة المصنعة. يمكنك الاطلاع على تفاصيل الضمان في صفحة كل منتج.</p>
+                        <p>نعم، جميع منتجاتنا أصلية وتأتي مع ضمان المصنع. تختلف مدة الضمان حسب المنتج والشركة المصنعة.</p>
                     </div>
                 </div>
             </div>
@@ -830,7 +1002,7 @@
             <div class="footer-grid">
                 <div class="footer-about">
                     <h4>🏥 Healtha</h4>
-                    <p>متجرك الموثوق لشراء الأدوات والمعدات الطبية بأفضل الأسعار وأعلى جودة.</p>
+                    <p id="footerAbout">متجرك الموثوق لشراء الأدوات والمعدات الطبية بأفضل الأسعار وأعلى جودة.</p>
                 </div>
                 <div class="footer-links">
                     <h4>روابط سريعة</h4>
@@ -860,7 +1032,7 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2024 Healtha. جميع الحقوق محفوظة</p>
+                <p id="copyright">&copy; 2024 Healtha. جميع الحقوق محفوظة</p>
             </div>
         </div>
     </footer>
@@ -875,22 +1047,18 @@
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        // Load store settings
         function loadStoreSettings() {
             database.ref('settings').on('value', (snapshot) => {
                 const settings = snapshot.val();
                 if (settings) {
-                    if (settings.logo) {
-                        document.getElementById('storeLogo').src = settings.logo;
-                    }
+                    if (settings.logo) document.getElementById('storeLogo').src = settings.logo;
+                    if (settings.storeName) document.getElementById('storeName').textContent = settings.storeName;
                     if (settings.phone) {
-                        document.getElementById('headerPhone').textContent = settings.phone;
                         document.getElementById('footerPhone').textContent = settings.phone;
                         document.getElementById('contactPhone').textContent = settings.phone;
                         document.getElementById('contactPhone').href = `tel:${settings.phone}`;
                     }
                     if (settings.email) {
-                        document.getElementById('headerEmail').textContent = settings.email;
                         document.getElementById('footerEmail').textContent = settings.email;
                         document.getElementById('contactEmail').textContent = settings.email;
                         document.getElementById('contactEmail').href = `mailto:${settings.email}`;
@@ -899,12 +1067,35 @@
                         document.getElementById('footerAddress').textContent = settings.address;
                         document.getElementById('contactAddress').textContent = settings.address;
                     }
+                    if (settings.copyright) document.getElementById('copyright').innerHTML = settings.copyright;
+                    if (settings.aboutText) document.getElementById('footerAbout').textContent = settings.aboutText;
                 }
             });
         }
 
-        // Contact Form Submission
-        document.getElementById('contactForm').addEventListener('submit', function(e) {
+        function searchProducts() {
+            const searchTerm = document.getElementById('searchInput').value;
+            if (searchTerm.trim()) {
+                window.location.href = `products.html?search=${encodeURIComponent(searchTerm)}`;
+            }
+        }
+
+        document.getElementById('searchInput')?.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') searchProducts();
+        });
+
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'toast-notification';
+            toast.innerHTML = message;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 2000);
+        }
+
+        document.getElementById('contactForm')?.addEventListener('submit', function(e) {
             e.preventDefault();
             
             const message = {
@@ -919,7 +1110,6 @@
                 replied: false
             };
             
-            // Save to Firebase
             database.ref('messages').push(message)
                 .then(() => {
                     document.getElementById('successMessage').style.display = 'block';
@@ -929,35 +1119,35 @@
                         document.getElementById('successMessage').style.display = 'none';
                     }, 5000);
                     
-                    // Scroll to success message
-                    document.getElementById('successMessage').scrollIntoView({ behavior: 'smooth' });
+                    showToast('✅ تم إرسال رسالتك بنجاح!');
                 })
                 .catch((error) => {
-                    alert('حدث خطأ أثناء إرسال الرسالة. يرجى المحاولة مرة أخرى.');
+                    showToast('❌ حدث خطأ أثناء الإرسال');
                     console.error('Error:', error);
                 });
         });
 
-        // FAQ Toggle
         function toggleFAQ(element) {
             const faqItem = element.parentElement;
             const wasActive = faqItem.classList.contains('active');
             
-            // Close all FAQs
             document.querySelectorAll('.faq-item').forEach(item => {
                 item.classList.remove('active');
             });
             
-            // Open clicked FAQ if it wasn't already open
             if (!wasActive) {
                 faqItem.classList.add('active');
             }
         }
 
-        // Cart
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
         function updateCartCount() {
-            const cart = JSON.parse(localStorage.getItem('cart')) || [];
-            document.getElementById('cartCount').textContent = cart.length;
+            const cartCount = document.getElementById('cartCount');
+            if (cartCount) {
+                const totalItems = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+                cartCount.textContent = totalItems;
+            }
         }
 
         document.addEventListener('DOMContentLoaded', () => {

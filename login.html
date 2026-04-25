@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>تسجيل الدخول - Healtha</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -42,35 +42,36 @@
 
         .login-container {
             width: 100%;
-            max-width: 450px;
+            max-width: 500px;
         }
 
         .login-card {
             background: var(--bg-white);
             border-radius: var(--radius);
-            padding: 40px;
+            padding: 30px;
             box-shadow: var(--shadow-lg);
         }
 
         .login-header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
 
         .login-header h1 {
-            font-size: 32px;
+            font-size: 28px;
             font-weight: 900;
             color: var(--primary-dark);
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         .login-header p {
             color: var(--text-secondary);
+            font-size: 14px;
         }
 
         .tabs {
             display: flex;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             border: 2px solid var(--border);
             border-radius: var(--radius-sm);
             overflow: hidden;
@@ -83,7 +84,7 @@
             background: white;
             cursor: pointer;
             font-family: var(--font);
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 700;
             transition: var(--transition);
         }
@@ -91,6 +92,10 @@
         .tab-btn.active {
             background: var(--primary);
             color: white;
+        }
+
+        .tab-btn:active {
+            transform: scale(0.98);
         }
 
         .form-panel {
@@ -102,17 +107,20 @@
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 18px;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             font-weight: 700;
             color: var(--text);
+            font-size: 14px;
         }
 
-        .form-group input {
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
             width: 100%;
             padding: 12px 15px;
             border: 2px solid var(--border);
@@ -122,10 +130,18 @@
             transition: var(--transition);
         }
 
-        .form-group input:focus {
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
             outline: none;
             border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(13,148,136,0.15);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
         }
 
         .btn {
@@ -134,11 +150,15 @@
             border: none;
             border-radius: var(--radius-sm);
             font-family: var(--font);
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 700;
             cursor: pointer;
             transition: var(--transition);
             margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
         .btn-primary {
@@ -146,9 +166,44 @@
             color: white;
         }
 
-        .btn-primary:hover {
+        .btn-primary:active {
             background: var(--primary-dark);
-            transform: translateY(-2px);
+            transform: scale(0.97);
+        }
+
+        .btn-google {
+            background: white;
+            color: #DB4437;
+            border: 2px solid #DB4437;
+            margin-top: 15px;
+        }
+
+        .btn-google:active {
+            transform: scale(0.97);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 20px 0;
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .divider::before {
+            margin-left: 10px;
+        }
+
+        .divider::after {
+            margin-right: 10px;
         }
 
         .message {
@@ -158,6 +213,7 @@
             text-align: center;
             display: none;
             font-weight: 500;
+            font-size: 13px;
         }
 
         .message.error {
@@ -173,39 +229,6 @@
         .message.info {
             background: #DBEAFE;
             color: #1E40AF;
-        }
-
-        .info-box {
-            background: #FEF3C7;
-            padding: 15px;
-            border-radius: var(--radius-sm);
-            margin-top: 20px;
-            font-size: 13px;
-            border-right: 4px solid #F59E0B;
-        }
-
-        .info-box strong {
-            display: block;
-            margin-bottom: 8px;
-        }
-
-        .info-box p {
-            margin: 3px 0;
-        }
-
-        .back-link {
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        .back-link a {
-            color: var(--primary);
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        .back-link a:hover {
-            text-decoration: underline;
         }
 
         .loading-spinner {
@@ -224,9 +247,41 @@
             font-size: 24px;
         }
 
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .back-link a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+
         @keyframes spin {
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .login-card {
+                padding: 20px;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            
+            .login-header h1 {
+                font-size: 24px;
+            }
         }
     </style>
 </head>
@@ -235,7 +290,7 @@
         <div class="login-card">
             <div class="login-header">
                 <h1>🏥 Healtha</h1>
-                <p>تسجيل الدخول إلى المتجر</p>
+                <p>تسجيل الدخول أو إنشاء حساب جديد</p>
             </div>
 
             <!-- Tabs -->
@@ -248,51 +303,108 @@
             <div class="form-panel active" id="loginPanel">
                 <form onsubmit="return false;">
                     <div class="form-group">
-                        <label>البريد الإلكتروني</label>
-                        <input type="email" id="loginEmail" placeholder="admin@healtha.com" value="admin@healtha.com" required>
+                        <label><i class="fas fa-envelope"></i> البريد الإلكتروني</label>
+                        <input type="email" id="loginEmail" placeholder="example@email.com" required>
                     </div>
                     <div class="form-group">
-                        <label>كلمة المرور</label>
-                        <input type="password" id="loginPassword" placeholder="أدخل كلمة المرور" value="admin123" required>
+                        <label><i class="fas fa-lock"></i> كلمة المرور</label>
+                        <input type="password" id="loginPassword" placeholder="أدخل كلمة المرور" required>
                     </div>
                     <button type="button" class="btn btn-primary" onclick="handleLogin()">
                         <i class="fas fa-sign-in-alt"></i> تسجيل الدخول
                     </button>
                 </form>
+
+                <div class="divider">أو</div>
+
+                <button class="btn btn-google" onclick="handleGoogleLogin()">
+                    <i class="fab fa-google"></i> تسجيل الدخول بحساب Google
+                </button>
+
                 <div class="loading-spinner" id="loginLoading">
                     <i class="fas fa-circle-notch"></i> جاري تسجيل الدخول...
                 </div>
                 <div class="message error" id="loginError"></div>
                 <div class="message success" id="loginSuccess"></div>
-                <div class="message info" id="loginInfo" style="display: block; background: #FEF3C7; color: #92400E;">
-                    ⚠️ <strong>مهم:</strong> إذا لم يعمل تسجيل الدخول، افتح ملف <strong>setup-admin.html</strong> أولاً لتهيئة حساب المدير، أو غير صلاحيات Firebase Rules إلى:
-                    <br><code style="background: #fff; padding: 5px; display: block; margin-top: 5px; direction: ltr;">{ "rules": { ".read": true, ".write": true } }</code>
-                </div>
             </div>
 
             <!-- Register Panel -->
             <div class="form-panel" id="registerPanel">
                 <form onsubmit="return false;">
-                    <div class="form-group">
-                        <label>الاسم الكامل</label>
-                        <input type="text" id="regName" placeholder="أدخل اسمك" required>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label><i class="fas fa-user"></i> الاسم الأول</label>
+                            <input type="text" id="regFirstName" placeholder="أحمد" required>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-user"></i> الاسم الأخير</label>
+                            <input type="text" id="regLastName" placeholder="محمد" required>
+                        </div>
                     </div>
+                    
                     <div class="form-group">
-                        <label>البريد الإلكتروني</label>
+                        <label><i class="fas fa-envelope"></i> البريد الإلكتروني</label>
                         <input type="email" id="regEmail" placeholder="example@email.com" required>
                     </div>
+                    
                     <div class="form-group">
-                        <label>كلمة المرور</label>
-                        <input type="password" id="regPassword" placeholder="6 أحرف على الأقل" minlength="6" required>
+                        <label><i class="fas fa-phone"></i> رقم الجوال</label>
+                        <input type="tel" id="regPhone" placeholder="05xxxxxxxx" required>
                     </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label><i class="fas fa-city"></i> المدينة</label>
+                            <input type="text" id="regCity" placeholder="الرياض" required>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-location-dot"></i> الحي</label>
+                            <input type="text" id="regDistrict" placeholder="الملز" required>
+                        </div>
+                    </div>
+                    
                     <div class="form-group">
-                        <label>تأكيد كلمة المرور</label>
-                        <input type="password" id="regConfirmPassword" placeholder="أعد كتابة كلمة المرور" required>
+                        <label><i class="fas fa-map-marker-alt"></i> العنوان التفصيلي</label>
+                        <textarea id="regAddress" rows="2" placeholder="شارع الملك فهد، مبنى رقم ١٢" required></textarea>
                     </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label><i class="fas fa-calendar"></i> تاريخ الميلاد</label>
+                            <input type="date" id="regBirthdate" required>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-venus-mars"></i> الجنس</label>
+                            <select id="regGender" required>
+                                <option value="">اختر</option>
+                                <option value="male">ذكر</option>
+                                <option value="female">أنثى</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label><i class="fas fa-lock"></i> كلمة المرور</label>
+                            <input type="password" id="regPassword" placeholder="6 أحرف على الأقل" minlength="6" required>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-check-circle"></i> تأكيد كلمة المرور</label>
+                            <input type="password" id="regConfirmPassword" placeholder="أعد كتابة كلمة المرور" required>
+                        </div>
+                    </div>
+                    
                     <button type="button" class="btn btn-primary" onclick="handleRegister()">
                         <i class="fas fa-user-plus"></i> إنشاء حساب
                     </button>
                 </form>
+
+                <div class="divider">أو</div>
+
+                <button class="btn btn-google" onclick="handleGoogleRegister()">
+                    <i class="fab fa-google"></i> إنشاء حساب بـ Google
+                </button>
+
                 <div class="loading-spinner" id="registerLoading">
                     <i class="fas fa-circle-notch"></i> جاري إنشاء الحساب...
                 </div>
@@ -316,6 +428,9 @@
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
+        // Google OAuth User (محاكاة)
+        let googleUserData = null;
+
         function switchTab(tab) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('.form-panel').forEach(panel => panel.classList.remove('active'));
@@ -332,18 +447,22 @@
 
         function hideAllMessages() {
             ['loginError', 'loginSuccess', 'registerError', 'registerSuccess'].forEach(id => {
-                document.getElementById(id).style.display = 'none';
+                const el = document.getElementById(id);
+                if (el) el.style.display = 'none';
             });
-            document.getElementById('loginLoading').classList.remove('show');
-            document.getElementById('registerLoading').classList.remove('show');
+            document.getElementById('loginLoading')?.classList.remove('show');
+            document.getElementById('registerLoading')?.classList.remove('show');
         }
 
         function showMessage(id, text) {
             const el = document.getElementById(id);
-            el.textContent = text;
-            el.style.display = 'block';
+            if (el) {
+                el.textContent = text;
+                el.style.display = 'block';
+            }
         }
 
+        // تسجيل الدخول العادي
         function handleLogin() {
             const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
@@ -373,17 +492,24 @@
                                 const userData = {
                                     id: childSnapshot.key,
                                     email: user.email,
-                                    name: user.name,
+                                    firstName: user.firstName,
+                                    lastName: user.lastName,
+                                    fullName: `${user.firstName} ${user.lastName}`,
                                     role: user.role || 'customer',
-                                    phone: user.phone || ''
+                                    phone: user.phone || '',
+                                    city: user.city || '',
+                                    district: user.district || '',
+                                    address: user.address || '',
+                                    birthdate: user.birthdate || '',
+                                    gender: user.gender || ''
                                 };
                                 
                                 localStorage.setItem('user', JSON.stringify(userData));
                                 showMessage('loginSuccess', '✅ تم تسجيل الدخول بنجاح!');
                                 
-                                // تحديث آخر دخول
-                                database.ref(`users/${childSnapshot.key}/lastLogin`).set(Date.now())
-                                    .catch(() => {}); // تجاهل الخطأ إذا فشل التحديث
+                                database.ref(`users/${childSnapshot.key}`).update({
+                                    lastLogin: Date.now()
+                                }).catch(() => {});
                                 
                                 setTimeout(() => {
                                     if (userData.role === 'admin') {
@@ -405,24 +531,81 @@
                 .catch((error) => {
                     document.getElementById('loginLoading').classList.remove('show');
                     console.error('Firebase error:', error);
-                    
-                    if (error.code === 'PERMISSION_DENIED') {
-                        showMessage('loginError', '❌ صلاحيات قاعدة البيانات مرفوضة. يجب تغيير Firebase Rules إلى:\n{ "rules": { ".read": true, ".write": true } }');
-                    } else {
-                        showMessage('loginError', '❌ خطأ في الاتصال: ' + error.message);
-                    }
+                    showMessage('loginError', '❌ خطأ في الاتصال: ' + error.message);
                 });
         }
 
+        // تسجيل الدخول بـ Google
+        function handleGoogleLogin() {
+            hideAllMessages();
+            document.getElementById('loginLoading').classList.add('show');
+            
+            // محاكاة تسجيل الدخول بـ Google
+            setTimeout(() => {
+                document.getElementById('loginLoading').classList.remove('show');
+                
+                const googleEmail = prompt('📧 أدخل بريدك الإلكتروني في Google:', 'user@gmail.com');
+                if (!googleEmail) return;
+                
+                const googleName = prompt('👤 أدخل اسمك الكامل:', 'Ahmed Mohammed');
+                
+                database.ref('users').orderByChild('email').equalTo(googleEmail).once('value')
+                    .then((snapshot) => {
+                        if (snapshot.exists()) {
+                            let userFound = false;
+                            snapshot.forEach((childSnapshot) => {
+                                const user = childSnapshot.val();
+                                if (user.provider === 'google' || user.email === googleEmail) {
+                                    userFound = true;
+                                    const userData = {
+                                        id: childSnapshot.key,
+                                        email: user.email,
+                                        firstName: user.firstName,
+                                        lastName: user.lastName,
+                                        fullName: `${user.firstName} ${user.lastName}`,
+                                        role: user.role || 'customer',
+                                        phone: user.phone || '',
+                                        provider: 'google'
+                                    };
+                                    localStorage.setItem('user', JSON.stringify(userData));
+                                    showMessage('loginSuccess', '✅ تم تسجيل الدخول بحساب Google!');
+                                    
+                                    setTimeout(() => {
+                                        window.location.href = 'index.html';
+                                    }, 800);
+                                }
+                            });
+                            
+                            if (!userFound) {
+                                showMessage('loginError', '❌ لا يوجد حساب مرتبط ببريد Google هذا، يرجى إنشاء حساب جديد');
+                            }
+                        } else {
+                            showMessage('loginError', '❌ لا يوجد حساب مرتبط ببريد Google هذا، يرجى إنشاء حساب جديد');
+                        }
+                    })
+                    .catch((error) => {
+                        showMessage('loginError', '❌ خطأ: ' + error.message);
+                    });
+            }, 1000);
+        }
+
+        // إنشاء حساب جديد
         function handleRegister() {
-            const name = document.getElementById('regName').value.trim();
+            const firstName = document.getElementById('regFirstName').value.trim();
+            const lastName = document.getElementById('regLastName').value.trim();
             const email = document.getElementById('regEmail').value.trim();
+            const phone = document.getElementById('regPhone').value.trim();
+            const city = document.getElementById('regCity').value.trim();
+            const district = document.getElementById('regDistrict').value.trim();
+            const address = document.getElementById('regAddress').value.trim();
+            const birthdate = document.getElementById('regBirthdate').value;
+            const gender = document.getElementById('regGender').value;
             const password = document.getElementById('regPassword').value;
             const confirmPassword = document.getElementById('regConfirmPassword').value;
             
             hideAllMessages();
             
-            if (!name || !email || !password) {
+            if (!firstName || !lastName || !email || !phone || !city || !district || !address || !birthdate || !gender) {
                 showMessage('registerError', 'يرجى ملء جميع الحقول المطلوبة');
                 return;
             }
@@ -434,6 +617,12 @@
             
             if (password !== confirmPassword) {
                 showMessage('registerError', 'كلمة المرور غير متطابقة');
+                return;
+            }
+            
+            // التحقق من صحة رقم الجوال
+            if (!phone.match(/^05\d{8}$|^9665\d{8}$/)) {
+                showMessage('registerError', 'رقم الجوال غير صحيح (يجب أن يبدأ بـ 05)');
                 return;
             }
 
@@ -448,10 +637,18 @@
                     }
                     
                     const newUser = {
-                        name: name,
+                        firstName: firstName,
+                        lastName: lastName,
                         email: email,
+                        phone: phone,
+                        city: city,
+                        district: district,
+                        address: address,
+                        birthdate: birthdate,
+                        gender: gender,
                         password: password,
                         role: 'customer',
+                        provider: 'email',
                         createdAt: Date.now(),
                         lastLogin: Date.now()
                     };
@@ -463,8 +660,14 @@
                             const userData = {
                                 id: ref.key,
                                 email: email,
-                                name: name,
-                                role: 'customer'
+                                firstName: firstName,
+                                lastName: lastName,
+                                fullName: `${firstName} ${lastName}`,
+                                role: 'customer',
+                                phone: phone,
+                                city: city,
+                                district: district,
+                                address: address
                             };
                             
                             localStorage.setItem('user', JSON.stringify(userData));
@@ -472,7 +675,7 @@
                             
                             setTimeout(() => {
                                 window.location.href = 'index.html';
-                            }, 800);
+                            }, 1000);
                         })
                         .catch((error) => {
                             document.getElementById('registerLoading').classList.remove('show');
@@ -485,11 +688,100 @@
                 });
         }
 
+        // إنشاء حساب بـ Google
+        function handleGoogleRegister() {
+            hideAllMessages();
+            document.getElementById('registerLoading').classList.add('show');
+            
+            setTimeout(() => {
+                const googleEmail = prompt('📧 أدخل بريدك الإلكتروني في Google:', 'user@gmail.com');
+                if (!googleEmail) {
+                    document.getElementById('registerLoading').classList.remove('show');
+                    return;
+                }
+                
+                const googleFirstName = prompt('👤 أدخل اسمك الأول:', 'أحمد');
+                const googleLastName = prompt('👤 أدخل اسمك الأخير:', 'محمد');
+                const googlePhone = prompt('📱 أدخل رقم جوالك:', '05xxxxxxxx');
+                
+                if (!googleFirstName || !googleLastName) {
+                    document.getElementById('registerLoading').classList.remove('show');
+                    showMessage('registerError', 'يرجى إدخال الاسم');
+                    return;
+                }
+                
+                database.ref('users').orderByChild('email').equalTo(googleEmail).once('value')
+                    .then((snapshot) => {
+                        if (snapshot.exists()) {
+                            document.getElementById('registerLoading').classList.remove('show');
+                            showMessage('registerError', 'البريد الإلكتروني مسجل بالفعل، يرجى تسجيل الدخول');
+                            return;
+                        }
+                        
+                        const newUser = {
+                            firstName: googleFirstName,
+                            lastName: googleLastName,
+                            email: googleEmail,
+                            phone: googlePhone || '',
+                            city: '',
+                            district: '',
+                            address: '',
+                            birthdate: '',
+                            gender: '',
+                            password: '',
+                            role: 'customer',
+                            provider: 'google',
+                            createdAt: Date.now(),
+                            lastLogin: Date.now()
+                        };
+                        
+                        database.ref('users').push(newUser)
+                            .then((ref) => {
+                                document.getElementById('registerLoading').classList.remove('show');
+                                
+                                const userData = {
+                                    id: ref.key,
+                                    email: googleEmail,
+                                    firstName: googleFirstName,
+                                    lastName: googleLastName,
+                                    fullName: `${googleFirstName} ${googleLastName}`,
+                                    role: 'customer',
+                                    phone: googlePhone || '',
+                                    provider: 'google'
+                                };
+                                
+                                localStorage.setItem('user', JSON.stringify(userData));
+                                showMessage('registerSuccess', '✅ تم إنشاء الحساب بـ Google بنجاح!');
+                                
+                                setTimeout(() => {
+                                    window.location.href = 'index.html';
+                                }, 1000);
+                            })
+                            .catch((error) => {
+                                document.getElementById('registerLoading').classList.remove('show');
+                                showMessage('registerError', 'خطأ: ' + error.message);
+                            });
+                    })
+                    .catch((error) => {
+                        document.getElementById('registerLoading').classList.remove('show');
+                        showMessage('registerError', 'خطأ: ' + error.message);
+                    });
+            }, 500);
+        }
+
         // التحقق من وجود جلسة سابقة
         document.addEventListener('DOMContentLoaded', () => {
             const user = JSON.parse(localStorage.getItem('user'));
             if (user && user.role === 'admin') {
                 window.location.href = 'admin.html';
+            }
+            
+            // تعبئة تاريخ الميلاد كحد أقصى
+            const birthdateInput = document.getElementById('regBirthdate');
+            if (birthdateInput) {
+                const today = new Date();
+                const maxDate = new Date(today.getFullYear() - 10, today.getMonth(), today.getDate());
+                birthdateInput.max = maxDate.toISOString().split('T')[0];
             }
         });
     </script>
