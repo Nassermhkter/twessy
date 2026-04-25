@@ -3,218 +3,264 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Healtha - تسجيل الدخول</title>
+    <title>Healtha - حسابي</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary: #0D9488;
-            --primary-dark: #0F766E;
-            --accent: #F59E0B;
-            --bg: #F8FAFC;
-            --bg-white: #FFFFFF;
-            --text: #0F172A;
-            --text-secondary: #64748B;
-            --border: #E2E8F0;
-            --danger: #EF4444;
-            --success: #059669;
-            --shadow: 0 1px 3px rgba(0,0,0,0.08);
-            --shadow-md: 0 4px 16px rgba(0,0,0,0.1);
-            --radius: 12px;
-            --radius-sm: 8px;
-            --radius-lg: 16px;
-            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            --font: 'Tajawal', sans-serif;
-        }
-        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: var(--font);
-            background: linear-gradient(135deg, #115E59, #0D9488, #14B8A6);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
+            font-family: 'Tajawal', sans-serif;
+            background: #F8FAFC;
+            color: #0F172A;
+            line-height: 1.7;
         }
-        .login-container { width: 100%; max-width: 420px; }
-        .login-card {
-            background: #fff;
-            border-radius: 24px;
-            padding: 40px 32px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-            text-align: center;
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+        .container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 16px; }
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            padding: 10px 20px; border-radius: 12px; font-weight: 700;
+            cursor: pointer; transition: all 0.3s ease;
         }
-        .logo-icon {
-            width: 70px;
-            height: 70px;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 20px;
+        .btn-primary { background: #0D9488; color: #fff; }
+        .btn-primary:hover { background: #0F766E; transform: translateY(-2px); }
+        .btn-outline { background: transparent; border: 2px solid #E2E8F0; color: #64748B; }
+        .btn-outline:hover { border-color: #0D9488; color: #0D9488; }
+        .btn-danger { background: #FEE2E2; color: #DC2626; border: 2px solid #FECACA; }
+        .btn-danger:hover { background: #EF4444; color: #fff; }
+
+        .store-notice { background: linear-gradient(135deg, #F59E0B, #D97706); color: #fff; padding: 10px 0; font-size: 14px; font-weight: 600; text-align: center; display: none; }
+        .store-notice .container { display: flex; align-items: center; justify-content: center; gap: 12px; }
+        .close-notice { background: rgba(255,255,255,0.2); width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+
+        .top-bar { background: #0F766E; color: #fff; font-size: 13px; padding: 8px 0; display: none; }
+        @media (min-width: 768px) { .top-bar { display: block; } }
+        .top-bar .container { display: flex; justify-content: space-between; align-items: center; }
+
+        .navbar { background: white; position: sticky; top: 0; z-index: 1000; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+        .nav-container { display: flex; align-items: center; justify-content: space-between; height: 60px; }
+        .logo a { display: flex; align-items: center; gap: 8px; }
+        .logo i { font-size: 28px; color: #0D9488; }
+        .logo h1 { font-size: 24px; font-weight: 900; background: linear-gradient(135deg, #0D9488, #F59E0B); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .nav-links { display: none; flex-direction: column; position: fixed; top: 60px; right: 0; left: 0; bottom: 0; background: white; padding: 20px; z-index: 999; overflow-y: auto; }
+        .nav-links.active { display: flex; }
+        .nav-links li a { display: block; padding: 14px 16px; border-radius: 12px; font-weight: 600; color: #0F172A; }
+        .nav-links li a:hover { background: #CCFBF1; color: #0F766E; }
+        .nav-icons { display: flex; align-items: center; gap: 6px; }
+        .nav-icons a { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%; color: #64748B; position: relative; }
+        .cart-count { position: absolute; top: 2px; left: 2px; background: #F59E0B; color: #fff; font-size: 10px; font-weight: 800; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .menu-toggle { width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; border-radius: 12px; cursor: pointer; font-size: 20px; }
+        @media (min-width: 1024px) {
+            .menu-toggle { display: none; }
+            .nav-links { display: flex !important; flex-direction: row; position: static; background: none; padding: 0; gap: 4px; }
+            .nav-links li a { padding: 8px 14px; font-size: 14px; }
         }
-        .logo-icon i { font-size: 32px; color: #fff; }
-        .login-card h1 { font-size: 24px; font-weight: 800; color: #0F172A; margin-bottom: 8px; }
-        .login-card p { font-size: 14px; color: #64748B; margin-bottom: 28px; }
-        .form-group { margin-bottom: 20px; text-align: right; }
-        .form-group label { display: block; margin-bottom: 8px; font-weight: 700; font-size: 14px; color: #0F172A; }
-        .input-wrapper { position: relative; }
-        .input-wrapper i { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: #94A3B8; }
-        .input-wrapper input {
-            width: 100%; padding: 14px 42px 14px 14px;
-            border: 2px solid var(--border); border-radius: 12px;
-            font-family: inherit; font-size: 14px;
-            background: #F8FAFC; transition: all 0.3s ease;
+
+        .dashboard-header { background: linear-gradient(135deg, #115E59 0%, #0D9488 50%, #14B8A6 100%); padding: 36px 0; text-align: center; color: #fff; }
+        .dashboard-header h1 { font-size: 24px; font-weight: 900; margin-bottom: 6px; }
+        .dashboard-header p { font-size: 14px; opacity: 0.9; }
+
+        .dashboard-page { padding: 24px 0 50px; }
+        .dashboard-grid { display: flex; flex-direction: column; gap: 20px; }
+        .dashboard-sidebar { order: 2; background: white; border-radius: 12px; padding: 24px 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); border: 1px solid #E2E8F0; }
+        .user-avatar { width: 72px; height: 72px; border-radius: 50%; margin: 0 auto 12px; background: linear-gradient(135deg, #0D9488, #0F766E); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 28px; font-weight: 800; }
+        .user-avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+        .dashboard-sidebar h3 { font-size: 18px; font-weight: 800; text-align: center; margin-bottom: 4px; }
+        .dashboard-sidebar p { font-size: 13px; color: #64748B; text-align: center; margin-bottom: 16px; }
+        .provider-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; margin-top: 8px; text-align: center; width: 100%; }
+        .provider-email { background: #D1FAE5; color: #065F46; }
+        .provider-google { background: #FEE2E2; color: #EA4335; }
+        .provider-facebook { background: #DBEAFE; color: #1877F2; }
+        .dashboard-menu { margin-top: 20px; border-top: 1px solid #E2E8F0; padding-top: 16px; }
+        .dashboard-menu li { margin-bottom: 8px; }
+        .dashboard-menu a { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 12px; color: #64748B; font-weight: 600; }
+        .dashboard-menu a:hover, .dashboard-menu a.active { background: #CCFBF1; color: #0D9488; }
+        .dashboard-content { order: 1; }
+        .dashboard-section { display: none; background: white; border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); border: 1px solid #E2E8F0; }
+        .dashboard-section.active { display: block; }
+        .dashboard-section h2 { font-size: 18px; font-weight: 900; margin-bottom: 20px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 24px; }
+        .stat-card { background: #F8FAFC; border-radius: 12px; padding: 16px; display: flex; align-items: center; gap: 12px; border: 1px solid #E2E8F0; }
+        .stat-icon { width: 48px; height: 48px; border-radius: 12px; background: linear-gradient(135deg, #0D9488, #0F766E); display: flex; align-items: center; justify-content: center; }
+        .stat-icon i { font-size: 20px; color: #fff; }
+        .stat-info h3 { font-size: 20px; font-weight: 900; }
+        .stat-info p { font-size: 12px; color: #64748B; }
+        .order-item { background: #F8FAFC; border-radius: 12px; padding: 14px; margin-bottom: 10px; border: 1px solid #E2E8F0; }
+        .order-header { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 8px; }
+        .order-id { font-weight: 800; }
+        .order-date { font-size: 12px; color: #94A3B8; }
+        .order-status { padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+        .status-pending { background: #FEF3C7; color: #92400E; }
+        .order-total { font-weight: 700; color: #0F766E; margin-top: 8px; }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; margin-bottom: 6px; font-weight: 700; font-size: 14px; }
+        .form-group input { width: 100%; padding: 12px 14px; border: 2px solid #E2E8F0; border-radius: 12px; font-size: 14px; }
+        .form-group input:focus { border-color: #0D9488; outline: none; }
+        @media (min-width: 768px) {
+            .dashboard-grid { flex-direction: row; }
+            .dashboard-sidebar { order: 1; width: 260px; }
+            .dashboard-content { order: 2; flex: 1; }
         }
-        .input-wrapper input:focus { outline: none; border-color: var(--primary); background: #fff; box-shadow: 0 0 0 4px rgba(13,148,136,0.1); }
-        .toggle-pass { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #94A3B8; }
-        .login-btn {
-            width: 100%; padding: 14px; background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: #fff; border: none; border-radius: 12px; font-size: 16px; font-weight: 800;
-            cursor: pointer; transition: all 0.3s ease; margin-top: 10px;
-        }
-        .login-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(13,148,136,0.3); }
-        .switch-link { text-align: center; margin-top: 20px; font-size: 14px; color: var(--text-secondary); }
-        .switch-link a { color: var(--primary); font-weight: 700; text-decoration: none; }
-        .switch-link a:hover { text-decoration: underline; }
-        .error-message { background: #FEE2E2; color: #DC2626; padding: 12px; border-radius: 12px; font-size: 13px; margin-bottom: 20px; display: none; align-items: center; gap: 8px; }
-        .error-message.show { display: flex; }
-        .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(100px); background: #0F172A; color: #fff; padding: 12px 24px; border-radius: 12px; font-size: 14px; font-weight: 600; z-index: 5000; transition: transform 0.35s ease; white-space: nowrap; max-width: calc(100% - 32px); text-align: center; }
+
+        .footer { background: #0F172A; color: #CBD5E1; padding: 48px 0 0; margin-top: 40px; }
+        .footer-grid { display: grid; grid-template-columns: 1fr; gap: 32px; padding-bottom: 32px; }
+        .footer-column h3 { font-size: 18px; font-weight: 800; color: #fff; margin-bottom: 16px; }
+        .social-icons { display: flex; gap: 10px; margin-top: 16px; }
+        .social-icons a { width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; color: #94A3B8; }
+        .social-icons a:hover { background: #0D9488; color: #fff; }
+        .copyright { border-top: 1px solid rgba(255,255,255,0.08); padding: 20px 0; text-align: center; font-size: 13px; }
+        @media (min-width: 640px) { .footer-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (min-width: 1024px) { .footer-grid { grid-template-columns: 2fr 1fr 1fr 1.5fr; } }
+
+        .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(100px); background: #0F172A; color: #fff; padding: 12px 24px; border-radius: 12px; font-size: 14px; font-weight: 600; z-index: 5000; transition: transform 0.35s ease; }
         .toast.show { transform: translateX(-50%) translateY(0); }
         .toast.success { background: #059669; }
-        .toast.error { background: #DC2626; }
-        .back-link { display: block; margin-top: 16px; color: var(--primary); font-size: 13px; font-weight: 600; text-decoration: none; }
-        .back-link:hover { text-decoration: underline; }
-        @media (max-width: 480px) { .login-card { padding: 32px 24px; } }
+        body.modal-open { overflow: hidden; }
     </style>
 </head>
 <body>
-    <div class="login-container">
-        <div class="login-card">
-            <div class="logo-icon"><i class="fas fa-stethoscope"></i></div>
-            <h1 id="formTitle">تسجيل الدخول</h1>
-            <p id="formDesc">مرحباً بعودتك، سجل دخولك إلى حسابك</p>
-            <div class="error-message" id="errorMessage"><i class="fas fa-exclamation-circle"></i><span id="errorText"></span></div>
-            <form id="authForm">
-                <div id="extraFields"></div>
-                <div class="form-group"><label>البريد الإلكتروني</label><div class="input-wrapper"><i class="fas fa-envelope"></i><input type="email" id="email" placeholder="example@email.com" required></div></div>
-                <div class="form-group"><label>كلمة المرور</label><div class="input-wrapper"><i class="fas fa-lock"></i><input type="password" id="password" placeholder="••••••••" required><button type="button" class="toggle-pass" id="togglePassword"><i class="fas fa-eye"></i></button></div></div>
-                <button type="submit" class="login-btn" id="submitBtn"><i class="fas fa-sign-in-alt" style="margin-left:8px;"></i> تسجيل الدخول</button>
-            </form>
-            <div class="switch-link" id="switchLink"><p>ليس لديك حساب؟ <a href="#" id="switchBtn">إنشاء حساب جديد</a></p></div>
-            <a href="index.html" class="back-link"><i class="fas fa-arrow-right" style="margin-left:5px;"></i> العودة للمتجر</a>
+
+    <div class="store-notice" id="storeNotice"><div class="container"><i class="fas fa-bullhorn"></i><span id="noticeText"></span><span class="close-notice" id="closeNotice"><i class="fas fa-times"></i></span></div></div>
+
+    <div class="top-bar"><div class="container"><div><span><i class="fas fa-phone"></i> +967 779 217 474</span><span style="margin-right:16px;"><i class="fas fa-envelope"></i> Hadirynasser@gmail.com</span></div><div class="shipping-info">شحن مجاني داخل عدن</div></div></div>
+
+    <nav class="navbar"><div class="container nav-container"><div class="logo"><a href="index.html"><i class="fas fa-stethoscope"></i><h1>Healtha</h1></a></div><ul class="nav-links" id="navLinks"><li><a href="index.html">الرئيسية</a></li><li><a href="products.html">المنتجات</a></li><li><a href="categories.html">الفئات</a></li><li><a href="about.html">من نحن</a></li><li><a href="services.html">الخدمات</a></li><li><a href="contact.html">اتصل بنا</a></li><li><a href="login.html">تسجيل الدخول</a></li><li><a href="admin-login.html">لوحة التحكم</a></li></ul><div class="nav-icons"><a href="https://www.instagram.com/x5tai" target="_blank"><i class="fab fa-instagram"></i></a><a href="#" id="userIcon"><i class="fas fa-user"></i></a><a href="#" id="cartIcon"><i class="fas fa-shopping-cart"></i><span class="cart-count" id="cartCount">0</span></a></div><div class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></div></div></nav>
+
+    <header class="dashboard-header"><div class="container"><h1><i class="fas fa-user-circle"></i> حسابي</h1><p>مرحباً بعودتك، <span id="userName"></span></p></div></header>
+
+    <section class="dashboard-page"><div class="container"><div class="dashboard-grid">
+        <div class="dashboard-sidebar">
+            <div class="user-avatar" id="userAvatar">?</div>
+            <h3 id="sidebarName"></h3>
+            <p id="sidebarEmail"></p>
+            <div id="providerBadge"></div>
+            <button class="btn btn-outline" id="logoutBtn" style="width:100%;margin-top:16px;"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</button>
+            <ul class="dashboard-menu" id="dashboardMenu">
+                <li><a href="#" class="active" data-section="dashboard"><i class="fas fa-tachometer-alt"></i> نظرة عامة</a></li>
+                <li><a href="#" data-section="orders"><i class="fas fa-shopping-bag"></i> طلباتي</a></li>
+                <li><a href="#" data-section="profile"><i class="fas fa-user-edit"></i> الملف الشخصي</a></li>
+            </ul>
         </div>
-    </div>
+        <div class="dashboard-content">
+            <div class="dashboard-section active" id="dashboardSection">
+                <h2>نظرة عامة</h2>
+                <div class="stats-grid"><div class="stat-card"><div class="stat-icon"><i class="fas fa-shopping-bag"></i></div><div class="stat-info"><h3 id="ordersCount">0</h3><p>الطلبات</p></div></div></div>
+                <div class="recent-orders"><h3>آخر الطلبات</h3><div id="recentOrders"></div></div>
+            </div>
+            <div class="dashboard-section" id="ordersSection"><h2>طلباتي</h2><div id="allOrders"></div></div>
+            <div class="dashboard-section" id="profileSection">
+                <h2>الملف الشخصي</h2>
+                <form id="profileForm">
+                    <div class="form-group"><label>الاسم الكامل</label><input type="text" id="profileName" required></div>
+                    <div class="form-group"><label>البريد الإلكتروني</label><input type="email" id="profileEmail" disabled></div>
+                    <div class="form-group"><label>رقم الهاتف</label><input type="tel" id="profilePhone" placeholder="7XXXXXXXX"></div>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> حفظ التغييرات</button>
+                </form>
+            </div>
+        </div>
+    </div></div></section>
+
+    <footer class="footer"><div class="container"><div class="footer-grid"><div class="footer-column"><h3>Healtha</h3><p>متجر متخصص في توفير الأدوات الطبية والأجهزة الصحية</p><div class="social-icons"><a href="https://wa.me/967779217474"><i class="fab fa-whatsapp"></i></a><a href="https://www.instagram.com/x5tai"><i class="fab fa-instagram"></i></a></div></div><div class="footer-column"><h3>روابط سريعة</h3><ul><li><a href="index.html">الرئيسية</a></li><li><a href="products.html">المنتجات</a></li><li><a href="categories.html">الفئات</a></li><li><a href="contact.html">اتصل بنا</a></li></ul></div></div><div class="copyright"><p>&copy; 2026 Healtha. جميع الحقوق محفوظة.</p></div></div></footer>
 
     <script>
     (function() {
-        let isLoginMode = true;
+        let currentSession = null;
+        let allOrders = [];
 
-        // بيانات المستخدمين المخزنة
-        const USERS_KEY = 'healtha_users';
+        function loadStoreNotice() {
+            try { let n = JSON.parse(localStorage.getItem('healtha_store_notice') || '{"text":"مرحباً بكم في Healtha","active":true}'); if (n.active && n.text) { document.getElementById('storeNotice').style.display = 'block'; document.getElementById('noticeText').textContent = n.text; } } catch(e) {}
+        }
+        document.getElementById('closeNotice')?.addEventListener('click', () => document.getElementById('storeNotice').style.display = 'none');
+        loadStoreNotice();
 
-        function getUsers() {
-            try {
-                let users = JSON.parse(localStorage.getItem(USERS_KEY));
-                if (!users) {
-                    users = [
-                        { id: '1', name: 'أحمد محمد', email: 'ahmed@healtha.com', phone: '777888999', password: '123456', createdAt: new Date().toISOString() }
-                    ];
-                    localStorage.setItem(USERS_KEY, JSON.stringify(users));
-                }
-                return users;
-            } catch(e) { return []; }
+        function getSession() { try { return JSON.parse(localStorage.getItem('healtha_session')); } catch(e) { return null; } }
+        function saveSession(s) { localStorage.setItem('healtha_session', JSON.stringify(s)); }
+        function clearSession() { localStorage.removeItem('healtha_session'); }
+
+        function getProviderBadge(provider) {
+            if (provider === 'google.com') return '<div class="provider-badge provider-google"><i class="fab fa-google"></i> جوجل</div>';
+            if (provider === 'facebook.com') return '<div class="provider-badge provider-facebook"><i class="fab fa-facebook-f"></i> فيسبوك</div>';
+            return '<div class="provider-badge provider-email"><i class="fas fa-envelope"></i> بريد إلكتروني</div>';
         }
 
-        function saveUsers(users) { localStorage.setItem(USERS_KEY, JSON.stringify(users)); }
+        function loadOrders() {
+            let orders = JSON.parse(localStorage.getItem('healtha_orders') || '[]');
+            allOrders = orders.filter(o => o.customerEmail === currentSession.userEmail || o.customerId === currentSession.uid);
+            displayOrders();
+        }
 
-        function showError(msg) { let e = document.getElementById('errorMessage'), t = document.getElementById('errorText'); t.textContent = msg; e.classList.add('show'); setTimeout(() => e.classList.remove('show'), 3000); }
+        function displayOrders() {
+            let container = document.getElementById('allOrders');
+            let recentContainer = document.getElementById('recentOrders');
+            document.getElementById('ordersCount').textContent = allOrders.length;
+            if (allOrders.length === 0) {
+                let empty = '<div style="text-align:center;padding:40px;"><i class="fas fa-box-open"></i><p>لا توجد طلبات بعد</p></div>';
+                if (container) container.innerHTML = empty;
+                if (recentContainer) recentContainer.innerHTML = empty;
+                return;
+            }
+            let recentHtml = allOrders.slice(0, 3).map(o => `<div class="order-item"><div class="order-header"><span class="order-id">#${o.orderId}</span><span class="order-date">${o.date}</span><span class="order-status status-pending">${o.status}</span></div><div class="order-total">الإجمالي: ${o.total}$</div></div>`).join('');
+            let allHtml = allOrders.map(o => `<div class="order-item"><div class="order-header"><span class="order-id">#${o.orderId}</span><span class="order-date">${o.date}</span><span class="order-status status-pending">${o.status}</span></div><div class="order-total">الإجمالي: ${o.total}$</div></div>`).join('');
+            if (recentContainer) recentContainer.innerHTML = recentHtml;
+            if (container) container.innerHTML = allHtml;
+        }
+
+        function updateProfile() {
+            document.getElementById('userName').textContent = currentSession.userName;
+            document.getElementById('sidebarName').textContent = currentSession.userName;
+            document.getElementById('sidebarEmail').textContent = currentSession.userEmail;
+            document.getElementById('profileName').value = currentSession.userName;
+            document.getElementById('profileEmail').value = currentSession.userEmail;
+            document.getElementById('profilePhone').value = currentSession.userPhone || '';
+            let avatarEl = document.getElementById('userAvatar');
+            if (currentSession.photoURL) {
+                avatarEl.innerHTML = `<img src="${currentSession.photoURL}" alt="">`;
+            } else {
+                avatarEl.innerHTML = currentSession.userName?.substring(0, 2) || 'م';
+            }
+            document.getElementById('providerBadge').innerHTML = getProviderBadge(currentSession.provider);
+        }
+
+        function saveProfile(name, phone) {
+            currentSession.userName = name;
+            currentSession.userPhone = phone;
+            saveSession(currentSession);
+            let profiles = JSON.parse(localStorage.getItem('healtha_profiles') || '{}');
+            profiles[currentSession.uid] = { name: name, phone: phone, updatedAt: Date.now() };
+            localStorage.setItem('healtha_profiles', JSON.stringify(profiles));
+            updateProfile();
+        }
 
         function showToast(msg, type) { let t = document.createElement('div'); t.className = 'toast ' + type; t.textContent = msg; document.body.appendChild(t); setTimeout(() => t.classList.add('show'), 10); setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 300); }, 2500); }
 
-        function login(email, password) {
-            let users = getUsers();
-            let user = users.find(u => u.email === email && u.password === password);
-            if (user) {
-                let session = { uid: user.id, userName: user.name, userEmail: user.email, userPhone: user.phone, loginTime: Date.now() };
-                localStorage.setItem('healtha_session', JSON.stringify(session));
-                return { success: true };
-            }
-            return { success: false, message: 'البريد الإلكتروني أو كلمة المرور غير صحيحة' };
+        function switchSection(name) {
+            document.querySelectorAll('#dashboardMenu a').forEach(a => a.classList.remove('active'));
+            document.querySelector(`#dashboardMenu a[data-section="${name}"]`).classList.add('active');
+            document.querySelectorAll('.dashboard-section').forEach(s => s.classList.remove('active'));
+            document.getElementById(name + 'Section').classList.add('active');
         }
 
-        function register(name, email, phone, password, confirm) {
-            if (!name || !email || !phone || !password) return { success: false, message: 'الرجاء ملء جميع الحقول' };
-            if (password !== confirm) return { success: false, message: 'كلمتا المرور غير متطابقتين' };
-            if (password.length < 6) return { success: false, message: 'كلمة المرور يجب أن تكون 6 أحرف على الأقل' };
-            let users = getUsers();
-            if (users.find(u => u.email === email)) return { success: false, message: 'البريد الإلكتروني مسجل مسبقاً' };
-            let newUser = { id: Date.now().toString(), name: name, email: email, phone: phone, password: password, createdAt: new Date().toISOString() };
-            users.push(newUser);
-            saveUsers(users);
-            let session = { uid: newUser.id, userName: newUser.name, userEmail: newUser.email, userPhone: newUser.phone, loginTime: Date.now() };
-            localStorage.setItem('healtha_session', JSON.stringify(session));
-            return { success: true };
-        }
+        let cart = JSON.parse(localStorage.getItem('healtha_cart') || '[]');
+        function updateCartCount() { document.getElementById('cartCount').textContent = cart.reduce((s,i)=>s+(i.quantity||1),0); }
 
-        function updateForm() {
-            let title = document.getElementById('formTitle');
-            let desc = document.getElementById('formDesc');
-            let submitBtn = document.getElementById('submitBtn');
-            let switchLink = document.getElementById('switchLink');
-            let extraFields = document.getElementById('extraFields');
+        document.addEventListener('DOMContentLoaded', function() {
+            let session = getSession();
+            if (!session) { window.location.href = 'login.html'; return; }
+            currentSession = session;
+            updateProfile();
+            loadOrders();
+            updateCartCount();
 
-            if (isLoginMode) {
-                title.textContent = 'تسجيل الدخول';
-                desc.textContent = 'مرحباً بعودتك، سجل دخولك إلى حسابك';
-                submitBtn.innerHTML = '<i class="fas fa-sign-in-alt" style="margin-left:8px;"></i> تسجيل الدخول';
-                switchLink.innerHTML = '<p>ليس لديك حساب؟ <a href="#" id="switchBtn">إنشاء حساب جديد</a></p>';
-                extraFields.innerHTML = '';
-            } else {
-                title.textContent = 'إنشاء حساب جديد';
-                desc.textContent = 'انضم إلينا واستمتع بتجربة تسوق فريدة';
-                submitBtn.innerHTML = '<i class="fas fa-user-plus" style="margin-left:8px;"></i> إنشاء الحساب';
-                switchLink.innerHTML = '<p>لديك حساب بالفعل؟ <a href="#" id="switchBtn">تسجيل الدخول</a></p>';
-                extraFields.innerHTML = `
-                    <div class="form-group"><label>الاسم الكامل</label><div class="input-wrapper"><i class="fas fa-user"></i><input type="text" id="regName" placeholder="أدخل اسمك الكامل" required></div></div>
-                    <div class="form-group"><label>رقم الهاتف</label><div class="input-wrapper"><i class="fas fa-phone"></i><input type="tel" id="regPhone" placeholder="7XXXXXXXX" required></div></div>
-                    <div class="form-group"><label>تأكيد كلمة المرور</label><div class="input-wrapper"><i class="fas fa-lock"></i><input type="password" id="regConfirm" placeholder="أعد إدخال كلمة المرور" required></div></div>
-                `;
-            }
-            document.getElementById('switchBtn').addEventListener('click', (e) => { e.preventDefault(); isLoginMode = !isLoginMode; updateForm(); });
-        }
+            document.getElementById('logoutBtn').addEventListener('click', () => { clearSession(); window.location.href = 'login.html'; });
+            document.getElementById('profileForm').addEventListener('submit', (e) => { e.preventDefault(); let newName = document.getElementById('profileName').value.trim(); let newPhone = document.getElementById('profilePhone').value.trim(); if (!newName) { showToast('الاسم مطلوب', 'error'); return; } saveProfile(newName, newPhone); showToast('تم حفظ التغييرات', 'success'); });
+            document.querySelectorAll('#dashboardMenu a').forEach(a => a.addEventListener('click', (e) => { e.preventDefault(); switchSection(a.dataset.section); }));
+            document.getElementById('userIcon').addEventListener('click', (e) => { e.preventDefault(); window.location.href = 'dashboard.html'; });
+            document.getElementById('cartIcon').addEventListener('click', (e) => { e.preventDefault(); window.location.href = 'products.html'; });
 
-        document.getElementById('togglePassword').addEventListener('click', function() {
-            let p = document.getElementById('password');
-            if (p.type === 'password') { p.type = 'text'; this.innerHTML = '<i class="fas fa-eye-slash"></i>'; }
-            else { p.type = 'password'; this.innerHTML = '<i class="fas fa-eye"></i>'; }
+            let menuOpen = false;
+            document.getElementById('menuToggle').addEventListener('click', () => { menuOpen = !menuOpen; document.getElementById('navLinks').classList.toggle('active'); document.body.classList.toggle('modal-open', menuOpen); });
+            document.querySelectorAll('#navLinks a').forEach(l => l.addEventListener('click', () => { menuOpen = false; document.getElementById('navLinks').classList.remove('active'); document.body.classList.remove('modal-open'); }));
         });
-
-        document.getElementById('authForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            let email = document.getElementById('email').value.trim();
-            let password = document.getElementById('password').value;
-
-            if (isLoginMode) {
-                let result = login(email, password);
-                if (result.success) {
-                    showToast('تم تسجيل الدخول بنجاح', 'success');
-                    setTimeout(() => { window.location.href = 'index.html'; }, 800);
-                } else { showError(result.message); }
-            } else {
-                let name = document.getElementById('regName').value.trim();
-                let phone = document.getElementById('regPhone').value.trim();
-                let confirm = document.getElementById('regConfirm').value;
-                let result = register(name, email, phone, password, confirm);
-                if (result.success) {
-                    showToast('تم إنشاء الحساب بنجاح', 'success');
-                    setTimeout(() => { window.location.href = 'index.html'; }, 800);
-                } else { showError(result.message); }
-            }
-        });
-
-        updateForm();
     })();
     </script>
 </body>
