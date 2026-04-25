@@ -2,11 +2,13 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Healtha - متجر الأدوات الطبية</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title id="pageTitle">Healtha - متجر الأدوات الطبية</title>
+    <meta name="theme-color" content="#115E59">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
+    <style id="dynamicStyles">
+        /* Default styles - will be overridden by admin settings */
         :root {
             --primary: #0D9488;
             --primary-dark: #0F766E;
@@ -67,6 +69,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
         }
 
         .contact-info span {
@@ -77,6 +80,10 @@
             margin-left: 5px;
         }
 
+        .free-shipping-text {
+            font-size: 13px;
+        }
+
         .header-main {
             padding: 15px 0;
         }
@@ -85,6 +92,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
         }
 
         .logo {
@@ -95,8 +103,10 @@
         }
 
         .logo img {
-            height: 40px;
+            height: 45px;
+            width: auto;
             margin-left: 10px;
+            border-radius: 10px;
         }
 
         .logo h1 {
@@ -196,12 +206,14 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
         }
 
         .nav-list {
             display: flex;
             list-style: none;
             gap: 30px;
+            flex-wrap: wrap;
         }
 
         .nav-list a {
@@ -363,6 +375,7 @@
         .category-icon {
             font-size: 48px;
             margin-bottom: 15px;
+            display: inline-block;
         }
 
         .category-card h4 {
@@ -455,12 +468,18 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         .product-price {
             font-size: 24px;
             font-weight: 900;
             color: var(--primary-dark);
+        }
+
+        .price-symbol {
+            font-size: 14px;
         }
 
         .add-to-cart-btn {
@@ -564,8 +583,25 @@
             color: var(--text-light);
         }
 
+        /* Loading Spinner */
+        .loading-spinner {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .loading-spinner i {
+            font-size: 40px;
+            color: var(--primary);
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         /* Responsive */
-        @media (max-width: 768px) {
+        @media (max-width: 992px) {
             .hero .container {
                 grid-template-columns: 1fr;
             }
@@ -574,26 +610,107 @@
                 font-size: 30px;
             }
 
-            .nav-list {
-                gap: 15px;
-                font-size: 14px;
-            }
-
             .search-bar {
-                margin: 10px 0;
+                margin: 15px 0;
                 max-width: 100%;
+                order: 3;
+                width: 100%;
             }
 
             .header-main .container {
                 flex-direction: column;
             }
 
+            .header-actions {
+                margin-top: 10px;
+            }
+
+            .nav-list {
+                justify-content: center;
+                gap: 15px;
+            }
+
+            .nav-list a {
+                font-size: 14px;
+                padding: 10px 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-top .container {
+                flex-direction: column;
+                gap: 8px;
+                text-align: center;
+            }
+
+            .contact-info span {
+                margin: 0 10px;
+            }
+
+            .hero {
+                padding: 40px 0;
+            }
+
+            .hero-content h2 {
+                font-size: 26px;
+            }
+
+            .hero-content p {
+                font-size: 16px;
+            }
+
             .categories-grid {
                 grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
             }
 
             .products-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .category-card {
+                padding: 20px 15px;
+            }
+
+            .category-icon {
+                font-size: 36px;
+            }
+
+            .section-title h3 {
+                font-size: 24px;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 20px;
+            }
+
+            .feature-card {
+                padding: 20px;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .product-price {
+                font-size: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-actions {
+                gap: 15px;
+            }
+
+            .categories-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .btn {
+                padding: 10px 20px;
+                font-size: 14px;
             }
         }
 
@@ -619,11 +736,11 @@
     <header class="header">
         <div class="header-top">
             <div class="container">
-                <div class="contact-info">
-                    <span><i class="fas fa-phone"></i> 966-555-555</span>
-                    <span><i class="fas fa-envelope"></i> info@healtha.com</span>
+                <div class="contact-info" id="contactInfo">
+                    <span><i class="fas fa-phone"></i> <span id="storePhone">966-555-555</span></span>
+                    <span><i class="fas fa-envelope"></i> <span id="storeEmail">info@healtha.com</span></span>
                 </div>
-                <div>
+                <div class="free-shipping-text" id="freeShippingText">
                     <span>شحن مجاني للطلبات فوق 500 ريال</span>
                 </div>
             </div>
@@ -632,7 +749,7 @@
             <div class="container">
                 <a href="index.html" class="logo">
                     <img src="logo.png" alt="Healtha Logo" id="storeLogo">
-                    <h1>Healtha</h1>
+                    <h1 id="storeName">Healtha</h1>
                 </a>
                 <div class="search-bar">
                     <input type="text" placeholder="ابحث عن المنتجات الطبية..." id="searchInput">
@@ -665,18 +782,18 @@
     </header>
 
     <!-- Hero Section -->
-    <section class="hero">
+    <section class="hero" id="heroSection">
         <div class="container">
             <div class="hero-content animate">
-                <h2>أفضل <span>الأدوات الطبية</span> بين يديك</h2>
-                <p>متجر Healtha يقدم لك أحدث وأفضل الأدوات والمعدات الطبية بأسعار تنافسية وجودة عالية. صحتك تهمنا!</p>
-                <div style="display: flex; gap: 15px;">
-                    <a href="products.html" class="btn btn-primary">تسوق الآن</a>
-                    <a href="categories.html" class="btn btn-outline">تصفح الفئات</a>
+                <h2 id="heroTitle">أفضل <span>الأدوات الطبية</span> بين يديك</h2>
+                <p id="heroSubtitle">متجر Healtha يقدم لك أحدث وأفضل الأدوات والمعدات الطبية بأسعار تنافسية وجودة عالية. صحتك تهمنا!</p>
+                <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                    <a href="products.html" class="btn btn-primary" id="shopNowBtn">تسوق الآن</a>
+                    <a href="categories.html" class="btn btn-outline" id="browseCategoriesBtn">تصفح الفئات</a>
                 </div>
             </div>
             <div class="hero-image animate">
-                <img src="https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=600" alt="Medical Equipment">
+                <img src="https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=600" alt="Medical Equipment" id="heroImage">
             </div>
         </div>
     </section>
@@ -685,11 +802,11 @@
     <section class="categories">
         <div class="container">
             <div class="section-title">
-                <h3>فئات المنتجات</h3>
-                <p>تصفح مجموعتنا الواسعة من الفئات الطبية</p>
+                <h3 id="categoriesTitle">فئات المنتجات</h3>
+                <p id="categoriesSubtitle">تصفح مجموعتنا الواسعة من الفئات الطبية</p>
             </div>
             <div class="categories-grid" id="categoriesGrid">
-                <!-- Dynamic content from Firebase -->
+                <div class="loading-spinner"><i class="fas fa-spinner"></i> جاري التحميل...</div>
             </div>
         </div>
     </section>
@@ -698,17 +815,17 @@
     <section class="products">
         <div class="container">
             <div class="section-title">
-                <h3>منتجات مميزة</h3>
-                <p>أفضل المنتجات الطبية المختارة بعناية</p>
+                <h3 id="featuredTitle">منتجات مميزة</h3>
+                <p id="featuredSubtitle">أفضل المنتجات الطبية المختارة بعناية</p>
             </div>
             <div class="products-grid" id="featuredProducts">
-                <!-- Dynamic content from Firebase -->
+                <div class="loading-spinner"><i class="fas fa-spinner"></i> جاري التحميل...</div>
             </div>
         </div>
     </section>
 
     <!-- Features -->
-    <section class="features">
+    <section class="features" id="featuresSection">
         <div class="container">
             <div class="features-grid">
                 <div class="feature-card">
@@ -736,12 +853,12 @@
     </section>
 
     <!-- Footer -->
-    <footer class="footer">
+    <footer class="footer" id="footer">
         <div class="container">
             <div class="footer-grid">
                 <div class="footer-about">
-                    <div class="footer-logo">🏥 Healtha</div>
-                    <p>متجرك الموثوق لشراء الأدوات والمعدات الطبية بأفضل الأسعار وأعلى جودة. نضمن لك منتجات أصلية وخدمة ممتازة.</p>
+                    <div class="footer-logo" id="footerLogo">🏥 Healtha</div>
+                    <p id="footerAbout">متجرك الموثوق لشراء الأدوات والمعدات الطبية بأفضل الأسعار وأعلى جودة. نضمن لك منتجات أصلية وخدمة ممتازة.</p>
                 </div>
                 <div class="footer-links">
                     <h4>روابط سريعة</h4>
@@ -763,15 +880,15 @@
                 </div>
                 <div class="footer-links">
                     <h4>تواصل معنا</h4>
-                    <ul>
-                        <li><i class="fas fa-phone"></i> 966-555-555</li>
-                        <li><i class="fas fa-envelope"></i> info@healtha.com</li>
-                        <li><i class="fas fa-map-marker-alt"></i> الرياض، المملكة العربية السعودية</li>
+                    <ul id="footerContact">
+                        <li><i class="fas fa-phone"></i> <span id="footerPhone">966-555-555</span></li>
+                        <li><i class="fas fa-envelope"></i> <span id="footerEmail">info@healtha.com</span></li>
+                        <li><i class="fas fa-map-marker-alt"></i> <span id="footerAddress">الرياض، المملكة العربية السعودية</span></li>
                     </ul>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2024 Healtha. جميع الحقوق محفوظة</p>
+                <p id="copyright">&copy; 2024 Healtha. جميع الحقوق محفوظة</p>
             </div>
         </div>
     </footer>
@@ -788,16 +905,125 @@
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        // Load Categories
+        // Current currency settings
+        let currentCurrency = 'SAR';
+        let currencyRates = { USD: 3.75, YER: 0.015 };
+        let enabledCurrencies = { USD: true, YER: true, SAR: true };
+        
+        // Store settings cache
+        let storeSettings = {};
+
+        // Load and apply dynamic styles from admin settings
+        function loadDynamicStyles() {
+            database.ref('settings').on('value', (snapshot) => {
+                const settings = snapshot.val();
+                if (settings) {
+                    storeSettings = settings;
+                    
+                    // Apply primary color if set
+                    if (settings.primaryColor) {
+                        document.documentElement.style.setProperty('--primary', settings.primaryColor);
+                        document.documentElement.style.setProperty('--primary-dark', adjustColor(settings.primaryColor, -20));
+                        document.documentElement.style.setProperty('--primary-light', adjustColor(settings.primaryColor, 40));
+                    }
+                    
+                    // Apply other style settings
+                    if (settings.bgColor) {
+                        document.documentElement.style.setProperty('--bg', settings.bgColor);
+                    }
+                    
+                    if (settings.textColor) {
+                        document.documentElement.style.setProperty('--text', settings.textColor);
+                    }
+                }
+            });
+        }
+
+        // Helper to adjust color brightness
+        function adjustColor(color, percent) {
+            return color; // Simplified - can be enhanced
+        }
+
+        // Load Page Content from admin (index page settings)
+        function loadPageContent() {
+            database.ref('pageContents').on('value', (snapshot) => {
+                const content = snapshot.val();
+                if (content) {
+                    // Hero Section
+                    if (content.heroTitle) document.getElementById('heroTitle').innerHTML = content.heroTitle;
+                    if (content.heroSubtitle) document.getElementById('heroSubtitle').textContent = content.heroSubtitle;
+                    if (content.heroBgImage) {
+                        document.getElementById('heroSection').style.background = `linear-gradient(135deg, var(--primary-light), #E0F2FE), url(${content.heroBgImage})`;
+                        document.getElementById('heroSection').style.backgroundSize = 'cover';
+                    }
+                    if (content.heroImage) document.getElementById('heroImage').src = content.heroImage;
+                    
+                    // Categories Section
+                    if (content.categoriesTitle) document.getElementById('categoriesTitle').textContent = content.categoriesTitle;
+                    if (content.categoriesSubtitle) document.getElementById('categoriesSubtitle').textContent = content.categoriesSubtitle;
+                    
+                    // Featured Products Section
+                    if (content.featuredTitle) document.getElementById('featuredTitle').textContent = content.featuredTitle;
+                    if (content.featuredSubtitle) document.getElementById('featuredSubtitle').textContent = content.featuredSubtitle;
+                    
+                    // Page Title
+                    if (content.pageTitle) document.getElementById('pageTitle').textContent = content.pageTitle;
+                }
+            });
+        }
+
+        // Load Currency Settings
+        function loadCurrencySettings() {
+            database.ref('settings').on('value', (snapshot) => {
+                const settings = snapshot.val();
+                if (settings) {
+                    if (settings.mainCurrency) currentCurrency = settings.mainCurrency;
+                    if (settings.usdRate) currencyRates.USD = settings.usdRate;
+                    if (settings.yerRate) currencyRates.YER = settings.yerRate;
+                    if (settings.enableUSD !== undefined) enabledCurrencies.USD = settings.enableUSD;
+                    if (settings.enableYER !== undefined) enabledCurrencies.YER = settings.enableYER;
+                    if (settings.enableSAR !== undefined) enabledCurrencies.SAR = settings.enableSAR;
+                }
+            });
+        }
+
+        // Get currency symbol
+        function getCurrencySymbol(currency = currentCurrency) {
+            const symbols = { SAR: 'ر.س', USD: '$', YER: '﷼' };
+            return symbols[currency] || 'ر.س';
+        }
+
+        // Format price based on current currency
+        function formatPrice(price, currency = currentCurrency) {
+            let convertedPrice = price;
+            if (currency === 'USD' && currencyRates.USD) {
+                convertedPrice = price / currencyRates.USD;
+            } else if (currency === 'YER' && currencyRates.YER) {
+                convertedPrice = price / currencyRates.YER;
+            }
+            return Math.round(convertedPrice * 100) / 100;
+        }
+
+        // Load Categories with colors and icons from admin
         function loadCategories() {
             database.ref('categories').on('value', (snapshot) => {
                 const categoriesGrid = document.getElementById('categoriesGrid');
                 categoriesGrid.innerHTML = '';
+                
+                if (!snapshot.exists()) {
+                    categoriesGrid.innerHTML = '<div class="loading-spinner">لا توجد فئات حالياً</div>';
+                    return;
+                }
+                
                 snapshot.forEach((childSnapshot) => {
                     const category = childSnapshot.val();
+                    const categoryId = childSnapshot.key;
+                    const iconColor = category.color || '#0D9488';
+                    const iconHtml = category.icon ? `<i class="${category.icon}" style="color: ${iconColor}; font-size: 48px;"></i>` : '📦';
+                    
                     categoriesGrid.innerHTML += `
-                        <div class="category-card" onclick="window.location.href='products.html?category=${childSnapshot.key}'">
-                            <div class="category-icon">${category.icon || '📦'}</div>
+                        <div class="category-card" onclick="window.location.href='products.html?category=${encodeURIComponent(category.name)}'">
+                            <div class="category-icon" style="color: ${iconColor};">${iconHtml}</div>
                             <h4>${category.name}</h4>
                         </div>
                     `;
@@ -805,26 +1031,36 @@
             });
         }
 
-        // Load Featured Products
+        // Load Featured Products with dynamic currency
         function loadFeaturedProducts() {
             database.ref('products').orderByChild('featured').equalTo(true).on('value', (snapshot) => {
                 const productsGrid = document.getElementById('featuredProducts');
                 productsGrid.innerHTML = '';
+                
+                if (!snapshot.exists()) {
+                    productsGrid.innerHTML = '<div class="loading-spinner">لا توجد منتجات مميزة حالياً</div>';
+                    return;
+                }
+                
                 snapshot.forEach((childSnapshot) => {
                     const product = childSnapshot.val();
+                    const productId = childSnapshot.key;
+                    const formattedPrice = formatPrice(product.price);
+                    const currencySymbol = getCurrencySymbol();
+                    
                     productsGrid.innerHTML += `
                         <div class="product-card animate">
                             <div class="product-image">
-                                <img src="${product.image || 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400'}" alt="${product.name}">
+                                <img src="${product.image || 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400'}" alt="${product.name}" onerror="this.src='https://via.placeholder.com/400x250?text=No+Image'">
                                 ${product.featured ? '<span class="product-badge">مميز</span>' : ''}
                             </div>
                             <div class="product-info">
-                                <div class="product-category">${product.category}</div>
+                                <div class="product-category">${product.category || 'عام'}</div>
                                 <h5 class="product-name">${product.name}</h5>
-                                <p class="product-description">${product.description}</p>
+                                <p class="product-description">${product.description ? product.description.substring(0, 80) + '...' : ''}</p>
                                 <div class="product-footer">
-                                    <span class="product-price">${product.price} ريال</span>
-                                    <button class="add-to-cart-btn" onclick="addToCart('${childSnapshot.key}')">
+                                    <span class="product-price">${formattedPrice} <span class="price-symbol">${currencySymbol}</span></span>
+                                    <button class="add-to-cart-btn" onclick="addToCart('${productId}')">
                                         <i class="fas fa-shopping-cart"></i>
                                     </button>
                                 </div>
@@ -835,12 +1071,46 @@
             });
         }
 
-        // Load Store Settings
+        // Load Store Settings (Logo, Name, Contact, etc.)
         function loadStoreSettings() {
             database.ref('settings').on('value', (snapshot) => {
                 const settings = snapshot.val();
-                if (settings && settings.logo) {
-                    document.getElementById('storeLogo').src = settings.logo;
+                if (settings) {
+                    // Logo
+                    if (settings.logo) {
+                        document.getElementById('storeLogo').src = settings.logo;
+                    }
+                    // Store Name
+                    if (settings.storeName) {
+                        document.getElementById('storeName').textContent = settings.storeName;
+                        document.getElementById('footerLogo').innerHTML = `🏥 ${settings.storeName}`;
+                    }
+                    // Phone
+                    if (settings.phone) {
+                        document.getElementById('storePhone').textContent = settings.phone;
+                        document.getElementById('footerPhone').textContent = settings.phone;
+                    }
+                    // Email
+                    if (settings.email) {
+                        document.getElementById('storeEmail').textContent = settings.email;
+                        document.getElementById('footerEmail').textContent = settings.email;
+                    }
+                    // Address
+                    if (settings.address) {
+                        document.getElementById('footerAddress').textContent = settings.address;
+                    }
+                    // Copyright
+                    if (settings.copyright) {
+                        document.getElementById('copyright').innerHTML = settings.copyright;
+                    }
+                    // About text
+                    if (settings.aboutText) {
+                        document.getElementById('footerAbout').textContent = settings.aboutText;
+                    }
+                    // Free shipping text
+                    if (settings.freeShippingText) {
+                        document.getElementById('freeShippingText').innerHTML = `<span>${settings.freeShippingText}</span>`;
+                    }
                 }
             });
         }
@@ -848,8 +1118,17 @@
         // Search Products
         function searchProducts() {
             const searchTerm = document.getElementById('searchInput').value;
-            window.location.href = `products.html?search=${searchTerm}`;
+            if (searchTerm.trim()) {
+                window.location.href = `products.html?search=${encodeURIComponent(searchTerm)}`;
+            }
         }
+
+        // Add Enter key support for search
+        document.getElementById('searchInput')?.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchProducts();
+            }
+        });
 
         // Cart Functions
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
@@ -857,22 +1136,54 @@
         function addToCart(productId) {
             database.ref(`products/${productId}`).once('value', (snapshot) => {
                 const product = snapshot.val();
-                cart.push({ ...product, id: productId });
-                localStorage.setItem('cart', JSON.stringify(cart));
-                updateCartCount();
-                alert('تمت إضافة المنتج إلى السلة');
+                if (product) {
+                    const existingItem = cart.find(item => item.id === productId);
+                    if (existingItem) {
+                        existingItem.quantity = (existingItem.quantity || 1) + 1;
+                    } else {
+                        cart.push({ 
+                            ...product, 
+                            id: productId, 
+                            quantity: 1 
+                        });
+                    }
+                    localStorage.setItem('cart', JSON.stringify(cart));
+                    updateCartCount();
+                    
+                    // Show notification
+                    const notification = document.createElement('div');
+                    notification.style.cssText = 'position:fixed;bottom:20px;right:20px;background:var(--success);color:white;padding:12px 24px;border-radius:50px;z-index:9999;animation:fadeInUp 0.3s ease;box-shadow:0 4px 12px rgba(0,0,0,0.2);';
+                    notification.innerHTML = '✅ تمت إضافة المنتج إلى السلة';
+                    document.body.appendChild(notification);
+                    setTimeout(() => notification.remove(), 2000);
+                }
             });
         }
 
         function updateCartCount() {
-            document.getElementById('cartCount').textContent = cart.length;
+            const cartCount = document.getElementById('cartCount');
+            if (cartCount) {
+                const totalItems = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+                cartCount.textContent = totalItems;
+            }
         }
 
-        // Initialize
+        // Listen for cart updates across pages
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'cart') {
+                cart = JSON.parse(e.newValue) || [];
+                updateCartCount();
+            }
+        });
+
+        // Initialize all
         document.addEventListener('DOMContentLoaded', () => {
+            loadDynamicStyles();
+            loadPageContent();
+            loadCurrencySettings();
+            loadStoreSettings();
             loadCategories();
             loadFeaturedProducts();
-            loadStoreSettings();
             updateCartCount();
         });
     </script>
