@@ -3,12 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Healtha - لوحة التحكم الكاملة</title>
+    <title>Healtha - لوحة التحكم</title>
     <meta name="theme-color" content="#115E59">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
     <style>
         :root {
             --primary: #0D9488; --primary-dark: #0F766E; --primary-darker: #115E59;
@@ -18,7 +20,6 @@
             --shadow-sm: 0 1px 2px rgba(0,0,0,0.05); --shadow: 0 1px 3px rgba(0,0,0,0.08);
             --shadow-md: 0 4px 16px rgba(0,0,0,0.08); --radius: 12px; --radius-sm: 8px;
             --radius-lg: 16px; --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); --font: 'Tajawal', sans-serif;
-            --danger: #EF4444; --success: #059669;
         }
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
@@ -27,9 +28,6 @@
         ul { list-style: none; }
         input, textarea, button, select { font-family: inherit; font-size: inherit; border: none; outline: none; }
 
-        .admin-container { display: flex; min-height: 100vh; }
-
-        /* Sidebar */
         .sidebar-overlay { position: fixed; inset: 0; background: rgba(15,23,42,0.55); backdrop-filter: blur(4px); z-index: 999; opacity: 0; visibility: hidden; transition: var(--transition); }
         .sidebar-overlay.active { opacity: 1; visibility: visible; }
 
@@ -38,19 +36,17 @@
         .sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 4px; }
         .sidebar-header { padding: 28px 20px 20px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.08); flex-shrink: 0; }
         .sidebar-header .logo-icon { width: 70px; height: 70px; border-radius: 18px; background: rgba(13,148,136,0.2); display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; overflow: hidden; border: 2px solid rgba(94,234,212,0.3); }
-        .sidebar-header .logo-icon img { width: 100%; height: 100%; object-fit: cover; }
         .sidebar-header .logo-icon i { font-size: 32px; color: #5EEAD4; }
         .sidebar-header h2 { font-size: 20px; font-weight: 900; margin-top: 5px; }
         .sidebar-header .admin-label { font-size: 12px; color: rgba(255,255,255,0.45); margin-top: 4px; }
 
         .sidebar-menu { flex: 1; padding: 16px 12px; }
         .sidebar-menu li { margin-bottom: 2px; }
-        .sidebar-menu a { display: flex; align-items: center; padding: 12px 16px; color: rgba(255,255,255,0.65); border-radius: var(--radius-sm); gap: 12px; transition: var(--transition); font-weight: 600; font-size: 14px; cursor: pointer; }
+        .sidebar-menu a { display: flex; align-items: center; padding: 12px 16px; color: rgba(255,255,255,0.65); border-radius: var(--radius-sm); gap: 12px; transition: var(--transition); font-weight: 600; font-size: 14px; }
         .sidebar-menu a i { width: 20px; text-align: center; font-size: 15px; }
         .sidebar-menu a:hover { background: rgba(13,148,136,0.2); color: #fff; }
         .sidebar-menu a.active { background: var(--primary); color: #fff; box-shadow: 0 4px 12px rgba(13,148,136,0.4); }
-        .sidebar-menu .menu-badge { margin-right: auto; background: #EF4444; color: #fff; font-size: 11px; font-weight: 800; min-width: 22px; height: 22px; border-radius: 11px; display: flex; align-items: center; justify-content: center; padding: 0 6px; animation: pulse 0.5s ease infinite; }
-        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+        .sidebar-menu .menu-badge { margin-right: auto; background: #EF4444; color: #fff; font-size: 11px; font-weight: 800; min-width: 22px; height: 22px; border-radius: 11px; display: flex; align-items: center; justify-content: center; padding: 0 6px; }
 
         .sidebar-footer { padding: 16px 12px; border-top: 1px solid rgba(255,255,255,0.08); flex-shrink: 0; }
         .btn-view-store { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 11px; background: rgba(13,148,136,0.2); color: #5EEAD4; border-radius: var(--radius-sm); font-weight: 700; font-size: 13px; transition: var(--transition); margin-bottom: 8px; }
@@ -58,28 +54,25 @@
         .btn-logout { width: 100%; padding: 11px; background: rgba(239,68,68,0.1); color: #FCA5A5; border-radius: var(--radius-sm); cursor: pointer; font-weight: 700; font-size: 13px; transition: var(--transition); display: flex; align-items: center; justify-content: center; gap: 8px; }
         .btn-logout:hover { background: #EF4444; color: #fff; }
 
-        /* Main Content */
-        .main-content { flex: 1; margin-right: 272px; padding: 20px; min-height: 100vh; transition: margin 0.35s cubic-bezier(0.4,0,0.2,1); }
+        .main-content { margin-right: 272px; padding: 20px; min-height: 100vh; transition: margin 0.35s cubic-bezier(0.4,0,0.2,1); }
         .top-bar { background: var(--bg-white); padding: 14px 20px; border-radius: var(--radius); display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; box-shadow: var(--shadow-sm); border: 1px solid var(--border); }
         .top-bar-left { display: flex; align-items: center; gap: 12px; }
         .store-logo-small { width: 38px; height: 38px; border-radius: 10px; background: var(--primary-light); display: flex; align-items: center; justify-content: center; overflow: hidden; margin-left: 8px; }
-        .store-logo-small img { width: 100%; height: 100%; object-fit: cover; }
         .store-logo-small i { font-size: 18px; color: var(--primary); }
         .menu-toggle { display: none; width: 40px; height: 40px; align-items: center; justify-content: center; border-radius: var(--radius-sm); cursor: pointer; color: var(--text); font-size: 18px; background: var(--bg); transition: var(--transition); }
         .page-title { font-size: 18px; font-weight: 900; display: flex; align-items: center; gap: 8px; }
         .top-bar-right { display: flex; align-items: center; gap: 10px; }
+        .date-display { font-size: 12px; color: var(--text-secondary); background: var(--bg); padding: 8px 10px; border-radius: var(--radius-sm); font-weight: 600; display: none; }
         .sheet-status { font-size: 11px; padding: 6px 10px; border-radius: var(--radius-sm); font-weight: 600; display: flex; align-items: center; gap: 6px; }
         .sheet-status.connected { background: #D1FAE5; color: #065F46; }
         .sheet-status.disconnected { background: #FEE2E2; color: #991B1B; }
 
-        /* Sections & Tabs */
         .section { display: none; background: var(--bg-white); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow-sm); border: 1px solid var(--border); animation: fadeSection 0.3s ease; }
         .section.active { display: block; }
         @keyframes fadeSection { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
         .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
-        .section-header h2, .form-container h3 { font-size: 17px; font-weight: 900; display: flex; align-items: center; gap: 8px; }
+        .section-header h2 { font-size: 17px; font-weight: 900; display: flex; align-items: center; gap: 8px; }
 
-        /* Buttons */
         .btn { padding: 10px 20px; border-radius: var(--radius-sm); font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: var(--transition); font-size: 14px; white-space: nowrap; }
         .btn:active { transform: scale(0.96); }
         .btn-primary { background: var(--primary); color: #fff; box-shadow: 0 3px 10px rgba(13,148,136,0.3); }
@@ -88,94 +81,84 @@
         .btn-danger:hover { background: #DC2626; }
         .btn-outline { background: transparent; border: 2px solid var(--border); color: var(--text-secondary); }
         .btn-outline:hover { background: var(--bg); }
-        .btn-sm { padding: 6px 14px; font-size: 12px; }
-        .btn-xs { padding: 4px 10px; font-size: 11px; }
 
-        /* Stats Grid */
         .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 24px; }
-        .stat-card { background: var(--bg-white); padding: 14px; border-radius: var(--radius); display: flex; align-items: center; gap: 12px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); transition: var(--transition); cursor: pointer; }
-        .stat-icon { width: 42px; height: 42px; min-width: 42px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 18px; }
+        .stat-card { background: var(--bg-white); padding: 14px; border-radius: var(--radius); display: flex; align-items: center; gap: 12px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); transition: var(--transition); }
+        .stat-icon { width: 42px; height: 42px; min-width: 42px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; }
         .stat-icon i { font-size: 18px; color: #fff; }
         .stat-icon.teal { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); }
-        .stat-icon.indigo { background: linear-gradient(135deg, #6366F1, #4F46E5); }
-        .stat-icon.amber { background: linear-gradient(135deg, var(--accent), var(--accent-dark)); }
+        .stat-icon.green { background: linear-gradient(135deg, #059669, #047857); }
         .stat-icon.red { background: linear-gradient(135deg, #EF4444, #DC2626); }
+        .stat-icon.amber { background: linear-gradient(135deg, var(--accent), var(--accent-dark)); }
+        .stat-icon.indigo { background: linear-gradient(135deg, #6366F1, #4F46E5); }
         .stat-info h3 { font-size: 20px; font-weight: 900; line-height: 1.2; }
         .stat-info p { color: var(--text-secondary); font-size: 12px; font-weight: 500; }
 
-        /* Table */
-        .table-responsive, .table-container { overflow-x: auto; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--bg-white); }
+        .table-responsive { overflow-x: auto; border-radius: var(--radius-sm); border: 1px solid var(--border); }
         table { width: 100%; border-collapse: collapse; min-width: 600px; }
         th, td { padding: 12px 14px; text-align: right; border-bottom: 1px solid var(--border); font-size: 14px; }
         th { background: var(--bg); font-weight: 700; white-space: nowrap; color: var(--text-secondary); font-size: 13px; }
         tr:last-child td { border-bottom: none; }
-        tbody tr { transition: 0.3s; }
-        tbody tr:hover { background: var(--bg); }
         
-        /* Badges */
-        .badge, .status-badge { padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; white-space: nowrap; }
-        .badge-success, .status-delivered { background: #D1FAE5; color: #065F46; }
-        .badge-danger, .status-cancelled { background: #FEE2E2; color: #991B1B; }
-        .status-pending { background: #FEF3C7; color: #92400E; }
-        .status-processing { background: #DBEAFE; color: #1E40AF; }
-        .status-shipped { background: #E0E7FF; color: #3730A3; }
-
+        .badge { padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; white-space: nowrap; }
+        .badge-success { background: #D1FAE5; color: #065F46; }
+        .badge-danger { background: #FEE2E2; color: #991B1B; }
+        
         .product-thumb { width: 44px; height: 44px; border-radius: var(--radius-sm); object-fit: cover; border: 1px solid var(--border); }
-
-        .action-buttons, td .btn { display: flex; gap: 6px; }
-        .action-btn, td .btn-xs { width: 34px; height: 34px; border: none; border-radius: var(--radius-sm); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; transition: var(--transition); }
+        .user-avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; color: #fff; flex-shrink: 0; }
+        
+        .action-buttons { display: flex; gap: 6px; }
+        .action-btn { width: 34px; height: 34px; border: none; border-radius: var(--radius-sm); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 13px; transition: var(--transition); }
         .action-btn:active { transform: scale(0.9); }
-        .action-btn.edit, .btn-success { background: #FEF3C7; color: #92400E; }
-        .action-btn.delete, .btn-danger { background: #FEE2E2; color: #991B1B; }
-        .action-btn.view, .btn-primary.btn-xs { background: #DBEAFE; color: #1D4ED8; }
+        .action-btn.edit { background: #FEF3C7; color: #92400E; }
+        .action-btn.delete { background: #FEE2E2; color: #991B1B; }
+        .action-btn.view { background: #DBEAFE; color: #1D4ED8; }
 
-        /* Forms */
-        .form-container { background: var(--bg-white); padding: 0; border-radius: 0; box-shadow: none; border: none; border-top: none; margin-top: 0; }
         .form-group { margin-bottom: 18px; }
         .form-group label { display: block; margin-bottom: 6px; font-weight: 700; font-size: 14px; }
         .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 11px 14px; border: 2px solid var(--border); border-radius: var(--radius-sm); font-size: 14px; background: var(--bg-white); color: var(--text); transition: var(--transition); }
         .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(13,148,136,0.1); }
         .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .form-row-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+        .required { color: #EF4444; }
         .form-actions { display: flex; gap: 12px; margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--border); flex-wrap: wrap; }
-        .image-upload-area { border: 2px dashed var(--border); border-radius: var(--radius-sm); padding: 30px; text-align: center; cursor: pointer; transition: all 0.3s; background: var(--bg); position: relative; margin-top: 10px; }
-        .image-upload-area:hover { border-color: var(--primary); background: var(--primary-light); }
-        .image-preview { width: 100%; max-height: 200px; border-radius: var(--radius-sm); object-fit: contain; margin-top: 15px; display: none; box-shadow: var(--shadow); }
-        .image-preview.show { display: block; }
+        .image-preview { width: 100px; height: 100px; border: 2px dashed var(--border); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; margin-top: 8px; overflow: hidden; background: var(--bg); cursor: pointer; }
+        .image-preview img { max-width: 100%; max-height: 100%; object-fit: cover; }
+        .upload-btn { display: inline-flex; align-items: center; gap: 8px; background: var(--bg); border: 2px solid var(--border); padding: 10px 18px; border-radius: var(--radius-sm); cursor: pointer; margin-top: 8px; font-size: 13px; font-weight: 600; color: var(--text-secondary); }
+        
+        .filter-bar { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+        .filter-search { flex: 1; min-width: 150px; }
+        .filter-search input { width: 100%; padding: 10px 14px; border: 2px solid var(--border); border-radius: var(--radius-sm); font-size: 14px; background: var(--bg-white); }
+        .filter-select { padding: 10px 14px; border: 2px solid var(--border); border-radius: var(--radius-sm); min-width: 120px; font-size: 14px; background: var(--bg-white); color: var(--text); cursor: pointer; }
+        
+        .categories-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+        .category-item { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px; transition: var(--transition); }
+        .category-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; }
+        .category-name { font-size: 16px; font-weight: 800; color: var(--primary); display: flex; align-items: center; gap: 8px; }
+        .category-name i { font-size: 18px; }
+        .category-desc { color: var(--text-secondary); font-size: 13px; line-height: 1.6; margin-bottom: 10px; }
+        .category-actions { display: flex; gap: 8px; }
+        .add-category-form { background: var(--bg-white); border: 2px dashed var(--border); border-radius: var(--radius-sm); padding: 20px; margin-top: 10px; }
+        .add-category-form h4 { font-size: 14px; font-weight: 800; margin-bottom: 12px; color: var(--text); }
 
-        .mini-tabs { display: flex; gap: 5px; margin-bottom: 10px; background: var(--bg); border-radius: 10px; padding: 5px; }
-        .mini-tab { flex: 1; padding: 8px; text-align: center; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.3s; border: none; background: transparent; font-family: var(--font); font-size: 13px; }
-        .mini-tab.active { background: white; box-shadow: var(--shadow-sm); color: var(--primary); }
+        .notice-section { background: var(--bg); border-radius: var(--radius-sm); padding: 16px; margin-bottom: 20px; border: 1px solid var(--border); }
+        .notice-section h3 { font-size: 16px; font-weight: 800; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; color: var(--primary); }
+        .notice-preview { background: linear-gradient(135deg, var(--accent), var(--accent-dark)); color: #fff; padding: 12px 16px; border-radius: var(--radius-sm); margin-top: 12px; display: flex; align-items: center; gap: 12px; }
 
-        /* Page Content Editor */
-        .page-editor-card { background: var(--bg); border-radius: var(--radius); padding: 20px; margin-bottom: 20px; border: 1px solid var(--border); }
-        .page-editor-card h3 { margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
-        .hero-preview { width: 100%; max-height: 180px; object-fit: cover; border-radius: var(--radius-sm); margin-top: 10px; }
+        .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--text); color: #fff; padding: 14px 24px; border-radius: var(--radius-sm); font-size: 14px; font-weight: 600; z-index: 5000; box-shadow: var(--shadow-md); transition: transform 0.35s cubic-bezier(0.4,0,0.2,1); max-width: calc(100% - 32px); text-align: center; }
+        .toast.show { transform: translateX(-50%) translateY(0); }
+        .toast.success { background: #059669; }
+        .toast.error { background: #EF4444; }
+        .toast.info { background: #0284C7; }
 
-        .icon-picker { display: grid; grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); gap: 10px; max-height: 250px; overflow-y: auto; padding: 15px; background: var(--bg); border-radius: 10px; border: 2px solid var(--border); }
-        .icon-option { width: 55px; height: 55px; display: flex; align-items: center; justify-content: center; font-size: 28px; border-radius: 10px; cursor: pointer; transition: all 0.3s; border: 2px solid transparent; background: white; }
-        .icon-option:hover { border-color: var(--primary); transform: scale(1.15); box-shadow: var(--shadow-md); }
-        .icon-option.selected { border-color: var(--primary); background: var(--primary-light); box-shadow: 0 0 0 3px rgba(13,148,136,0.2); }
-
-        .color-picker { display: flex; gap: 10px; flex-wrap: wrap; }
-        .color-option { width: 45px; height: 45px; border-radius: 50%; cursor: pointer; transition: all 0.3s; border: 3px solid transparent; }
-        .color-option:hover { transform: scale(1.2); }
-        .color-option.selected { border-color: var(--text); box-shadow: 0 0 0 4px rgba(0,0,0,0.1); }
-
-        .currency-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
-        .currency-card { background: var(--bg); padding: 20px; border-radius: 12px; border: 2px solid var(--border); transition: 0.3s; cursor: pointer; text-align: center; }
-        .currency-card.selected { border-color: var(--primary); background: var(--primary-light); }
-        .currency-card h4 { font-size: 16px; margin-bottom: 8px; }
-        .currency-symbol { font-size: 28px; font-weight: 900; color: var(--primary); }
-
-        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 3000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); opacity: 0; visibility: hidden; transition: var(--transition); padding: 20px; }
-        .modal-overlay.active { opacity: 1; visibility: visible; }
-        .modal { background: var(--bg-white); border-radius: var(--radius-lg); padding: 28px; max-width: 500px; width: 100%; max-height: 85vh; overflow-y: auto; box-shadow: var(--shadow-md); transform: scale(0.9); transition: transform 0.3s ease; }
-        .modal-overlay.active .modal { transform: scale(1); }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px solid var(--border); }
-        .modal-close { cursor: pointer; font-size: 24px; color: var(--text-light); transition: 0.3s; }
-
+        .confirm-overlay, .order-detail-overlay { position: fixed; inset: 0; background: rgba(15,23,42,0.55); backdrop-filter: blur(4px); z-index: 3000; display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; visibility: hidden; transition: var(--transition); }
+        .confirm-overlay.active, .order-detail-overlay.active { opacity: 1; visibility: visible; }
+        .confirm-box, .order-detail-box { background: var(--bg-white); border-radius: var(--radius-lg); padding: 28px 24px; max-width: 400px; width: 100%; transform: scale(0.9); transition: transform 0.3s ease; }
+        .order-detail-box { max-width: 500px; max-height: 85vh; overflow-y: auto; }
+        .confirm-overlay.active .confirm-box, .order-detail-overlay.active .order-detail-box { transform: scale(1); }
+        .confirm-box .confirm-icon { width: 56px; height: 56px; border-radius: 50%; background: #FEE2E2; color: #EF4444; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-size: 24px; }
+        .order-detail-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
         body.sidebar-open, body.modal-open { overflow: hidden; }
-        .empty-table { text-align: center; padding: 48px 20px !important; color: var(--text-light); }
 
         @media (max-width: 768px) {
             .sidebar { transform: translateX(100%); width: 280px; }
@@ -183,8 +166,8 @@
             .main-content { margin-right: 0; padding: 12px; }
             .menu-toggle { display: flex; }
             .page-title { font-size: 16px; }
-            .form-row { grid-template-columns: 1fr; }
-            .section, .form-container { padding: 16px; }
+            .form-row, .form-row-3 { grid-template-columns: 1fr; }
+            .section { padding: 16px; }
             .stat-info h3 { font-size: 18px; }
         }
     </style>
@@ -195,17 +178,17 @@
         <div class="sidebar-header">
             <div class="logo-icon" id="sidebarLogoArea"><i class="fas fa-stethoscope"></i></div>
             <h2>Healtha Admin</h2>
-            <div class="admin-label" id="adminName">لوحة إدارة المتجر</div>
+            <div class="admin-label">لوحة إدارة المتجر الطبي</div>
         </div>
         <ul class="sidebar-menu">
-            <li><a class="nav-link active" data-section="dashboard"><i class="fas fa-tachometer-alt"></i> الإحصائيات</a></li>
-            <li><a class="nav-link" data-section="orders"><i class="fas fa-shopping-bag"></i> الطلبات <span class="menu-badge" id="ordersBadge" style="display:none;">0</span></a></li>
-            <li><a class="nav-link" data-section="products"><i class="fas fa-boxes"></i> المنتجات</a></li>
-            <li><a class="nav-link" data-section="categories"><i class="fas fa-shapes"></i> الفئات</a></li>
-            <li><a class="nav-link" data-section="customers"><i class="fas fa-users"></i> العملاء</a></li>
-            <li><a class="nav-link" data-section="messages"><i class="fas fa-comments"></i> الرسائل</a></li>
-            <li><a class="nav-link" data-section="pages"><i class="fas fa-file-alt"></i> محتوى الصفحات</a></li>
-            <li><a class="nav-link" data-section="settings"><i class="fas fa-sliders-h"></i> الإعدادات</a></li>
+            <li><a href="#" class="nav-link active" data-section="dashboard"><i class="fas fa-tachometer-alt"></i> الرئيسية</a></li>
+            <li><a href="#" class="nav-link" data-section="customers"><i class="fas fa-users"></i> العملاء</a></li>
+            <li><a href="#" class="nav-link" data-section="products"><i class="fas fa-box"></i> المنتجات</a></li>
+            <li><a href="#" class="nav-link" data-section="addProduct"><i class="fas fa-plus-circle"></i> إضافة منتج</a></li>
+            <li><a href="#" class="nav-link" data-section="orders"><i class="fas fa-shopping-cart"></i> الطلبات</a></li>
+            <li><a href="#" class="nav-link" data-section="categories"><i class="fas fa-tags"></i> الفئات</a></li>
+            <li><a href="#" class="nav-link" data-section="notice"><i class="fas fa-bell"></i> إشعار المتجر</a></li>
+            <li><a href="#" class="nav-link" data-section="settings"><i class="fas fa-cog"></i> الإعدادات</a></li>
         </ul>
         <div class="sidebar-footer">
             <a href="index.html" class="btn-view-store"><i class="fas fa-eye"></i> عرض المتجر</a>
@@ -217,253 +200,538 @@
         <div class="top-bar">
             <div class="top-bar-left">
                 <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
-                <div class="store-logo-small" id="topBarLogo"><i class="fas fa-stethoscope" style="color:#0D9488;"></i></div>
-                <h1 class="page-title" id="pageTitle">📊 الإحصائيات</h1>
+                <div class="store-logo-small"><i class="fas fa-stethoscope"></i></div>
+                <h1 class="page-title" id="pageTitle">لوحة التحكم</h1>
             </div>
             <div class="top-bar-right">
-                <span class="sheet-status connected" id="sheetStatus"><i class="fas fa-check-circle"></i> متصل</span>
+                <span class="date-display" id="currentDate"></span>
+                <span class="sheet-status checking" id="sheetStatus"><i class="fas fa-spinner fa-pulse"></i></span>
             </div>
         </div>
 
-        <!-- Dashboard Tab -->
+        <!-- Dashboard -->
         <div class="section active" id="dashboardSection">
             <div class="stats-grid">
-                <div class="stat-card" onclick="showTab('products')"><div class="stat-icon indigo"><i class="fas fa-boxes"></i></div><div class="stat-info"><h3 id="totalProducts">0</h3><p>منتجات</p></div></div>
-                <div class="stat-card" onclick="showTab('categories')"><div class="stat-icon teal"><i class="fas fa-shapes"></i></div><div class="stat-info"><h3 id="totalCategories">0</h3><p>فئات</p></div></div>
-                <div class="stat-card" onclick="showTab('orders')"><div class="stat-icon amber"><i class="fas fa-shopping-bag"></i></div><div class="stat-info"><h3 id="totalOrders">0</h3><p>طلبات</p></div></div>
-                <div class="stat-card" onclick="showTab('customers')"><div class="stat-icon red"><i class="fas fa-users"></i></div><div class="stat-info"><h3 id="totalCustomers">0</h3><p>عملاء</p></div></div>
+                <div class="stat-card"><div class="stat-icon indigo"><i class="fas fa-users"></i></div><div class="stat-info"><h3 id="totalCustomers">0</h3><p>عملاء</p></div></div>
+                <div class="stat-card"><div class="stat-icon teal"><i class="fas fa-box"></i></div><div class="stat-info"><h3 id="totalProducts">0</h3><p>منتجات</p></div></div>
+                <div class="stat-card"><div class="stat-icon green"><i class="fas fa-check-circle"></i></div><div class="stat-info"><h3 id="inStockProducts">0</h3><p>متوفرة</p></div></div>
+                <div class="stat-card"><div class="stat-icon red"><i class="fas fa-times-circle"></i></div><div class="stat-info"><h3 id="outOfStockProducts">0</h3><p>نافدة</p></div></div>
+                <div class="stat-card" style="grid-column: span 2;"><div class="stat-icon amber"><i class="fas fa-shopping-cart"></i></div><div class="stat-info"><h3 id="totalOrders">0</h3><p>طلبات</p></div></div>
             </div>
-            <div class="section-header"><h2><i class="fas fa-clock"></i> آخر الطلبات</h2></div>
-            <div class="table-responsive"><table><thead><tr><th>رقم الطلب</th><th>العميل</th><th>الإجمالي</th><th>الحالة</th><th>التاريخ</th></tr></thead><tbody id="recentOrdersTable"></tbody></table></div>
-        </div>
-
-        <!-- Orders Tab -->
-        <div class="section" id="ordersSection">
-            <div class="section-header"><h2><i class="fas fa-shopping-bag"></i> جميع الطلبات</h2></div>
-            <div class="table-responsive"><table><thead><tr><th>رقم الطلب</th><th>العميل</th><th>الهاتف</th><th>المنتجات</th><th>الإجمالي</th><th>الحالة</th><th>التاريخ</th><th>إجراءات</th></tr></thead><tbody id="ordersTableBody"></tbody></table></div>
-        </div>
-
-        <!-- Products Tab -->
-        <div class="section" id="productsSection">
-            <div class="section-header"><h2><i class="fas fa-boxes"></i> المنتجات</h2><button class="btn btn-primary" onclick="showProductForm()"><i class="fas fa-plus"></i> إضافة منتج</button></div>
-            <div class="section" id="productForm" style="display:none; margin-top:20px;">
-                <div class="section-header"><h3 id="productFormTitle"><i class="fas fa-plus-circle"></i> إضافة منتج جديد</h3></div>
-                <form id="productFormElement">
-                    <input type="hidden" id="productId"><input type="hidden" id="productImageData" value="">
-                    <div class="form-row"><div class="form-group"><label>اسم المنتج *</label><input type="text" id="productName" required></div><div class="form-group"><label>الفئة *</label><select id="productCategory" required></select></div></div>
-                    <div class="form-group"><label>الوصف *</label><textarea id="productDescription" required rows="3"></textarea></div>
-                    <div class="form-row"><div class="form-group"><label>السعر *</label><input type="number" id="productPrice" required step="0.01"></div><div class="form-group"><label>المخزون</label><input type="number" id="productStock" value="1" min="0"></div></div>
-                    <div class="form-group"><label><input type="checkbox" id="productFeatured"> منتج مميز ⭐</label></div>
-                    <div class="form-actions"><button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> حفظ المنتج</button><button type="button" class="btn btn-outline" onclick="hideProductForm()">إلغاء</button></div>
-                </form>
+            <div style="margin-bottom:24px;">
+                <h3 style="margin-bottom:14px;font-size:16px;font-weight:800;"><i class="fas fa-user-clock" style="color:var(--primary);margin-left:6px;"></i> آخر العملاء</h3>
+                <div class="table-responsive"><table><thead><tr><th>العميل</th><th>الهاتف</th><th>التسجيل</th></tr></thead><tbody id="recentCustomers"></tbody></table></div>
             </div>
-            <div class="table-responsive" style="margin-top:20px;"><table><thead><tr><th>صورة</th><th>المنتج</th><th>الفئة</th><th>السعر</th><th>المخزون</th><th>مميز</th><th>إجراءات</th></tr></thead><tbody id="productsTableBody"></tbody></table></div>
-        </div>
-
-        <!-- Categories Tab -->
-        <div class="section" id="categoriesSection">
-            <div class="section" id="categoryForm" style="display:none; margin-bottom:20px;">
-                <div class="section-header"><h3><i class="fas fa-plus-circle"></i> إضافة فئة جديدة</h3></div>
-                <form id="categoryFormElement">
-                    <input type="hidden" id="categoryId">
-                    <div class="form-row"><div class="form-group"><label>اسم الفئة *</label><input type="text" id="categoryName" required></div><div class="form-group"><label>لون الفئة</label><div class="color-picker" id="colorPicker"></div><input type="hidden" id="categoryColor" value="#0D9488"></div></div>
-                    <div class="form-group"><label>اختر أيقونة</label><div class="icon-picker" id="iconPicker"></div><input type="hidden" id="categoryIcon" value="fas fa-stethoscope"></div>
-                    <div class="form-group"><label>الوصف</label><textarea id="categoryDescription" rows="2"></textarea></div>
-                    <div class="form-actions"><button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> حفظ الفئة</button><button type="button" class="btn btn-outline" onclick="hideCategoryForm()">إلغاء</button></div>
-                </form>
+            <div>
+                <h3 style="margin-bottom:14px;font-size:16px;font-weight:800;">آخر المنتجات</h3>
+                <div class="table-responsive"><table><thead><tr><th>المنتج</th><th>السعر</th><th>الحالة</th></tr></thead><tbody id="recentProducts"></tbody></table></div>
             </div>
-            <button class="btn btn-primary" onclick="showCategoryForm()" style="margin-bottom:20px;"><i class="fas fa-plus"></i> إضافة فئة جديدة</button>
-            <div class="table-responsive"><table><thead><tr><th>الأيقونة</th><th>اللون</th><th>اسم الفئة</th><th>الوصف</th><th>إجراءات</th></tr></thead><tbody id="categoriesTableBody"></tbody></table></div>
         </div>
 
-        <!-- Customers Tab -->
+        <!-- Customers -->
         <div class="section" id="customersSection">
-            <div class="section-header"><h2><i class="fas fa-users"></i> قائمة العملاء</h2></div>
-            <div class="table-responsive"><table><thead><tr><th>العميل</th><th>البريد</th><th>الهاتف</th><th>الدور</th><th>تاريخ التسجيل</th></tr></thead><tbody id="customersTableBody"></tbody></table></div>
+            <div class="section-header"><h2><i class="fas fa-users" style="color:#6366F1;"></i> العملاء</h2></div>
+            <div class="filter-bar"><div class="filter-search"><input type="text" id="searchCustomer" placeholder="بحث..."></div></div>
+            <div class="table-responsive"><table><thead><tr><th>العميل</th><th>البريد</th><th>الهاتف</th><th>إجراء</th></tr></thead><tbody id="customersTableBody"></tbody></table></div>
         </div>
 
-        <!-- Messages Tab -->
-        <div class="section" id="messagesSection">
-            <div class="section-header"><h2><i class="fas fa-comments"></i> رسائل العملاء</h2></div>
-            <div class="table-responsive"><table><thead><tr><th>المرسل</th><th>البريد</th><th>الموضوع</th><th>التاريخ</th><th>الحالة</th><th>إجراءات</th></tr></thead><tbody id="messagesTableBody"></tbody></table></div>
+        <!-- Products -->
+        <div class="section" id="productsSection">
+            <div class="section-header"><h2><i class="fas fa-box" style="color:var(--primary)"></i> المنتجات</h2><button class="btn btn-primary" id="goToAddProductBtn"><i class="fas fa-plus"></i> إضافة</button></div>
+            <div class="filter-bar"><div class="filter-search"><input type="text" id="searchProduct" placeholder="بحث..."></div></div>
+            <div class="table-responsive"><table><thead><tr><th>الصورة</th><th>المنتج</th><th>السعر</th><th>الحالة</th><th>إجراء</th></tr></thead><tbody id="productsTableBody"></tbody><table></div>
         </div>
 
-        <!-- Pages Content Editor (NEW) -->
-        <div class="section" id="pagesSection">
-            <div class="section-header"><h2><i class="fas fa-file-alt"></i> تحرير محتوى صفحات المتجر</h2></div>
-            
-            <!-- Index Page Editor -->
-            <div class="page-editor-card">
-                <h3><i class="fas fa-home"></i> الصفحة الرئيسية (index.html)</h3>
-                <div class="form-group"><label>النص الترحيبي (Hero Title)</label><input type="text" id="heroTitle" class="form-control" placeholder="مثال: Healtha - متجرك الصحي الأول"></div>
-                <div class="form-group"><label>النص الوصفي (Hero Subtitle)</label><textarea id="heroSubtitle" rows="2" placeholder="وصف قصير للمتجر"></textarea></div>
-                <div class="form-group"><label>رابط صورة الخلفية (Hero Background)</label><input type="text" id="heroBgImage" placeholder="https://example.com/hero.jpg"></div>
-                <div class="form-group"><label>رمز الفئة الرئيسي (أيقونة مميزة)</label><input type="text" id="featuredIcon" placeholder="fas fa-medal"></div>
-                <button class="btn btn-primary btn-sm" onclick="savePageContent('index')"><i class="fas fa-save"></i> حفظ محتوى الرئيسية</button>
-            </div>
+        <!-- Add Product -->
+        <div class="section" id="addProductSection">
+            <div class="section-header"><h2 id="formTitle"><i class="fas fa-plus-circle" style="color:var(--primary)"></i> إضافة منتج</h2></div>
+            <form id="productForm">
+                <input type="hidden" id="editProductId">
+                <div class="form-row">
+                    <div class="form-group"><label>اسم المنتج <span class="required">*</span></label><input type="text" id="productName" required></div>
+                    <div class="form-group"><label>الفئة <span class="required">*</span></label><select id="productCategory" required><option value="">اختر</option></select></div>
+                </div>
+                <div class="form-group"><label>الوصف</label><textarea id="productDescription" rows="3"></textarea></div>
+                <div class="form-row-3">
+                    <div class="form-group"><label>السعر ($) <span class="required">*</span></label><input type="number" id="productPrice" step="0.01" required></div>
+                    <div class="form-group"><label>السعر القديم</label><input type="number" id="productOldPrice" step="0.01"></div>
+                    <div class="form-group"><label>المخزون <span class="required">*</span></label><input type="number" id="productStock" min="0" required></div>
+                </div>
+                <div class="form-group">
+                    <label>صورة المنتج</label>
+                    <input type="file" id="productImageFile" accept="image/*" style="display:none;">
+                    <div class="image-preview" id="imagePreview"><i class="fas fa-image" style="font-size:28px;color:var(--text-light)"></i></div>
+                    <div class="upload-btn" id="uploadBtnTrigger"><i class="fas fa-upload"></i> اختر صورة</div>
+                    <input type="text" id="productImageUrl" placeholder="أو رابط الصورة" style="margin-top:8px;">
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> حفظ</button>
+                    <button type="button" class="btn btn-outline" id="cancelProductBtn">إلغاء</button>
+                </div>
+            </form>
+        </div>
 
-            <!-- About Page Editor -->
-            <div class="page-editor-card">
-                <h3><i class="fas fa-info-circle"></i> صفحة من نحن (about.html)</h3>
-                <div class="form-group"><label>عنوان القسم</label><input type="text" id="aboutTitle" placeholder="عنوان الصفحة"></div>
-                <div class="form-group"><label>المحتوى النصي (HTML مسموح)</label><textarea id="aboutContent" rows="6" placeholder="اكتب قصة المتجر ورؤيته..."></textarea></div>
-                <div class="form-group"><label>رابط الصورة الرئيسية</label><input type="text" id="aboutImage" placeholder="رابط الصورة"></div>
-                <div class="form-group"><label>رؤية المتجر</label><textarea id="aboutVision" rows="2" placeholder="رؤيتنا..."></textarea></div>
-                <div class="form-group"><label>رسالة المتجر</label><textarea id="aboutMission" rows="2" placeholder="رسالتنا..."></textarea></div>
-                <button class="btn btn-primary btn-sm" onclick="savePageContent('about')"><i class="fas fa-save"></i> حفظ محتوى من نحن</button>
-            </div>
+        <!-- Orders -->
+        <div class="section" id="ordersSection">
+            <div class="section-header"><h2><i class="fas fa-shopping-cart" style="color:var(--primary)"></i> الطلبات</h2></div>
+            <div class="filter-bar"><div class="filter-search"><input type="text" id="searchOrder" placeholder="بحث..."></div></div>
+            <div class="table-responsive"><table><thead><tr><th>العميل</th><th>الإجمالي</th><th>الحالة</th><th>تفاصيل</th></tr></thead><tbody id="ordersTableBody"></tbody></table></div>
+        </div>
 
-            <!-- Contact Page Editor -->
-            <div class="page-editor-card">
-                <h3><i class="fas fa-envelope"></i> صفحة اتصل بنا (contact.html)</h3>
-                <div class="form-group"><label>عنوان الصفحة</label><input type="text" id="contactTitle" placeholder="تواصل معنا"></div>
-                <div class="form-group"><label>الوصف</label><textarea id="contactDesc" rows="2" placeholder="نحن هنا لمساعدتك..."></textarea></div>
-                <div class="form-group"><label>ساعات العمل</label><input type="text" id="workHours" placeholder="السبت - الخميس: 9ص - 9م"></div>
-                <div class="form-group"><label>خريطة (Google Maps Embed Link)</label><input type="text" id="mapLink" placeholder="رابط الخريطة"></div>
-                <button class="btn btn-primary btn-sm" onclick="savePageContent('contact')"><i class="fas fa-save"></i> حفظ محتوى اتصل بنا</button>
-            </div>
-
-            <!-- Cart Page Editor -->
-            <div class="page-editor-card">
-                <h3><i class="fas fa-shopping-cart"></i> صفحة السلة (cart.html)</h3>
-                <div class="form-group"><label>عنوان الصفحة</label><input type="text" id="cartTitle" placeholder="سلة التسوق"></div>
-                <div class="form-group"><label>نص فارغ (عند عدم وجود منتجات)</label><textarea id="emptyCartMsg" rows="2" placeholder="سلة التسوق فارغة..."></textarea></div>
-                <div class="form-group"><label>لون خلفية الصفحة</label><input type="color" id="cartBgColor" value="#F1F5F9"></div>
-                <button class="btn btn-primary btn-sm" onclick="savePageContent('cart')"><i class="fas fa-save"></i> حفظ محتوى السلة</button>
-            </div>
-            <div class="alert alert-info" style="margin-top:15px; background:#E0F2FE; padding:12px; border-radius:10px;">
-                <i class="fas fa-info-circle"></i> ملاحظة: كل ما يتم حفظه هنا سيظهر مباشرة على صفحات المتجر (index, about, contact, cart).
+        <!-- Categories -->
+        <div class="section" id="categoriesSection">
+            <div class="section-header"><h2><i class="fas fa-tags" style="color:var(--primary)"></i> إدارة الفئات</h2></div>
+            <div class="categories-list" id="categoriesList"></div>
+            <div class="add-category-form">
+                <h4><i class="fas fa-plus-circle" style="color:var(--primary);margin-left:8px;"></i> إضافة فئة جديدة</h4>
+                <div class="form-group"><label>اسم الفئة <span class="required">*</span></label><input type="text" id="newCategoryName" placeholder="مثال: الأجهزة الطبية"></div>
+                <div class="form-group"><label>وصف الفئة</label><textarea id="newCategoryDesc" rows="2" placeholder="وصف مختصر للفئة..."></textarea></div>
+                <div class="form-group"><label>أيقونة الفئة</label><select id="newCategoryIcon"><option value="fas fa-stethoscope">🩺 أجهزة طبية</option><option value="fas fa-syringe">💉 أدوات الحقن</option><option value="fas fa-heartbeat">❤️ أجهزة قياس</option><option value="fas fa-thermometer">🌡️ موازين حرارة</option><option value="fas fa-bolt">⚡ أجهزة كهربائية</option><option value="fas fa-box">📦 عام</option></select></div>
+                <div class="form-group"><label>لون الفئة</label><input type="color" id="newCategoryColor" value="#0D9488"></div>
+                <button class="btn btn-primary" id="addCategoryBtn"><i class="fas fa-save"></i> حفظ الفئة</button>
             </div>
         </div>
 
-        <!-- Settings Tab -->
+        <!-- إشعار المتجر -->
+        <div class="section" id="noticeSection">
+            <div class="section-header"><h2><i class="fas fa-bell" style="color:var(--accent)"></i> إشعار المتجر</h2></div>
+            <div class="notice-section">
+                <h3><i class="fas fa-edit"></i> تحرير الإشعار</h3>
+                <div class="form-group">
+                    <label>نص الإشعار</label>
+                    <textarea id="noticeTextInput" rows="3" placeholder="أدخل نص الإشعار الذي سيظهر أعلى المتجر..." style="width:100%;padding:12px;border:2px solid var(--border);border-radius:var(--radius-sm);"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>حالة الإشعار</label>
+                    <select id="noticeStatus" style="width:100%;padding:12px;border:2px solid var(--border);border-radius:var(--radius-sm);">
+                        <option value="active">مفعل</option>
+                        <option value="inactive">غير مفعل</option>
+                    </select>
+                </div>
+                <div class="notice-preview">
+                    <i class="fas fa-bullhorn"></i>
+                    <span id="noticePreviewText">مرحباً بكم في Healtha - متجر الأدوات الطبية</span>
+                </div>
+                <button class="btn btn-primary" id="saveNoticeBtn" style="margin-top:16px;"><i class="fas fa-save"></i> حفظ الإشعار</button>
+            </div>
+        </div>
+
+        <!-- Settings -->
         <div class="section" id="settingsSection">
-            <div class="section-header"><h2><i class="fas fa-sliders-h"></i> الإعدادات العامة</h2></div>
+            <div class="section-header"><h2><i class="fas fa-cog" style="color:var(--primary)"></i> الإعدادات</h2></div>
             <form id="settingsForm">
-                <div class="form-group"><label>شعار المتجر</label><input type="url" id="storeLogoData" placeholder="رابط الشعار"></div>
-                <div class="form-row"><div class="form-group"><label>اسم المتجر</label><input type="text" id="storeName" value="Healtha"></div><div class="form-group"><label>رقم الهاتف</label><input type="tel" id="storePhone"></div></div>
-                <div class="form-group"><label>البريد الإلكتروني</label><input type="email" id="storeEmail"></div>
+                <div class="form-group"><label>شعار المتجر</label><input type="file" id="storeLogoFile" accept="image/*"><div id="logoPreview" style="width:80px;height:80px;border-radius:16px;background:#f1f5f9;margin-top:8px;display:flex;align-items:center;justify-content:center;overflow:hidden;border:1px solid var(--border);"><i class="fas fa-image" style="color:var(--text-light);"></i></div></div>
+                <div class="form-group"><label>اسم المتجر</label><input type="text" id="storeName" value="Healtha"></div>
+                <div class="form-row"><div class="form-group"><label>البريد</label><input type="email" id="storeEmail"></div><div class="form-group"><label>الهاتف</label><input type="tel" id="storePhone"></div></div>
                 <div class="form-group"><label>العنوان</label><textarea id="storeAddress" rows="2"></textarea></div>
-                <hr>
-                <h4><i class="fas fa-coins"></i> إعدادات العملات</h4>
-                <div class="form-group"><label>العملة الرئيسية</label><select id="mainCurrency"><option value="SAR">ريال سعودي</option><option value="USD">دولار</option><option value="YER">ريال يمني</option></select></div>
-                <div class="form-actions"><button type="submit" class="btn btn-primary">حفظ الإعدادات</button></div>
+                <div class="form-actions"><button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> حفظ الإعدادات</button></div>
             </form>
         </div>
     </main>
 
-    <div class="modal-overlay" id="orderModal">
-        <div class="modal">
-            <div class="modal-header"><h3>تفاصيل الطلب</h3><span class="modal-close" onclick="closeModal()">&times;</span></div>
-            <div id="orderModalContent"></div>
-        </div>
-    </div>
+    <div class="confirm-overlay" id="confirmOverlay"><div class="confirm-box"><div class="confirm-icon"><i class="fas fa-trash-alt"></i></div><h3 id="confirmTitle">حذف</h3><p id="confirmMessage">هل أنت متأكد؟</p><div style="display:flex;gap:10px;justify-content:center;margin-top:20px;"><button class="btn btn-danger" id="confirmDeleteBtn">حذف</button><button class="btn btn-outline" id="confirmCancelBtn">إلغاء</button></div></div></div>
+    <div class="order-detail-overlay" id="orderDetailOverlay"><div class="order-detail-box"><h3 style="margin-bottom:16px;"><i class="fas fa-receipt"></i> تفاصيل الطلب</h3><div id="orderDetailContent"></div><button class="btn btn-outline" id="orderDetailCloseBtn" style="margin-top:16px;width:100%;">إغلاق</button></div></div>
 
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
-    <script>
-        const firebaseConfig = { databaseURL: "https://medical-54ab4-default-rtdb.firebaseio.com/" };
-        firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
+<script>
+(function(){
+    const FIREBASE_CONFIG = { databaseURL: "https://medical-54ab4-default-rtdb.firebaseio.com/" };
+    let database = null;
+    let products = [], orders = [], customers = [];
+    let categories = [];
+    let lastOrderCount = 0;
+    let currentCurrency = 'USD';
+    let deleteTarget = { id: null, type: null };
 
-        let currentUser = null;
-        let selectedIcon = 'fas fa-stethoscope';
-        let selectedColor = '#0D9488';
-        let mainCurrency = 'SAR';
-
-        const iconList = ['fas fa-stethoscope', 'fas fa-heartbeat', 'fas fa-syringe', 'fas fa-pills', 'fas fa-hospital', 'fas fa-ambulance', 'fas fa-x-ray', 'fas fa-microscope', 'fas fa-tooth', 'fas fa-eye', 'fas fa-brain', 'fas fa-bone', 'fas fa-lungs', 'fas fa-virus', 'fas fa-flask', 'fas fa-capsules', 'fas fa-band-aid', 'fas fa-wheelchair', 'fas fa-procedures', 'fas fa-thermometer'];
-
-        function initIconPicker() {
-            const picker = document.getElementById('iconPicker');
-            if(!picker) return;
-            picker.innerHTML = iconList.map(icon => `<div class="icon-option ${icon === selectedIcon ? 'selected' : ''}" onclick="selectIcon('${icon}', this)"><i class="${icon}"></i></div>`).join('');
+    // التحقق من جلسة المشرف
+    function checkAdminAuth() {
+        try {
+            var adminSession = JSON.parse(localStorage.getItem('healtha_admin_session'));
+            if (!adminSession || !adminSession.isAdmin || adminSession.email !== 'admin@healtha.com') {
+                window.location.href = 'admin-login.html';
+                return false;
+            }
+            return true;
+        } catch(e) {
+            window.location.href = 'admin-login.html';
+            return false;
         }
+    }
 
-        function selectIcon(icon, element) { selectedIcon = icon; document.getElementById('categoryIcon').value = icon; document.querySelectorAll('.icon-option').forEach(el => el.classList.remove('selected')); element.classList.add('selected'); }
-        function selectColor(element) { document.querySelectorAll('.color-option').forEach(el => el.classList.remove('selected')); element.classList.add('selected'); selectedColor = element.dataset.color; document.getElementById('categoryColor').value = selectedColor; }
+    function initFirebase() {
+        try {
+            if (firebase && !firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+            database = firebase.database();
+            return true;
+        } catch (error) { return false; }
+    }
+
+    function showToast(msg, type) { 
+        let t = document.createElement('div'); 
+        t.className = 'toast ' + type; 
+        t.innerText = msg; 
+        document.body.appendChild(t); 
+        setTimeout(() => t.classList.add('show'), 10); 
+        setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 300); }, 3000); 
+    }
+
+    // إشعار المتجر
+    function loadStoreNotice() {
+        try {
+            var noticeData = JSON.parse(localStorage.getItem('healtha_store_notice') || '{"text":"مرحباً بكم في Healtha - متجر الأدوات الطبية الموثوق","active":true}');
+            document.getElementById('noticeTextInput').value = noticeData.text;
+            document.getElementById('noticeStatus').value = noticeData.active ? 'active' : 'inactive';
+            document.getElementById('noticePreviewText').textContent = noticeData.text;
+        } catch(e) {}
+    }
+
+    function saveStoreNotice() {
+        var text = document.getElementById('noticeTextInput').value.trim();
+        var active = document.getElementById('noticeStatus').value === 'active';
+        if (!text) {
+            showToast('نص الإشعار مطلوب', 'error');
+            return;
+        }
+        var noticeData = { text: text, active: active };
+        localStorage.setItem('healtha_store_notice', JSON.stringify(noticeData));
+        document.getElementById('noticePreviewText').textContent = text;
+        showToast('تم حفظ إشعار المتجر بنجاح', 'success');
+    }
+
+    // الفئات
+    function loadCategoriesFromFirebase() {
+        if (!database) return;
+        database.ref('categories').on('value', (snapshot) => {
+            const data = snapshot.val();
+            categories = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
+            displayCategoriesList();
+            updateCategorySelects();
+        });
+    }
+
+    function displayCategoriesList() {
+        const container = document.getElementById('categoriesList');
+        if (!container) return;
+        if (categories.length === 0) {
+            container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-light);"><i class="fas fa-folder-open" style="font-size:40px;margin-bottom:12px;display:block;"></i>لا توجد فئات. أضف فئة جديدة!</div>';
+            return;
+        }
+        container.innerHTML = categories.map(cat => `
+            <div class="category-item" data-id="${cat.id}">
+                <div class="category-header">
+                    <div class="category-name"><i class="${cat.icon || 'fas fa-tag'}" style="color:${cat.color || '#0D9488'}"></i><span>${escapeHtml(cat.name)}</span></div>
+                    <div class="category-actions">
+                        <button class="action-btn edit" onclick="editCategory('${cat.id}')"><i class="fas fa-edit"></i></button>
+                        <button class="action-btn delete" onclick="deleteCategory('${cat.id}')"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+                <div class="category-desc">${escapeHtml(cat.description || 'لا يوجد وصف')}</div>
+            </div>
+        `).join('');
+    }
+
+    function updateCategorySelects() {
+        const select = document.getElementById('productCategory');
+        if (!select) return;
+        select.innerHTML = '<option value="">اختر</option>' + categories.map(c => `<option value="${escapeHtml(c.name)}">${escapeHtml(c.name)}</option>`).join('');
+    }
+
+    function editCategory(categoryId) {
+        const cat = categories.find(c => c.id === categoryId);
+        if (!cat) return;
+        document.getElementById('newCategoryName').value = cat.name;
+        document.getElementById('newCategoryDesc').value = cat.description || '';
+        document.getElementById('newCategoryIcon').value = cat.icon || 'fas fa-box';
+        document.getElementById('newCategoryColor').value = cat.color || '#0D9488';
+        document.getElementById('addCategoryBtn').innerHTML = '<i class="fas fa-edit"></i> تحديث الفئة';
+        document.getElementById('addCategoryBtn').setAttribute('data-edit-id', categoryId);
+    }
+
+    function deleteCategory(categoryId) {
+        deleteTarget = { id: categoryId, type: 'category' };
+        document.getElementById('confirmOverlay').classList.add('active');
+    }
+
+    async function saveCategoryToFirebase(categoryData, editId = null) {
+        if (!database) return false;
+        try {
+            if (editId) {
+                await database.ref(`categories/${editId}`).update(categoryData);
+                showToast('تم تحديث الفئة بنجاح', 'success');
+            } else {
+                await database.ref('categories').push(categoryData);
+                showToast('تم إضافة الفئة بنجاح', 'success');
+            }
+            return true;
+        } catch (error) {
+            showToast('حدث خطأ أثناء حفظ الفئة', 'error');
+            return false;
+        }
+    }
+
+    // المنتجات والطلبات والعملاء
+    function loadProductsFromFirebase() {
+        if (!database) return;
+        database.ref('products').on('value', (snapshot) => {
+            const data = snapshot.val();
+            products = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
+            updateAllDisplays();
+        });
+    }
+
+    function loadOrdersFromFirebase() {
+        if (!database) return;
+        database.ref('orders').on('value', (snapshot) => {
+            const data = snapshot.val();
+            orders = data ? Object.keys(data).map(key => ({ firebaseKey: key, ...data[key] })) : [];
+            if (orders.length > lastOrderCount && lastOrderCount > 0) {
+                showToast('📦 طلب جديد واصل!', 'warning');
+            }
+            lastOrderCount = orders.length;
+            updateAllDisplays();
+        });
+    }
+
+    function loadUsersFromFirebase() {
+        if (!database) return;
+        database.ref('users').on('value', (snapshot) => {
+            const data = snapshot.val();
+            customers = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
+            updateAllDisplays();
+        });
+    }
+
+    function loadSettingsFromFirebase() {
+        if (!database) return;
+        database.ref('settings').on('value', (snapshot) => {
+            const settings = snapshot.val() || {};
+            document.getElementById('storeName').value = settings.storeName || 'Healtha';
+            document.getElementById('storeEmail').value = settings.storeEmail || '';
+            document.getElementById('storePhone').value = settings.storePhone || '';
+            document.getElementById('storeAddress').value = settings.storeAddress || '';
+            if (settings.storeLogo) updateStoreLogo(settings.storeLogo);
+        });
+    }
+
+    function updateStoreLogo(dataUrl) {
+        const sidebarLogo = document.getElementById('sidebarLogoArea');
+        if (dataUrl) {
+            sidebarLogo.innerHTML = `<img src="${dataUrl}" alt="Logo" style="width:100%;height:100%;object-fit:cover;">`;
+        } else {
+            sidebarLogo.innerHTML = '<i class="fas fa-stethoscope"></i>';
+        }
+    }
+
+    function updateAllDisplays() { 
+        updateStats(); 
+        displayProducts(); 
+        displayOrders(); 
+        displayCustomers(); 
+        updateRecentProducts(); 
+        updateRecentCustomers(); 
+    }
+    
+    function updateStats() { 
+        document.getElementById('totalCustomers').innerText = customers.length; 
+        document.getElementById('totalProducts').innerText = products.length; 
+        document.getElementById('inStockProducts').innerText = products.filter(p => p.stock > 0).length; 
+        document.getElementById('outOfStockProducts').innerText = products.filter(p => p.stock === 0).length; 
+        document.getElementById('totalOrders').innerText = orders.length; 
+    }
+    
+    function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, function(m) { if (m === '&') return '&amp;'; if (m === '<') return '&lt;'; return '&gt;'; }); }
+
+    function displayProducts() {
+        let search = document.getElementById('searchProduct').value.toLowerCase();
+        let filtered = products.filter(p => p.name?.toLowerCase().includes(search));
+        let tbody = document.getElementById('productsTableBody');
+        tbody.innerHTML = filtered.map(p => `<tr>
+            <td><img src="${p.image || 'https://placehold.co/44x44/e2e8f0/64748b?text=H'}" class="product-thumb" onerror="this.src='https://placehold.co/44x44/e2e8f0/64748b?text=H'"></td>
+            <td><strong>${escapeHtml(p.name)}</strong></td>
+            <td>${p.price}$</td>
+            <td><span class="badge ${p.stock > 0 ? 'badge-success' : 'badge-danger'}">${p.stock > 0 ? 'متوفر' : 'نافد'}</span></td>
+            <td><div class="action-buttons"><button class="action-btn edit" data-id="${p.id}"><i class="fas fa-edit"></i></button><button class="action-btn delete" data-id="${p.id}"><i class="fas fa-trash"></i></button></div></td>
+        `).join('');
+        document.querySelectorAll('.edit[data-id]').forEach(btn => btn.addEventListener('click', () => editProduct(btn.dataset.id)));
+        document.querySelectorAll('.delete[data-id]').forEach(btn => btn.addEventListener('click', () => { deleteTarget = { id: btn.dataset.id, type: 'product' }; document.getElementById('confirmOverlay').classList.add('active'); }));
+    }
+
+    function displayOrders() {
+        let search = document.getElementById('searchOrder').value.toLowerCase();
+        let filtered = orders.filter(o => (o.customerName?.toLowerCase().includes(search) || o.phone?.includes(search)));
+        let tbody = document.getElementById('ordersTableBody');
+        tbody.innerHTML = filtered.map(o => `<tr>
+            <td><div style="display:flex;align-items:center;gap:8px;"><div class="user-avatar" style="background:var(--primary);font-size:12px;">${(o.customerName?.substring(0, 2) || 'م')}</div>${escapeHtml(o.customerName) || 'زائر'}</div></td>
+            <td>${o.total || 0}$</td>
+            <td><select class="filter-select order-status-select" data-key="${o.firebaseKey}" style="padding:4px;font-size:12px;">${['قيد الانتظار', 'قيد التجهيز', 'تم الشحن', 'تم التوصيل'].map(s => `<option ${o.status === s ? 'selected' : ''}>${s}</option>`).join('')}</select></td>
+            <td><button class="action-btn view" data-id="${o.id || o.orderId}"><i class="fas fa-eye"></i></button></td>
+        `).join('');
+        document.querySelectorAll('.order-status-select').forEach(sel => sel.addEventListener('change', (e) => { if (sel.dataset.key) database.ref(`orders/${sel.dataset.key}/status`).set(sel.value); }));
+        document.querySelectorAll('.view[data-id]').forEach(btn => btn.addEventListener('click', () => viewOrder(btn.dataset.id)));
+    }
+
+    function displayCustomers() {
+        let search = document.getElementById('searchCustomer').value.toLowerCase();
+        let filtered = customers.filter(c => (c.name?.toLowerCase().includes(search) || c.email?.toLowerCase().includes(search) || c.phone?.includes(search)));
+        let tbody = document.getElementById('customersTableBody');
+        tbody.innerHTML = filtered.map(c => `<tr>
+            <td><div style="display:flex;align-items:center;gap:8px;"><div class="user-avatar" style="background:#6366F1;">${(c.name?.substring(0, 2) || 'م')}</div>${escapeHtml(c.name) || 'مستخدم'}</div></td>
+            <td>${c.email || '—'}</td>
+            <td>${c.phone || '—'}</td>
+            <td><button class="action-btn delete" data-id="${c.id}"><i class="fas fa-trash"></i></button></td>
+        `).join('');
+        document.querySelectorAll('.delete[data-id]').forEach(btn => btn.addEventListener('click', () => { deleteTarget = { id: btn.dataset.id, type: 'customer' }; document.getElementById('confirmOverlay').classList.add('active'); }));
+    }
+
+    function viewOrder(id) {
+        let o = orders.find(or => (or.id === id || or.orderId === id));
+        if (!o) return;
+        let itemsHtml = o.items?.map(i => `<div class="order-detail-row"><span>${escapeHtml(i.name)}</span><span>${i.quantity} × ${i.price}$</span></div>`).join('') || '';
+        document.getElementById('orderDetailContent').innerHTML = `
+            <div class="order-detail-row"><span>العميل</span><span>${escapeHtml(o.customerName) || 'زائر'}</span></div>
+            <div class="order-detail-row"><span>الهاتف</span><span>${o.phone || '—'}</span></div>
+            <div class="order-detail-row"><span>العنوان</span><span>${o.address || '—'}</span></div>
+            <div class="order-detail-row"><span>الإجمالي</span><span>${o.total || 0}$</span></div>
+            ${itemsHtml}
+            <div class="order-detail-row"><span>التاريخ</span><span>${o.date || '—'}</span></div>
+        `;
+        document.getElementById('orderDetailOverlay').classList.add('active'); document.body.classList.add('modal-open');
+    }
+
+    function editProduct(id) {
+        let p = products.find(p => p.id === id);
+        if (p) {
+            document.getElementById('editProductId').value = p.id;
+            document.getElementById('productName').value = p.name;
+            document.getElementById('productCategory').value = p.category;
+            document.getElementById('productDescription').value = p.description || '';
+            document.getElementById('productPrice').value = p.price;
+            document.getElementById('productOldPrice').value = p.oldPrice || '';
+            document.getElementById('productStock').value = p.stock;
+            document.getElementById('productImageUrl').value = p.image || '';
+            document.getElementById('imagePreview').innerHTML = p.image ? `<img src="${p.image}">` : '<i class="fas fa-image"></i>';
+            document.getElementById('formTitle').innerHTML = '<i class="fas fa-edit"></i> تعديل المنتج';
+            switchSection('addProduct');
+        }
+    }
+
+    function updateRecentProducts() { 
+        let tbody = document.getElementById('recentProducts'); 
+        let recent = products.slice().reverse().slice(0, 5); 
+        tbody.innerHTML = recent.map(p => `<tr><td><strong>${escapeHtml(p.name)}</strong></td><td>${p.price}$</td><td><span class="badge ${p.stock > 0 ? 'badge-success' : 'badge-danger'}">${p.stock > 0 ? 'متوفر' : 'نافد'}</span></td>`).join(''); 
+    }
+    
+    function updateRecentCustomers() { 
+        let tbody = document.getElementById('recentCustomers'); 
+        let recent = customers.slice().sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 5); 
+        tbody.innerHTML = recent.map(c => `<tr><td>${escapeHtml(c.name) || 'مستخدم'}</td><td>${c.phone || '—'}</td><td>${c.provider === 'google' ? 'جوجل' : 'بريد'}</td>`).join(''); 
+    }
+
+    function switchSection(name) {
+        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+        document.querySelector(`.nav-link[data-section="${name}"]`)?.classList.add('active');
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.getElementById(`${name}Section`).classList.add('active');
+        let titles = { dashboard: 'الرئيسية', customers: 'العملاء', products: 'المنتجات', addProduct: 'إضافة منتج', orders: 'الطلبات', categories: 'الفئات', notice: 'إشعار المتجر', settings: 'الإعدادات' };
+        document.getElementById('pageTitle').innerText = titles[name];
+        closeSidebar();
+    }
+    
+    function closeSidebar() { document.getElementById('sidebar').classList.remove('active'); document.getElementById('sidebarOverlay').classList.remove('active'); document.body.classList.remove('sidebar-open'); }
+    function openSidebar() { document.getElementById('sidebar').classList.add('active'); document.getElementById('sidebarOverlay').classList.add('active'); document.body.classList.add('sidebar-open'); }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        if (!checkAdminAuth()) return;
         
-        function initColorPicker() { const picker = document.getElementById('colorPicker'); if(picker) picker.innerHTML = ['#0D9488','#3B82F6','#8B5CF6','#EF4444','#F59E0B','#10B981','#EC4899','#6366F1'].map(c => `<span class="color-option ${c==='#0D9488'?'selected':''}" style="background:${c};" data-color="${c}" onclick="selectColor(this)"></span>`).join(''); }
-
-        function checkAdminAccess() { const user = JSON.parse(localStorage.getItem('user')); if (!user || user.role !== 'admin') { window.location.href = 'login.html'; return false; } currentUser = user; document.getElementById('adminName').textContent = `👋 مرحباً، ${user.name}`; return true; }
-
-        function showTab(tabName) {
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-            document.getElementById(`${tabName}Section`)?.classList.add('active');
-            document.querySelector(`.nav-link[data-section="${tabName}"]`)?.classList.add('active');
-            if(tabName === 'dashboard') loadDashboard();
-            else if(tabName === 'orders') loadOrders();
-            else if(tabName === 'products') { loadProducts(); loadCategoriesForSelect(); }
-            else if(tabName === 'categories') loadCategories();
-            else if(tabName === 'customers') loadCustomers();
-            else if(tabName === 'messages') loadMessages();
-            else if(tabName === 'pages') loadPageContents();
-            else if(tabName === 'settings') loadSettings();
+        if (initFirebase()) {
+            loadCategoriesFromFirebase();
+            loadProductsFromFirebase();
+            loadOrdersFromFirebase();
+            loadUsersFromFirebase();
+            loadSettingsFromFirebase();
+            loadStoreNotice();
+            document.getElementById('sheetStatus').className = 'sheet-status connected';
+            document.getElementById('sheetStatus').innerHTML = '<i class="fas fa-check-circle"></i> متصل';
+        } else {
+            document.getElementById('sheetStatus').className = 'sheet-status disconnected';
+            document.getElementById('sheetStatus').innerHTML = '<i class="fas fa-times-circle"></i> غير متصل';
         }
 
-        function loadDashboard() {
-            database.ref('products').on('value', s => document.getElementById('totalProducts').textContent = s.numChildren());
-            database.ref('categories').on('value', s => document.getElementById('totalCategories').textContent = s.numChildren());
-            database.ref('orders').on('value', s => { let total=0; const orders=[]; s.forEach(c=>{total++; orders.push({id:c.key,...c.val()});}); document.getElementById('totalOrders').textContent=total; orders.sort((a,b)=>b.date-a.date); document.getElementById('recentOrdersTable').innerHTML=orders.slice(0,5).map(o=>`<tr><td>#${o.id.slice(0,8)}</td><td>${o.customerName}</td><td>${o.total} ${getCurrencySymbol()}</td><td><span class="badge status-${o.status}">${getStatusText(o.status)}</span></td><td>${new Date(o.date).toLocaleDateString('ar-SA')}</td></tr>`).join(''); });
-            database.ref('users').on('value', s=>{ let count=0; s.forEach(c=>{if(c.val().role==='customer') count++;}); document.getElementById('totalCustomers').textContent=count; });
-        }
+        // إضافة فئة
+        document.getElementById('addCategoryBtn').addEventListener('click', async () => {
+            const name = document.getElementById('newCategoryName').value.trim();
+            if (!name) { showToast('اسم الفئة مطلوب', 'error'); return; }
+            const categoryData = {
+                name: name,
+                description: document.getElementById('newCategoryDesc').value.trim(),
+                icon: document.getElementById('newCategoryIcon').value,
+                color: document.getElementById('newCategoryColor').value
+            };
+            const editId = document.getElementById('addCategoryBtn').getAttribute('data-edit-id');
+            await saveCategoryToFirebase(categoryData, editId);
+            document.getElementById('newCategoryName').value = '';
+            document.getElementById('newCategoryDesc').value = '';
+            document.getElementById('newCategoryIcon').value = 'fas fa-box';
+            document.getElementById('newCategoryColor').value = '#0D9488';
+            document.getElementById('addCategoryBtn').innerHTML = '<i class="fas fa-save"></i> حفظ الفئة';
+            document.getElementById('addCategoryBtn').removeAttribute('data-edit-id');
+        });
 
-        function loadOrders() { database.ref('orders').on('value', s=>{ const orders=[]; s.forEach(c=>orders.push({id:c.key,...c.val()})); orders.sort((a,b)=>b.date-a.date); document.getElementById('ordersTableBody').innerHTML=orders.map(o=>`<tr><td>#${o.id.slice(0,8)}</td><td>${o.customerName}</td><td>${o.customerPhone||'-'}</td><td>${o.products?.length||0}</td><td>${o.total} ${getCurrencySymbol()}</td><td><span class="badge status-${o.status}">${getStatusText(o.status)}</span></td><td>${new Date(o.date).toLocaleDateString('ar-SA')}</td><td><button class="btn btn-primary btn-xs" onclick="viewOrder('${o.id}')">👁️</button><select onchange="updateOrderStatus('${o.id}', this.value)" style="padding:6px;border-radius:6px;margin-right:5px;"><option value="">تحديث</option><option value="pending">قيد الانتظار</option><option value="processing">قيد المعالجة</option><option value="shipped">تم الشحن</option><option value="delivered">تم التوصيل</option><option value="cancelled">ملغي</option></select></td></tr>`).join(''); }); }
-        function updateOrderStatus(id, status) { if(status) database.ref(`orders/${id}`).update({ status, updatedAt: Date.now() }); }
-        function viewOrder(id) { database.ref(`orders/${id}`).once('value', s=>{ const o=s.val(); document.getElementById('orderModalContent').innerHTML=`<h4>👤 ${o.customerName}</h4><p>📧 ${o.customerEmail} | 📱 ${o.customerPhone}</p><p>📍 ${o.customerCity} - ${o.customerAddress}</p><hr>${o.products.map(p=>`<p>• ${p.name} x${p.quantity||1} = ${p.price*(p.quantity||1)} ${getCurrencySymbol()}</p>`).join('')}<hr><h4>💰 الإجمالي: ${o.total} ${getCurrencySymbol()}</h4><p>💳 ${getPaymentMethod(o.paymentMethod)} | 📅 ${new Date(o.date).toLocaleString('ar-SA')}</p>`; document.getElementById('orderModal').classList.add('active'); }); }
-        function closeModal() { document.getElementById('orderModal').classList.remove('active'); }
+        // منتج
+        document.getElementById('productForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            let file = document.getElementById('productImageFile').files[0];
+            let imageUrl = document.getElementById('productImageUrl').value;
+            if (file) { let reader = await new Promise(r => { let fr = new FileReader(); fr.onload = r; fr.readAsDataURL(file); }); imageUrl = reader.target.result; }
+            let editId = document.getElementById('editProductId').value;
+            let product = { id: editId || Date.now().toString(), name: document.getElementById('productName').value, category: document.getElementById('productCategory').value, description: document.getElementById('productDescription').value, price: parseFloat(document.getElementById('productPrice').value), oldPrice: parseFloat(document.getElementById('productOldPrice').value) || null, stock: parseInt(document.getElementById('productStock').value), image: imageUrl || 'https://placehold.co/100x100/e2e8f0/64748b?text=H' };
+            await database.ref('products/' + product.id).set(product);
+            document.getElementById('productForm').reset(); document.getElementById('editProductId').value = ''; document.getElementById('imagePreview').innerHTML = '<i class="fas fa-image"></i>'; document.getElementById('formTitle').innerHTML = '<i class="fas fa-plus-circle"></i> إضافة منتج';
+            switchSection('products'); showToast(editId ? 'تم التحديث' : 'تم الإضافة', 'success');
+        });
 
-        function loadProducts() { database.ref('products').on('value', s=>{ document.getElementById('productsTableBody').innerHTML=''; s.forEach(c=>{ const p=c.val(); document.getElementById('productsTableBody').innerHTML+=`<tr><td><img src="${p.image||'https://via.placeholder.com/44'}" class="product-thumb"></td><td><strong>${p.name}</strong></td><td>${p.category}</td><td>${p.price} ${getCurrencySymbol()}</td><td>${p.stock||0}</td><td>${p.featured?'⭐':'-'}</td><td><div class="action-buttons"><button class="action-btn edit" onclick="editProduct('${c.key}')"><i class="fas fa-edit"></i></button><button class="action-btn delete" onclick="deleteProduct('${c.key}')"><i class="fas fa-trash"></i></button></div></td></tr>`; }); }); }
-        function showProductForm() { document.getElementById('productForm').style.display='block'; document.getElementById('productFormElement').reset(); document.getElementById('productId').value=''; }
-        function hideProductForm() { document.getElementById('productForm').style.display='none'; }
-        function editProduct(id) { database.ref(`products/${id}`).once('value', s=>{ const p=s.val(); document.getElementById('productId').value=id; document.getElementById('productName').value=p.name; document.getElementById('productDescription').value=p.description; document.getElementById('productPrice').value=p.price; document.getElementById('productCategory').value=p.category; document.getElementById('productStock').value=p.stock||0; document.getElementById('productFeatured').checked=p.featured||false; showProductForm(); }); }
-        function deleteProduct(id) { if(confirm('هل أنت متأكد؟')) database.ref(`products/${id}`).remove(); }
-        document.getElementById('productFormElement').addEventListener('submit', function(e){ e.preventDefault(); const product={ name:document.getElementById('productName').value, description:document.getElementById('productDescription').value, price:Number(document.getElementById('productPrice').value), category:document.getElementById('productCategory').value, stock:Number(document.getElementById('productStock').value), featured:document.getElementById('productFeatured').checked, image:'', updatedAt:Date.now() }; const id=document.getElementById('productId').value; if(id) database.ref(`products/${id}`).update(product); else database.ref('products').push({...product, createdAt:Date.now()}); hideProductForm(); });
-        function loadCategoriesForSelect() { database.ref('categories').on('value', s=>{ const select=document.getElementById('productCategory'); select.innerHTML='<option value="">اختر الفئة</option>'; s.forEach(c=>select.innerHTML+=`<option value="${c.val().name}">${c.val().name}</option>`); }); }
-        function loadCategories() { database.ref('categories').on('value', s=>{ document.getElementById('categoriesTableBody').innerHTML=''; s.forEach(c=>{ const cat=c.val(); document.getElementById('categoriesTableBody').innerHTML+=`<tr><td><span style="font-size:28px;color:${cat.color||'#0D9488'};"><i class="${cat.icon||'fas fa-folder'}"></i></span></td><td><span style="display:inline-block;width:20px;height:20px;border-radius:50%;background:${cat.color||'#0D9488'};"></span></td><td><strong>${cat.name}</strong></td><td>${cat.description||'-'}</td><td><div class="action-buttons"><button class="action-btn edit" onclick="editCategory('${c.key}')"><i class="fas fa-edit"></i></button><button class="action-btn delete" onclick="deleteCategory('${c.key}')"><i class="fas fa-trash"></i></button></div></td></tr>`; }); }); }
-        function showCategoryForm() { document.getElementById('categoryForm').style.display='block'; document.getElementById('categoryFormElement').reset(); document.getElementById('categoryId').value=''; selectedIcon='fas fa-stethoscope'; document.getElementById('categoryIcon').value=selectedIcon; selectedColor='#0D9488'; document.getElementById('categoryColor').value=selectedColor; initIconPicker(); initColorPicker(); }
-        function hideCategoryForm() { document.getElementById('categoryForm').style.display='none'; }
-        function editCategory(id) { database.ref(`categories/${id}`).once('value', s=>{ const cat=s.val(); document.getElementById('categoryId').value=id; document.getElementById('categoryName').value=cat.name; document.getElementById('categoryDescription').value=cat.description||''; selectedIcon=cat.icon||'fas fa-stethoscope'; document.getElementById('categoryIcon').value=selectedIcon; selectedColor=cat.color||'#0D9488'; document.getElementById('categoryColor').value=selectedColor; initIconPicker(); initColorPicker(); showCategoryForm(); }); }
-        function deleteCategory(id) { if(confirm('حذف الفئة؟')) database.ref(`categories/${id}`).remove(); }
-        document.getElementById('categoryFormElement').addEventListener('submit', function(e){ e.preventDefault(); const category={ name:document.getElementById('categoryName').value, icon:document.getElementById('categoryIcon').value, color:document.getElementById('categoryColor').value, description:document.getElementById('categoryDescription').value }; const id=document.getElementById('categoryId').value; if(id) database.ref(`categories/${id}`).update(category); else database.ref('categories').push(category); hideCategoryForm(); });
-        function loadCustomers() { database.ref('users').on('value', s=>{ document.getElementById('customersTableBody').innerHTML=''; s.forEach(c=>{ const u=c.val(); if(u.role!=='admin') document.getElementById('customersTableBody').innerHTML+=`<tr><td>${u.name}</td><td>${u.email}</td><td>${u.phone||'-'}</td><td><span class="badge status-processing">عميل</span></td><td>${u.createdAt?new Date(u.createdAt).toLocaleDateString('ar-SA'):'-'}</td></tr>`; }); }); }
-        function loadMessages() { database.ref('messages').on('value', s=>{ const msgs=[]; s.forEach(c=>msgs.push({id:c.key,...c.val()})); msgs.sort((a,b)=>b.createdAt-a.createdAt); document.getElementById('messagesTableBody').innerHTML=msgs.map(m=>`<tr><td>${m.fullName}</td><td>${m.email}</td><td>${m.subject}</td><td>${new Date(m.createdAt).toLocaleDateString('ar-SA')}</td><td><span class="badge ${m.replied?'badge-success':'status-pending'}">${m.replied?'تم الرد':'جديد'}</span></td><td><button class="btn btn-primary btn-xs" onclick="viewMessage('${m.id}')">👁️</button></td></tr>`).join(''); }); }
-        function viewMessage(id) { database.ref(`messages/${id}`).once('value', s=>{ const m=s.val(); document.getElementById('orderModalContent').innerHTML=`<h4>👤 ${m.fullName} | 📧 ${m.email}</h4><p><strong>${m.subject}</strong></p><p style="background:#f8f9fa;padding:15px;border-radius:8px;">${m.message}</p><button class="btn btn-success btn-sm" onclick="database.ref('messages/${id}').update({replied:true});closeModal();">✅ تحديد كمقروء</button>`; document.getElementById('orderModal').classList.add('active'); }); }
+        // الإعدادات
+        document.getElementById('settingsForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            let file = document.getElementById('storeLogoFile').files[0];
+            const processSave = (logoData) => {
+                let settings = { storeName: document.getElementById('storeName').value, storeEmail: document.getElementById('storeEmail').value, storePhone: document.getElementById('storePhone').value, storeAddress: document.getElementById('storeAddress').value, storeLogo: logoData || null };
+                database.ref('settings').set(settings);
+                showToast('تم حفظ الإعدادات', 'success');
+            };
+            if (file && file.type.startsWith('image/')) { let reader = new FileReader(); reader.onload = (ev) => processSave(ev.target.result); reader.readAsDataURL(file); } else { processSave(null); }
+        });
+
+        // إشعار المتجر
+        document.getElementById('saveNoticeBtn').addEventListener('click', saveStoreNotice);
+
+        // حذف
+        document.getElementById('confirmDeleteBtn').addEventListener('click', async () => {
+            if (deleteTarget.type === 'product') { await database.ref('products/' + deleteTarget.id).remove(); showToast('تم حذف المنتج', 'error'); }
+            else if (deleteTarget.type === 'customer') { await database.ref('users/' + deleteTarget.id).remove(); showToast('تم حذف العميل', 'error'); }
+            else if (deleteTarget.type === 'category') { await database.ref('categories/' + deleteTarget.id).remove(); showToast('تم حذف الفئة', 'error'); }
+            document.getElementById('confirmOverlay').classList.remove('active');
+        });
+        document.getElementById('confirmCancelBtn').addEventListener('click', () => document.getElementById('confirmOverlay').classList.remove('active'));
+
+        // تنقل
+        document.getElementById('menuToggle').addEventListener('click', openSidebar);
+        document.getElementById('sidebarOverlay').addEventListener('click', closeSidebar);
+        document.querySelectorAll('.nav-link').forEach(l => l.addEventListener('click', (e) => { e.preventDefault(); switchSection(l.dataset.section); }));
+        document.getElementById('goToAddProductBtn').addEventListener('click', () => { document.getElementById('productForm').reset(); document.getElementById('editProductId').value = ''; document.getElementById('imagePreview').innerHTML = '<i class="fas fa-image"></i>'; document.getElementById('formTitle').innerHTML = '<i class="fas fa-plus-circle"></i> إضافة منتج'; switchSection('addProduct'); });
+        document.getElementById('cancelProductBtn').addEventListener('click', () => switchSection('products'));
+        document.getElementById('logoutBtn').addEventListener('click', () => { localStorage.removeItem('healtha_admin_session'); window.location.href = 'admin-login.html'; });
+        document.getElementById('searchProduct').addEventListener('input', displayProducts);
+        document.getElementById('searchCustomer').addEventListener('input', displayCustomers);
+        document.getElementById('searchOrder').addEventListener('input', displayOrders);
+        document.getElementById('orderDetailCloseBtn').addEventListener('click', () => { document.getElementById('orderDetailOverlay').classList.remove('active'); document.body.classList.remove('modal-open'); });
         
-        function loadPageContents() {
-            database.ref('pageContents').on('value', s=>{ const data=s.val()||{};
-                document.getElementById('heroTitle').value=data.heroTitle||'مرحباً بكم في Healtha';
-                document.getElementById('heroSubtitle').value=data.heroSubtitle||'أفضل المنتجات الطبية';
-                document.getElementById('heroBgImage').value=data.heroBgImage||'';
-                document.getElementById('aboutTitle').value=data.aboutTitle||'من نحن';
-                document.getElementById('aboutContent').value=data.aboutContent||'نحن متخصصون في توفير المنتجات الطبية...';
-                document.getElementById('aboutImage').value=data.aboutImage||'';
-                document.getElementById('aboutVision').value=data.aboutVision||'الريادة في الخدمات الطبية';
-                document.getElementById('aboutMission').value=data.aboutMission||'تقديم الأفضل دائماً';
-                document.getElementById('contactTitle').value=data.contactTitle||'تواصل معنا';
-                document.getElementById('contactDesc').value=data.contactDesc||'نحن هنا لخدمتك';
-                document.getElementById('workHours').value=data.workHours||'السبت - الخميس: 10ص - 10م';
-                document.getElementById('mapLink').value=data.mapLink||'';
-                document.getElementById('cartTitle').value=data.cartTitle||'سلة التسوق الخاصة بك';
-                document.getElementById('emptyCartMsg').value=data.emptyCartMsg||'سلة التسوق فارغة، أضف منتجات الآن';
-                document.getElementById('cartBgColor').value=data.cartBgColor||'#F1F5F9';
-            });
-        }
-        function savePageContent(page) {
-            const updates={};
-            if(page==='index') { updates.heroTitle=document.getElementById('heroTitle').value; updates.heroSubtitle=document.getElementById('heroSubtitle').value; updates.heroBgImage=document.getElementById('heroBgImage').value; }
-            if(page==='about') { updates.aboutTitle=document.getElementById('aboutTitle').value; updates.aboutContent=document.getElementById('aboutContent').value; updates.aboutImage=document.getElementById('aboutImage').value; updates.aboutVision=document.getElementById('aboutVision').value; updates.aboutMission=document.getElementById('aboutMission').value; }
-            if(page==='contact') { updates.contactTitle=document.getElementById('contactTitle').value; updates.contactDesc=document.getElementById('contactDesc').value; updates.workHours=document.getElementById('workHours').value; updates.mapLink=document.getElementById('mapLink').value; }
-            if(page==='cart') { updates.cartTitle=document.getElementById('cartTitle').value; updates.emptyCartMsg=document.getElementById('emptyCartMsg').value; updates.cartBgColor=document.getElementById('cartBgColor').value; }
-            database.ref('pageContents').update(updates).then(()=>alert('تم حفظ المحتوى بنجاح!'));
-        }
-        function loadSettings() { database.ref('settings').on('value', s=>{ const st=s.val()||{}; document.getElementById('storeName').value=st.storeName||'Healtha'; document.getElementById('storeLogoData').value=st.logo||''; document.getElementById('storePhone').value=st.phone||''; document.getElementById('storeEmail').value=st.email||''; document.getElementById('storeAddress').value=st.address||''; document.getElementById('mainCurrency').value=st.mainCurrency||'SAR'; if(st.logo) document.getElementById('sidebarLogoArea').innerHTML=`<img src="${st.logo}">`; }); }
-        document.getElementById('settingsForm').addEventListener('submit', function(e){ e.preventDefault(); database.ref('settings').update({ storeName:document.getElementById('storeName').value, logo:document.getElementById('storeLogoData').value, phone:document.getElementById('storePhone').value, email:document.getElementById('storeEmail').value, address:document.getElementById('storeAddress').value, mainCurrency:document.getElementById('mainCurrency').value, updatedAt:Date.now() }).then(()=>alert('تم حفظ الإعدادات')); });
-        function getCurrencySymbol() { const map={SAR:'ر.س',USD:'$',YER:'﷼'}; return map[mainCurrency]||'ر.س'; }
-        function getStatusText(s) { const map={pending:'قيد الانتظار',processing:'قيد المعالجة',shipped:'تم الشحن',delivered:'تم التوصيل',cancelled:'ملغي'}; return map[s]||s; }
-        function getPaymentMethod(m) { const map={cod:'الدفع عند الاستلام',card:'بطاقة',bank:'تحويل بنكي'}; return map[m]||m; }
+        document.getElementById('uploadBtnTrigger').addEventListener('click', () => document.getElementById('productImageFile').click());
+        document.getElementById('imagePreview').addEventListener('click', () => document.getElementById('productImageFile').click());
+        document.getElementById('productImageFile').addEventListener('change', (e) => { if (e.target.files[0]) { let reader = new FileReader(); reader.onload = ev => { document.getElementById('imagePreview').innerHTML = `<img src="${ev.target.result}">`; document.getElementById('productImageUrl').value = ''; }; reader.readAsDataURL(e.target.files[0]); } });
         
-        document.addEventListener('DOMContentLoaded', () => { initIconPicker(); initColorPicker(); document.getElementById('menuToggle').addEventListener('click', ()=>document.getElementById('sidebar').classList.add('active')); document.getElementById('sidebarOverlay').addEventListener('click', ()=>document.getElementById('sidebar').classList.remove('active')); document.querySelectorAll('.nav-link').forEach(l=>l.addEventListener('click',(e)=>{e.preventDefault(); showTab(l.dataset.section);})); document.getElementById('logoutBtn').addEventListener('click',()=>{localStorage.removeItem('user'); window.location='login.html';}); if(checkAdminAccess()) { loadDashboard(); database.ref('orders').on('value', s=>{ let p=0; s.forEach(c=>{if(c.val().status==='pending') p++;}); const badge=document.getElementById('ordersBadge'); if(p){badge.style.display='flex'; badge.textContent=p;}else badge.style.display='none';}); } });
-    </script>
+        setInterval(() => { document.getElementById('currentDate').innerText = new Date().toLocaleDateString('ar-EG'); }, 1000);
+    });
+})();
+</script>
 </body>
 </html>

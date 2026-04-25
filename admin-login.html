@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Healtha - دخول المشرف</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: linear-gradient(135deg, #115E59, #0D9488, #14B8A6);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .admin-login-container {
+            width: 100%;
+            max-width: 420px;
+        }
+        .admin-login-card {
+            background: #fff;
+            border-radius: 24px;
+            padding: 40px 32px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            text-align: center;
+        }
+        .admin-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #0D9488, #115E59);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+        }
+        .admin-icon i {
+            font-size: 32px;
+            color: #fff;
+        }
+        .admin-login-card h1 {
+            font-size: 24px;
+            font-weight: 800;
+            color: #0F172A;
+            margin-bottom: 8px;
+        }
+        .admin-login-card p {
+            font-size: 14px;
+            color: #64748B;
+            margin-bottom: 28px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+            text-align: right;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 700;
+            font-size: 14px;
+            color: #0F172A;
+        }
+        .input-wrapper {
+            position: relative;
+        }
+        .input-wrapper i {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94A3B8;
+            font-size: 14px;
+        }
+        .input-wrapper input {
+            width: 100%;
+            padding: 14px 42px 14px 14px;
+            border: 2px solid #E2E8F0;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: #F8FAFC;
+        }
+        .input-wrapper input:focus {
+            outline: none;
+            border-color: #0D9488;
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(13,148,136,0.1);
+        }
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #0D9488, #0F766E);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(13,148,136,0.3);
+        }
+        .login-btn:active {
+            transform: translateY(0);
+        }
+        .back-link {
+            margin-top: 20px;
+            display: block;
+            color: #0D9488;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .back-link:hover {
+            color: #0F766E;
+            text-decoration: underline;
+        }
+        .error-message {
+            background: #FEE2E2;
+            color: #DC2626;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 13px;
+            margin-bottom: 20px;
+            display: none;
+            align-items: center;
+            gap: 8px;
+        }
+        .error-message.show {
+            display: flex;
+        }
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #0F172A;
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            z-index: 5000;
+            transition: transform 0.35s ease;
+            white-space: nowrap;
+            max-width: calc(100% - 32px);
+            text-align: center;
+        }
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+        .toast.error {
+            background: #DC2626;
+        }
+        .toast.success {
+            background: #059669;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-login-container">
+        <div class="admin-login-card">
+            <div class="admin-icon">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <h1>دخول المشرف</h1>
+            <p>لوحة تحكم Healtha - المتجر الطبي</p>
+            
+            <div class="error-message" id="errorMessage">
+                <i class="fas fa-exclamation-circle"></i>
+                <span id="errorText"></span>
+            </div>
+            
+            <form id="adminLoginForm">
+                <div class="form-group">
+                    <label>البريد الإلكتروني</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="adminEmail" placeholder="admin@healtha.com" autocomplete="email" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>كلمة المرور</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="adminPassword" placeholder="••••••••" autocomplete="current-password" required>
+                    </div>
+                </div>
+                <button type="submit" class="login-btn">
+                    <i class="fas fa-sign-in-alt" style="margin-left: 8px;"></i> دخول
+                </button>
+            </form>
+            <a href="index.html" class="back-link"><i class="fas fa-arrow-right" style="margin-left: 5px;"></i> العودة للمتجر</a>
+        </div>
+    </div>
+
+    <script>
+    (function() {
+        // بيانات المشرف المسموح بها - يمكن تعديلها
+        const ADMIN_CREDENTIALS = {
+            email: "admin@healtha.com",
+            password: "Healtha2024"
+        };
+
+        function showError(message) {
+            var errorDiv = document.getElementById('errorMessage');
+            var errorText = document.getElementById('errorText');
+            errorText.textContent = message;
+            errorDiv.classList.add('show');
+            setTimeout(function() {
+                errorDiv.classList.remove('show');
+            }, 3000);
+        }
+
+        function showToast(message, type) {
+            var existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+            var toast = document.createElement('div');
+            toast.className = 'toast ' + type;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(function() { toast.classList.add('show'); }, 10);
+            setTimeout(function() {
+                toast.classList.remove('show');
+                setTimeout(function() { toast.remove(); }, 350);
+            }, 2500);
+        }
+
+        document.getElementById('adminLoginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            var email = document.getElementById('adminEmail').value.trim();
+            var password = document.getElementById('adminPassword').value;
+            
+            if (!email || !password) {
+                showError('الرجاء إدخال البريد الإلكتروني وكلمة المرور');
+                return;
+            }
+            
+            if (email === ADMIN_CREDENTIALS.email && password === ADMIN_CREDENTIALS.password) {
+                // تخزين جلسة المشرف
+                var adminSession = {
+                    isAdmin: true,
+                    loggedInAt: Date.now(),
+                    email: email
+                };
+                localStorage.setItem('healtha_admin_session', JSON.stringify(adminSession));
+                showToast('تم تسجيل الدخول بنجاح', 'success');
+                setTimeout(function() {
+                    window.location.href = 'admin.html';
+                }, 800);
+            } else {
+                showError('البريد الإلكتروني أو كلمة المرور غير صحيحة');
+            }
+        });
+    })();
+    </script>
+</body>
+</html>

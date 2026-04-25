@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Healtha - من نحن</title>
+    <title>Healtha - خدماتنا</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
@@ -13,6 +13,7 @@
             --primary: #0D9488;
             --primary-dark: #0F766E;
             --accent: #F59E0B;
+            --accent-dark: #D97706;
             --bg: #F8FAFC;
             --bg-white: #FFFFFF;
             --text: #0F172A;
@@ -22,6 +23,8 @@
             --shadow-md: 0 4px 16px rgba(0,0,0,0.1);
             --radius: 12px;
             --radius-sm: 8px;
+            --radius-lg: 16px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             --font: 'Tajawal', sans-serif;
         }
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -29,6 +32,11 @@
         a { text-decoration: none; color: inherit; }
         ul { list-style: none; }
         .container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 16px; }
+
+        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 28px; border-radius: var(--radius-sm); font-weight: 700; cursor: pointer; transition: var(--transition); }
+        .btn-primary { background: var(--primary); color: #fff; }
+        .btn-primary:hover { background: var(--primary-dark); }
+        .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
 
         .store-notice { background: linear-gradient(135deg, var(--accent), #D97706); color: #fff; padding: 10px 0; font-size: 14px; font-weight: 600; text-align: center; display: none; }
         .store-notice .container { display: flex; align-items: center; justify-content: center; gap: 12px; }
@@ -43,7 +51,7 @@
         .logo a { display: flex; align-items: center; gap: 8px; }
         .logo i { font-size: 28px; color: var(--primary); }
         .logo h1 { font-size: 24px; font-weight: 900; background: linear-gradient(135deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .nav-links { display: none; flex-direction: column; position: fixed; top: 60px; right: 0; left: 0; bottom: 0; background: var(--bg-white); padding: 20px; z-index: 999; }
+        .nav-links { display: none; flex-direction: column; position: fixed; top: 60px; right: 0; left: 0; bottom: 0; background: var(--bg-white); padding: 20px; z-index: 999; overflow-y: auto; }
         .nav-links.active { display: flex; }
         .nav-links li a { display: block; padding: 14px 16px; border-radius: var(--radius-sm); font-weight: 600; color: var(--text); }
         .nav-links li a:hover, .nav-links li a.active { background: #CCFBF1; color: var(--primary-dark); }
@@ -65,14 +73,19 @@
         .content-section { background: var(--bg-white); border-radius: var(--radius); padding: 20px; margin-bottom: 24px; box-shadow: var(--shadow); border: 1px solid var(--border); }
         .content-section h2 { font-size: 20px; font-weight: 900; margin-bottom: 14px; position: relative; padding-bottom: 12px; display: inline-block; }
         .content-section h2::after { content: ''; position: absolute; bottom: 0; right: 0; width: 50px; height: 3px; background: linear-gradient(90deg, var(--primary), var(--accent)); border-radius: 3px; }
-        .content-section p { font-size: 14px; line-height: 1.9; color: var(--text-secondary); margin-bottom: 10px; }
 
-        .values-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 20px; }
-        .value-card { background: var(--bg); border-radius: var(--radius); padding: 20px; text-align: center; border: 1px solid var(--border); }
-        .value-icon { width: 56px; height: 56px; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; }
-        .value-icon i { font-size: 22px; color: #fff; }
-        .value-card h3 { font-size: 16px; font-weight: 800; margin-bottom: 8px; }
-        .value-card p { font-size: 13px; color: var(--text-secondary); }
+        .services-grid { display: grid; grid-template-columns: 1fr; gap: 16px; margin-bottom: 32px; }
+        .service-card { background: var(--bg-white); border-radius: var(--radius); padding: 24px 20px; box-shadow: var(--shadow); border: 1px solid var(--border); transition: var(--transition); }
+        .service-card:hover { box-shadow: var(--shadow-md); transform: translateY(-3px); }
+        .service-icon { width: 52px; height: 52px; border-radius: var(--radius-sm); background: linear-gradient(135deg, var(--primary), var(--primary-dark)); display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
+        .service-icon i { font-size: 22px; color: #fff; }
+        .service-card h3 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
+        .service-card p { font-size: 14px; color: var(--text-secondary); line-height: 1.7; }
+        .service-card ul { margin: 12px 0 0 20px; }
+        .service-card ul li { font-size: 13px; color: var(--text-secondary); margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+        .service-card ul li::before { content: '\f00c'; font-family: 'Font Awesome 6 Free'; font-weight: 900; font-size: 10px; color: var(--primary); }
+        @media (min-width: 640px) { .services-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; } }
+        @media (min-width: 1024px) { .services-grid { grid-template-columns: repeat(3, 1fr); } }
 
         .footer { background: #0F172A; color: #CBD5E1; padding: 48px 0 0; }
         .footer-grid { display: grid; grid-template-columns: 1fr; gap: 32px; padding-bottom: 32px; }
@@ -101,25 +114,28 @@
         .cart-total { display: flex; justify-content: space-between; font-size: 18px; font-weight: 900; margin-bottom: 14px; }
         .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(100px); background: #0F172A; color: #fff; padding: 14px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; z-index: 5000; transition: transform 0.35s ease; }
         .toast.show { transform: translateX(-50%) translateY(0); }
-        .toast.success { background: #059669; }
-
-        @media (max-width: 480px) { .values-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
 
     <div class="store-notice" id="storeNotice"><div class="container"><i class="fas fa-bullhorn"></i><span id="noticeText"></span><span class="close-notice" id="closeNotice"><i class="fas fa-times"></i></span></div></div>
+
     <div class="top-bar"><div class="container"><div><span><i class="fas fa-phone"></i> +967 779 217 474</span><span style="margin-right:16px;"><i class="fas fa-envelope"></i> Hadirynasser@gmail.com</span></div><div class="shipping-info">شحن مجاني داخل عدن</div></div></div>
 
-    <nav class="navbar"><div class="container nav-container"><div class="logo"><a href="index.html"><i class="fas fa-stethoscope"></i><h1>Healtha</h1></a></div><ul class="nav-links" id="navLinks"><li><a href="index.html">الرئيسية</a></li><li><a href="products.html">المنتجات</a></li><li><a href="categories.html">الفئات</a></li><li><a href="about.html" class="active">من نحن</a></li><li><a href="services.html">الخدمات</a></li><li><a href="contact.html">اتصل بنا</a></li><li><a href="login.html">تسجيل الدخول</a></li><li><a href="admin-login.html">لوحة التحكم</a></li></ul><div class="nav-icons"><a href="https://www.instagram.com/x5tai" target="_blank"><i class="fab fa-instagram"></i></a><a href="#" id="userIcon"><i class="fas fa-user"></i></a><a href="#" id="cartIcon"><i class="fas fa-shopping-cart"></i><span class="cart-count" id="cartCount">0</span></a></div><div class="menu-toggle" id="menuToggle"><i class="fas fa-bars" id="menuIcon"></i></div></div></nav>
+    <nav class="navbar"><div class="container nav-container"><div class="logo"><a href="index.html"><i class="fas fa-stethoscope"></i><h1>Healtha</h1></a></div><ul class="nav-links" id="navLinks"><li><a href="index.html">الرئيسية</a></li><li><a href="products.html">المنتجات</a></li><li><a href="categories.html">الفئات</a></li><li><a href="about.html">من نحن</a></li><li><a href="services.html" class="active">الخدمات</a></li><li><a href="contact.html">اتصل بنا</a></li><li><a href="login.html">تسجيل الدخول</a></li><li><a href="admin-login.html">لوحة التحكم</a></li></ul><div class="nav-icons"><a href="https://www.instagram.com/x5tai" target="_blank"><i class="fab fa-instagram"></i></a><a href="#" id="userIcon"><i class="fas fa-user"></i></a><a href="#" id="cartIcon"><i class="fas fa-shopping-cart"></i><span class="cart-count" id="cartCount">0</span></a></div><div class="menu-toggle" id="menuToggle"><i class="fas fa-bars" id="menuIcon"></i></div></div></nav>
 
-    <header class="page-header"><div class="container"><h1>من نحن</h1><p>تعرف على قصة متجر Healtha ورسالتنا في توفير الأدوات الطبية عالية الجودة</p></div></header>
+    <header class="page-header"><div class="container"><h1>خدماتنا</h1><p>خدمات مميزة لتجربة تسوق أفضل</p></div></header>
 
     <section class="content-page"><div class="container">
-        <div class="content-section"><h2>قصة تأسيس Healtha</h2><p>تأسس متجر Healtha عام 2025 برؤية طموحة لتوفير الأدوات الطبية والأجهزة الصحية عالية الجودة في اليمن. جاءت الفكرة من الحاجة الملحة لمنتجات طبية موثوقة بأسعار مناسبة.</p><p>بدأنا برحلة بحث وتطوير للعثور على أفضل الموردين والمصنعين من مختلف أنحاء العالم، مع التركيز على الجودة والفعالية والأسعار المناسبة للجميع.</p></div>
-        <div class="content-section"><h2>رؤيتنا</h2><p>أن نكون المتجر الرائد في توفير الأدوات الطبية والأجهزة الصحية في اليمن، ونشر الوعي بأهمية الرعاية الصحية المنزلية.</p></div>
-        <div class="content-section"><h2>رسالتنا</h2><p>توفير منتجات طبية عالية الجودة بأسعار مناسبة، مع تقديم استشارات مهنية لمساعدة عملائنا على اختيار المنتجات المناسبة لاحتياجاتهم الصحية.</p></div>
-        <div class="content-section"><h2>قيمنا</h2><div class="values-grid"><div class="value-card"><div class="value-icon"><i class="fas fa-award"></i></div><h3>الجودة</h3><p>نضمن أن جميع منتجاتنا أصلية وذات جودة عالية</p></div><div class="value-card"><div class="value-icon"><i class="fas fa-handshake"></i></div><h3>الثقة</h3><p>نبني علاقات طويلة الأمد مع عملائنا</p></div><div class="value-card"><div class="value-icon"><i class="fas fa-heart"></i></div><h3>الرعاية</h3><p>نهتم حقاً بصحة عملائنا</p></div><div class="value-card"><div class="value-icon"><i class="fas fa-bullseye"></i></div><h3>الابتكار</h3><p>نسعى لتقديم أحدث المنتجات والتقنيات</p></div></div></div>
+        <div class="content-section"><h2>خدمات متكاملة لراحتكم</h2><p>في Healtha، نقدم مجموعة من الخدمات المصممة خصيصاً لراحتكم وضمان تجربة تسوق ممتازة.</p></div>
+        <div class="services-grid">
+            <div class="service-card"><div class="service-icon"><i class="fas fa-shipping-fast"></i></div><h3>توصيل سريع</h3><p>توصيل سريع وآمن لجميع أنحاء عدن خلال 24-48 ساعة. توصيل مجاني للطلبات فوق 50$.</p></div>
+            <div class="service-card"><div class="service-icon"><i class="fas fa-headset"></i></div><h3>دعم فني واستشارات</h3><p>فريق دعم متخصص للإجابة على استفساراتكم وتقديم النصائح الطبية عبر الواتساب والهاتف.</p></div>
+            <div class="service-card"><div class="service-icon"><i class="fas fa-exchange-alt"></i></div><h3>سياسة الإرجاع</h3><p>إرجاع أو استبدال خلال 7 أيام من تاريخ الاستلام بشرط أن يكون المنتج بحالته الأصلية.</p></div>
+            <div class="service-card"><div class="service-icon"><i class="fas fa-gift"></i></div><h3>برنامج الولاء</h3><p>نقاط على كل عملية شراء، خصومات حصرية للأعضاء، وهدايا مجانية مع الطلبات الكبيرة.</p></div>
+            <div class="service-card"><div class="service-icon"><i class="fas fa-box"></i></div><h3>تغليف هدايا</h3><p>تغليف احترافي للمنتجات كهدايا مع إمكانية إضافة بطاقة تهنئة مخصصة.</p></div>
+            <div class="service-card"><div class="service-icon"><i class="fas fa-calendar-check"></i></div><h3>طلبات دورية</h3><p>نظام طلبات دورية للمنتجات المستهلكة بانتظام مع تخفيض 15% وإمكانية التعديل في أي وقت.</p></div>
+        </div>
     </div></section>
 
     <footer class="footer"><div class="container"><div class="footer-grid"><div class="footer-column"><h3>Healtha</h3><p>متجر متخصص في توفير الأدوات الطبية والأجهزة الصحية</p><div class="social-icons"><a href="https://wa.me/967779217474"><i class="fab fa-whatsapp"></i></a><a href="https://www.instagram.com/x5tai"><i class="fab fa-instagram"></i></a><a href="mailto:Hadirynasser@gmail.com"><i class="fas fa-envelope"></i></a></div></div><div class="footer-column"><h3>روابط سريعة</h3><ul><li><a href="index.html">الرئيسية</a></li><li><a href="products.html">المنتجات</a></li><li><a href="categories.html">الفئات</a></li><li><a href="contact.html">اتصل بنا</a></li></ul></div><div class="footer-column"><h3>الفئات</h3><ul><li><a href="products.html?category=الأجهزة الطبية">الأجهزة الطبية</a></li><li><a href="products.html?category=أدوات القياس">أدوات القياس</a></li><li><a href="products.html?category=مستلزمات العناية">مستلزمات العناية</a></li></ul></div><div class="footer-column"><h3>معلومات الاتصال</h3><ul><li><i class="fas fa-map-marker-alt"></i> عدن - اليمن</li><li><i class="fas fa-phone"></i> +967 779 217 474</li><li><i class="fas fa-envelope"></i> Hadirynasser@gmail.com</li></ul></div></div><div class="copyright"><p>&copy; 2026 Healtha. جميع الحقوق محفوظة.</p></div></div></footer>
@@ -140,15 +156,16 @@
         function openCart() { renderCart(); document.getElementById('cartModal').classList.add('active'); document.getElementById('cartOverlay').classList.add('active'); document.body.classList.add('modal-open'); }
         function closeCart() { document.getElementById('cartModal').classList.remove('active'); document.getElementById('cartOverlay').classList.remove('active'); document.body.classList.remove('modal-open'); }
         function getSession(){try{return JSON.parse(localStorage.getItem('healtha_session'));}catch(e){return null;}}
+        function showToast(msg,type){let t=document.createElement('div');t.className='toast '+(type||'');t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.classList.add('show'),10);setTimeout(()=>{t.classList.remove('show');setTimeout(()=>t.remove(),300);},2500);}
         document.getElementById('cartIcon').addEventListener('click', e=>{e.preventDefault();openCart();});
         document.getElementById('closeCart').addEventListener('click',closeCart);
         document.getElementById('cartOverlay').addEventListener('click',closeCart);
-        document.getElementById('checkoutBtn').addEventListener('click',function(){if(cart.length===0){alert('السلة فارغة');return;}let s=getSession();if(!s){alert('الرجاء تسجيل الدخول');window.location.href='login.html';return;}let msg='*طلب جديد من Healtha*\n\n';let total=0;cart.forEach((item,i)=>{let q=item.quantity||1;total+=item.price*q;msg+=(i+1)+'. '+item.name+' ×'+q+' = '+item.price*q+'$\n';});msg+='\n*الإجمالي:* '+total+'$';window.open('https://wa.me/967779217474?text='+encodeURIComponent(msg),'_blank');});
+        document.getElementById('checkoutBtn').addEventListener('click',function(){if(cart.length===0){showToast('السلة فارغة','error');return;}let s=getSession();if(!s){showToast('الرجاء تسجيل الدخول أولاً','error');window.location.href='login.html';return;}let msg='*طلب جديد من Healtha*\n\n';let total=0;cart.forEach((item,i)=>{let q=item.quantity||1;total+=item.price*q;msg+=(i+1)+'. '+item.name+' ×'+q+' = '+item.price*q+'$\n';});msg+='\n*الإجمالي:* '+total+'$';window.open('https://wa.me/967779217474?text='+encodeURIComponent(msg),'_blank');});
         document.getElementById('userIcon').addEventListener('click', e=>{e.preventDefault();let s=getSession();window.location.href=s?'dashboard.html':'login.html';});
         updateCartCount();
         let menuOpen=false;
-        document.getElementById('menuToggle').addEventListener('click',()=>{menuOpen=!menuOpen;document.getElementById('navLinks').classList.toggle('active');document.getElementById('menuIcon').className=menuOpen?'fas fa-times':'fas fa-bars';});
-        document.querySelectorAll('#navLinks a').forEach(l=>l.addEventListener('click',()=>{menuOpen=false;document.getElementById('navLinks').classList.remove('active');document.getElementById('menuIcon').className='fas fa-bars';}));
+        document.getElementById('menuToggle').addEventListener('click',()=>{menuOpen=!menuOpen;document.getElementById('navLinks').classList.toggle('active');document.getElementById('menuIcon').className=menuOpen?'fas fa-times':'fas fa-bars';document.body.classList.toggle('modal-open',menuOpen);});
+        document.querySelectorAll('#navLinks a').forEach(l=>l.addEventListener('click',()=>{menuOpen=false;document.getElementById('navLinks').classList.remove('active');document.getElementById('menuIcon').className='fas fa-bars';document.body.classList.remove('modal-open');}));
     })();
     </script>
 </body>

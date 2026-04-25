@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Healtha - حسابي</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+    <style>
+        :root {
+            --primary: #0D9488;
+            --primary-dark: #0F766E;
+            --accent: #F59E0B;
+            --bg: #F8FAFC;
+            --bg-white: #FFFFFF;
+            --text: #0F172A;
+            --text-secondary: #64748B;
+            --border: #E2E8F0;
+            --danger: #EF4444;
+            --shadow: 0 1px 3px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 16px rgba(0,0,0,0.1);
+            --radius: 12px;
+            --radius-sm: 8px;
+            --radius-lg: 16px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --font: 'Tajawal', sans-serif;
+        }
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.7; }
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+        .container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 16px; }
+
+        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 20px; border-radius: var(--radius-sm); font-weight: 700; cursor: pointer; transition: var(--transition); }
+        .btn-primary { background: var(--primary); color: #fff; }
+        .btn-primary:hover { background: var(--primary-dark); }
+        .btn-outline { background: transparent; border: 2px solid var(--border); color: var(--text-secondary); }
+        .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
+        .btn-danger { background: #FEE2E2; color: #DC2626; border: 2px solid #FECACA; }
+        .btn-danger:hover { background: #EF4444; color: #fff; }
+
+        .store-notice { background: linear-gradient(135deg, var(--accent), #D97706); color: #fff; padding: 10px 0; font-size: 14px; font-weight: 600; text-align: center; display: none; }
+        .store-notice .container { display: flex; align-items: center; justify-content: center; gap: 12px; }
+        .store-notice .close-notice { background: rgba(255,255,255,0.2); width: 28px; height: 28px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
+
+        .top-bar { background: var(--primary-dark); color: #fff; font-size: 13px; padding: 8px 0; display: none; }
+        @media (min-width: 768px) { .top-bar { display: block; } }
+        .top-bar .container { display: flex; justify-content: space-between; align-items: center; }
+
+        .navbar { background: var(--bg-white); position: sticky; top: 0; z-index: 1000; box-shadow: var(--shadow); }
+        .nav-container { display: flex; align-items: center; justify-content: space-between; height: 60px; }
+        .logo a { display: flex; align-items: center; gap: 8px; }
+        .logo i { font-size: 28px; color: var(--primary); }
+        .logo h1 { font-size: 24px; font-weight: 900; background: linear-gradient(135deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .nav-links { display: none; flex-direction: column; position: fixed; top: 60px; right: 0; left: 0; bottom: 0; background: var(--bg-white); padding: 20px; z-index: 999; overflow-y: auto; }
+        .nav-links.active { display: flex; }
+        .nav-links li a { display: block; padding: 14px 16px; border-radius: var(--radius-sm); font-weight: 600; color: var(--text); }
+        .nav-links li a:hover { background: #CCFBF1; color: var(--primary-dark); }
+        .nav-icons { display: flex; align-items: center; gap: 6px; }
+        .nav-icons a { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%; color: #64748B; position: relative; }
+        .cart-count { position: absolute; top: 2px; left: 2px; background: var(--accent); color: #fff; font-size: 10px; font-weight: 800; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .menu-toggle { width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; border-radius: var(--radius-sm); cursor: pointer; font-size: 20px; }
+        @media (min-width: 1024px) {
+            .menu-toggle { display: none; }
+            .nav-links { display: flex !important; flex-direction: row; position: static; background: none; padding: 0; gap: 4px; }
+            .nav-links li a { padding: 8px 14px; font-size: 14px; }
+        }
+
+        .dashboard-header { background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 50%, #14B8A6 100%); padding: 36px 0; text-align: center; color: #fff; }
+        .dashboard-header h1 { font-size: 24px; font-weight: 900; margin-bottom: 6px; }
+        .dashboard-header p { font-size: 14px; opacity: 0.9; }
+
+        .dashboard-page { padding: 24px 0 50px; }
+        .dashboard-grid { display: flex; flex-direction: column; gap: 20px; }
+        .dashboard-sidebar { order: 2; background: var(--bg-white); border-radius: var(--radius); padding: 24px 20px; box-shadow: var(--shadow); border: 1px solid var(--border); }
+        .user-avatar { width: 72px; height: 72px; border-radius: 50%; margin: 0 auto 12px; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 28px; font-weight: 800; }
+        .dashboard-sidebar h3 { font-size: 18px; font-weight: 800; text-align: center; margin-bottom: 4px; }
+        .dashboard-sidebar p { font-size: 13px; color: var(--text-secondary); text-align: center; margin-bottom: 16px; }
+        .dashboard-menu { margin-top: 20px; border-top: 1px solid var(--border); padding-top: 16px; }
+        .dashboard-menu li { margin-bottom: 8px; }
+        .dashboard-menu a { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: var(--radius-sm); color: var(--text-secondary); font-weight: 600; transition: var(--transition); }
+        .dashboard-menu a:hover, .dashboard-menu a.active { background: #CCFBF1; color: var(--primary); }
+        .dashboard-content { order: 1; }
+        .dashboard-section { display: none; background: var(--bg-white); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); border: 1px solid var(--border); }
+        .dashboard-section.active { display: block; }
+        .dashboard-section h2 { font-size: 18px; font-weight: 900; margin-bottom: 20px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 24px; }
+        .stat-card { background: var(--bg); border-radius: var(--radius); padding: 16px; display: flex; align-items: center; gap: 12px; border: 1px solid var(--border); }
+        .stat-icon { width: 48px; height: 48px; border-radius: var(--radius-sm); background: linear-gradient(135deg, var(--primary), var(--primary-dark)); display: flex; align-items: center; justify-content: center; }
+        .stat-icon i { font-size: 20px; color: #fff; }
+        .stat-info h3 { font-size: 20px; font-weight: 900; }
+        .stat-info p { font-size: 12px; color: var(--text-secondary); }
+        .order-item { background: var(--bg); border-radius: var(--radius-sm); padding: 14px; margin-bottom: 10px; border: 1px solid var(--border); }
+        .order-header { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 8px; }
+        .order-id { font-weight: 800; }
+        .order-date { font-size: 12px; color: var(--text-light); }
+        .order-status { padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+        .status-pending { background: #FEF3C7; color: #92400E; }
+        .status-processing { background: #DBEAFE; color: #1E40AF; }
+        .status-shipped { background: #CCFBF1; color: #0F766E; }
+        .status-delivered { background: #D1FAE5; color: #065F46; }
+        .order-total { font-weight: 700; color: var(--primary-dark); margin-top: 8px; }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; margin-bottom: 6px; font-weight: 700; font-size: 14px; }
+        .form-group input { width: 100%; padding: 12px 14px; border: 2px solid var(--border); border-radius: var(--radius-sm); font-size: 14px; }
+        .form-group input:focus { border-color: var(--primary); outline: none; }
+        @media (min-width: 768px) { .dashboard-grid { flex-direction: row; } .dashboard-sidebar { order: 1; width: 260px; } .dashboard-content { order: 2; flex: 1; } }
+
+        .footer { background: #0F172A; color: #CBD5E1; padding: 48px 0 0; margin-top: 40px; }
+        .footer-grid { display: grid; grid-template-columns: 1fr; gap: 32px; padding-bottom: 32px; }
+        .footer-column h3 { font-size: 18px; font-weight: 800; color: #fff; margin-bottom: 16px; }
+        .social-icons { display: flex; gap: 10px; margin-top: 16px; }
+        .social-icons a { width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; color: #94A3B8; }
+        .social-icons a:hover { background: var(--primary); color: #fff; }
+        .copyright { border-top: 1px solid rgba(255,255,255,0.08); padding: 20px 0; text-align: center; }
+        .copyright p { font-size: 13px; color: #64748B; }
+        @media (min-width: 640px) { .footer-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (min-width: 1024px) { .footer-grid { grid-template-columns: 2fr 1fr 1fr 1.5fr; } }
+
+        .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(100px); background: #0F172A; color: #fff; padding: 12px 24px; border-radius: 12px; font-size: 14px; font-weight: 600; z-index: 5000; transition: transform 0.35s ease; }
+        .toast.show { transform: translateX(-50%) translateY(0); }
+        .toast.success { background: #059669; }
+    </style>
+</head>
+<body>
+
+    <div class="store-notice" id="storeNotice"><div class="container"><i class="fas fa-bullhorn"></i><span id="noticeText"></span><span class="close-notice" id="closeNotice"><i class="fas fa-times"></i></span></div></div>
+
+    <div class="top-bar"><div class="container"><div><span><i class="fas fa-phone"></i> +967 779 217 474</span><span style="margin-right:16px;"><i class="fas fa-envelope"></i> Hadirynasser@gmail.com</span></div><div class="shipping-info">شحن مجاني داخل عدن</div></div></div>
+
+    <nav class="navbar"><div class="container nav-container"><div class="logo"><a href="index.html"><i class="fas fa-stethoscope"></i><h1>Healtha</h1></a></div><ul class="nav-links" id="navLinks"><li><a href="index.html">الرئيسية</a></li><li><a href="products.html">المنتجات</a></li><li><a href="categories.html">الفئات</a></li><li><a href="about.html">من نحن</a></li><li><a href="services.html">الخدمات</a></li><li><a href="contact.html">اتصل بنا</a></li><li><a href="login.html">تسجيل الدخول</a></li><li><a href="admin-login.html">لوحة التحكم</a></li></ul><div class="nav-icons"><a href="https://www.instagram.com/x5tai" target="_blank"><i class="fab fa-instagram"></i></a><a href="#" id="userIcon"><i class="fas fa-user"></i></a><a href="#" id="cartIcon"><i class="fas fa-shopping-cart"></i><span class="cart-count" id="cartCount">0</span></a></div><div class="menu-toggle" id="menuToggle"><i class="fas fa-bars" id="menuIcon"></i></div></div></nav>
+
+    <header class="dashboard-header"><div class="container"><h1><i class="fas fa-user-circle"></i> حسابي</h1><p>مرحباً بعودتك، <span id="userName"></span></p></div></header>
+
+    <section class="dashboard-page"><div class="container"><div class="dashboard-grid">
+        <div class="dashboard-sidebar"><div class="user-avatar" id="userAvatar">?</div><h3 id="sidebarName"></h3><p id="sidebarEmail"></p><button class="btn btn-outline" id="logoutBtn" style="width:100%;"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</button>
+        <ul class="dashboard-menu" id="dashboardMenu"><li><a href="#" class="active" data-section="dashboard"><i class="fas fa-tachometer-alt"></i> نظرة عامة</a></li><li><a href="#" data-section="orders"><i class="fas fa-shopping-bag"></i> طلباتي</a></li><li><a href="#" data-section="profile"><i class="fas fa-user-edit"></i> الملف الشخصي</a></li></ul></div>
+        <div class="dashboard-content"><div class="dashboard-section active" id="dashboardSection"><h2>نظرة عامة</h2><div class="stats-grid"><div class="stat-card"><div class="stat-icon"><i class="fas fa-shopping-bag"></i></div><div class="stat-info"><h3 id="ordersCount">0</h3><p>الطلبات</p></div></div><div class="stat-card"><div class="stat-icon"><i class="fas fa-coins"></i></div><div class="stat-info"><h3>0</h3><p>نقاط المكافآت</p></div></div></div><div class="recent-orders"><h3>آخر الطلبات</h3><div id="recentOrders"></div></div></div>
+        <div class="dashboard-section" id="ordersSection"><h2>طلباتي</h2><div id="allOrders"></div></div>
+        <div class="dashboard-section" id="profileSection"><h2>الملف الشخصي</h2><form id="profileForm"><div class="form-group"><label>الاسم الكامل</label><input type="text" id="profileName" required></div><div class="form-group"><label>البريد الإلكتروني</label><input type="email" id="profileEmail" disabled></div><div class="form-group"><label>رقم الهاتف</label><input type="tel" id="profilePhone" placeholder="7XXXXXXXX"></div><button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> حفظ التغييرات</button></form></div></div>
+    </div></div></section>
+
+    <footer class="footer"><div class="container"><div class="footer-grid"><div class="footer-column"><h3>Healtha</h3><p>متجر متخصص في توفير الأدوات الطبية والأجهزة الصحية</p><div class="social-icons"><a href="https://wa.me/967779217474"><i class="fab fa-whatsapp"></i></a><a href="https://www.instagram.com/x5tai"><i class="fab fa-instagram"></i></a></div></div><div class="footer-column"><h3>روابط سريعة</h3><ul><li><a href="index.html">الرئيسية</a></li><li><a href="products.html">المنتجات</a></li><li><a href="categories.html">الفئات</a></li><li><a href="contact.html">اتصل بنا</a></li></ul></div></div><div class="copyright"><p>&copy; 2026 Healtha. جميع الحقوق محفوظة.</p></div></div></footer>
+
+    <script>
+    (function() {
+        let currentSession = null;
+        let allOrders = [];
+
+        function loadStoreNotice() { try { let n = JSON.parse(localStorage.getItem('healtha_store_notice') || '{"text":"مرحباً بكم في Healtha","active":true}'); if (n.active && n.text) { document.getElementById('storeNotice').style.display = 'block'; document.getElementById('noticeText').textContent = n.text; } } catch(e) {} }
+        document.getElementById('closeNotice')?.addEventListener('click', () => document.getElementById('storeNotice').style.display = 'none');
+        loadStoreNotice();
+
+        function getSession() { try { return JSON.parse(localStorage.getItem('healtha_session')); } catch(e) { return null; } }
+        function saveSession(s) { localStorage.setItem('healtha_session', JSON.stringify(s)); }
+        function clearSession() { localStorage.removeItem('healtha_session'); }
+
+        function loadOrders() { let orders = JSON.parse(localStorage.getItem('healtha_orders') || '[]'); allOrders = orders.filter(o => o.customerEmail === currentSession.userEmail || o.customerName === currentSession.userName); displayOrders(); }
+
+        function displayOrders() { let container = document.getElementById('allOrders'); let recentContainer = document.getElementById('recentOrders'); document.getElementById('ordersCount').textContent = allOrders.length; if (allOrders.length === 0) { let empty = '<div style="text-align:center;padding:40px;"><i class="fas fa-box-open"></i><p>لا توجد طلبات بعد</p></div>'; if (container) container.innerHTML = empty; if (recentContainer) recentContainer.innerHTML = empty; return; }
+            let recentHtml = allOrders.slice(0, 3).map(o => `<div class="order-item"><div class="order-header"><span class="order-id">#${o.orderId}</span><span class="order-date">${o.date}</span><span class="order-status status-${o.status === 'قيد الانتظار' ? 'pending' : 'processing'}">${o.status}</span></div><div class="order-total">الإجمالي: ${o.total}$</div></div>`).join('');
+            let allHtml = allOrders.map(o => `<div class="order-item"><div class="order-header"><span class="order-id">#${o.orderId}</span><span class="order-date">${o.date}</span><span class="order-status status-${o.status === 'قيد الانتظار' ? 'pending' : 'processing'}">${o.status}</span></div><div class="order-total">الإجمالي: ${o.total}$</div></div>`).join('');
+            if (recentContainer) recentContainer.innerHTML = recentHtml;
+            if (container) container.innerHTML = allHtml;
+        }
+
+        function updateProfile() { document.getElementById('userName').textContent = currentSession.userName; document.getElementById('sidebarName').textContent = currentSession.userName; document.getElementById('sidebarEmail').textContent = currentSession.userEmail; document.getElementById('profileName').value = currentSession.userName; document.getElementById('profileEmail').value = currentSession.userEmail; document.getElementById('profilePhone').value = currentSession.userPhone || ''; let avatarEl = document.getElementById('userAvatar'); avatarEl.innerHTML = (currentSession.userName?.substring(0,2) || 'م'); }
+
+        function saveProfile(name, phone) { currentSession.userName = name; currentSession.userPhone = phone; saveSession(currentSession); let users = JSON.parse(localStorage.getItem('healtha_users') || '[]'); let user = users.find(u => u.email === currentSession.userEmail); if (user) { user.name = name; user.phone = phone; localStorage.setItem('healtha_users', JSON.stringify(users)); } updateProfile(); }
+
+        function showToast(msg, type) { let t = document.createElement('div'); t.className = 'toast ' + type; t.textContent = msg; document.body.appendChild(t); setTimeout(() => t.classList.add('show'), 10); setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 300); }, 2500); }
+
+        function switchSection(name) { document.querySelectorAll('#dashboardMenu a').forEach(a => a.classList.remove('active')); document.querySelector(`#dashboardMenu a[data-section="${name}"]`).classList.add('active'); document.querySelectorAll('.dashboard-section').forEach(s => s.classList.remove('active')); document.getElementById(name + 'Section').classList.add('active'); }
+
+        let cart = JSON.parse(localStorage.getItem('healtha_cart') || '[]');
+        function updateCartCount() { document.getElementById('cartCount').textContent = cart.reduce((s,i)=>s+(i.quantity||1),0); }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            let session = getSession();
+            if (!session) { window.location.href = 'login.html'; return; }
+            currentSession = session;
+            updateProfile();
+            loadOrders();
+            updateCartCount();
+
+            document.getElementById('logoutBtn').addEventListener('click', () => { clearSession(); window.location.href = 'login.html'; });
+            document.getElementById('profileForm').addEventListener('submit', (e) => { e.preventDefault(); let newName = document.getElementById('profileName').value.trim(); let newPhone = document.getElementById('profilePhone').value.trim(); if (!newName) { showToast('الاسم مطلوب', 'error'); return; } saveProfile(newName, newPhone); showToast('تم حفظ التغييرات', 'success'); });
+            document.querySelectorAll('#dashboardMenu a').forEach(a => a.addEventListener('click', (e) => { e.preventDefault(); switchSection(a.dataset.section); }));
+            document.getElementById('userIcon').addEventListener('click', (e) => { e.preventDefault(); window.location.href = 'dashboard.html'; });
+            document.getElementById('cartIcon').addEventListener('click', (e) => { e.preventDefault(); window.location.href = 'products.html'; });
+
+            let menuOpen = false;
+            document.getElementById('menuToggle').addEventListener('click', () => { menuOpen = !menuOpen; document.getElementById('navLinks').classList.toggle('active'); document.getElementById('menuIcon').className = menuOpen ? 'fas fa-times' : 'fas fa-bars'; });
+            document.querySelectorAll('#navLinks a').forEach(l => l.addEventListener('click', () => { menuOpen = false; document.getElementById('navLinks').classList.remove('active'); document.getElementById('menuIcon').className = 'fas fa-bars'; }));
+        });
+    })();
+    </script>
+</body>
+</html>
