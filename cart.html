@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>تهيئة البيانات الكاملة - Healtha</title>
+</head>
+<body>
+    <h1>جاري تهيئة قاعدة البيانات...</h1>
+    <div id="status"></div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    <script>
+        const firebaseConfig = {
+            databaseURL: "https://medical-54ab4-default-rtdb.firebaseio.com/"
+        };
+        
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        async function initializeData() {
+            try {
+            
+                await database.ref('categories').set(categories);
+
+               
+                await database.ref('products').set(products);
+
+        
+                await database.ref('users').set(users);
+
+                // Add settings
+                const settings = {
+                    storeName: "Healtha",
+                    logo: "",
+                    phone: "966555555555",
+                    email: "info@healtha.com",
+                    address: "الرياض، المملكة العربية السعودية - حي الملقا - طريق الملك فهد",
+                    currency: "SAR"
+                };
+                await database.ref('settings').set(settings);
+
+                document.getElementById('status').innerHTML = `
+                    <h2 style="color: green;">✅ تمت تهيئة جميع البيانات بنجاح!</h2>
+                    <div style="margin: 20px 0; padding: 20px; background: #f0f9ff; border-radius: 10px;">
+                        <h3>معلومات تسجيل الدخول للوحة التحكم:</h3>
+                        <p>📧 البريد: admin@healtha.com</p>
+                        <p>🔑 كلمة المرور: admin123</p>
+                    </div>
+                    <h3>الصفحات المتاحة:</h3>
+                    <ul>
+                        <li><a href="index.html">🏠 الصفحة الرئيسية</a></li>
+                        <li><a href="products.html">📦 المنتجات</a></li>
+                        <li><a href="categories.html">🏷️ الفئات</a></li>
+                        <li><a href="about.html">ℹ️ عن المتجر</a></li>
+                        <li><a href="contact.html">📞 اتصل بنا</a></li>
+                        <li><a href="cart.html">🛒 سلة التسوق</a></li>
+                        <li><a href="admin.html">⚙️ لوحة التحكم</a></li>
+                        <li><a href="login.html">🔐 تسجيل الدخول</a></li>
+                    </ul>
+                    <p style="margin-top: 20px;"><strong>كود خصم للتجربة:</strong> HEALTHA2024 (خصم 10%)</p>
+                `;
+            } catch (error) {
+                document.getElementById('status').innerHTML = `<h2 style="color: red;">❌ حدث خطأ: ${error.message}</h2>`;
+            }
+        }
+
+        initializeData();
+    </script>
+</body>
+</html>

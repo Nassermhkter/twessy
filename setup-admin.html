@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إعداد المدير - Healtha</title>
+    <style>
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: linear-gradient(135deg, #CCFBF1, #E0F2FE);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+        h1 { color: #0F766E; margin-bottom: 10px; font-size: 28px; }
+        p { color: #64748B; margin-bottom: 30px; }
+        
+        .step {
+            background: #F8FAFC;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 15px 0;
+            text-align: right;
+            border-right: 4px solid #0D9488;
+        }
+        .step h3 { color: #0F766E; margin-bottom: 10px; }
+        .step code {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 10px;
+            display: block;
+            border-radius: 8px;
+            margin: 10px 0;
+            direction: ltr;
+            text-align: left;
+            font-size: 14px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 15px 40px;
+            margin: 10px;
+            border: none;
+            border-radius: 50px;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            text-decoration: none;
+        }
+        .btn-primary { background: #0D9488; color: white; }
+        .btn-primary:hover { background: #0F766E; transform: translateY(-2px); }
+        .btn-success { background: #27ae60; color: white; }
+        .btn-warning { background: #F59E0B; color: white; }
+        
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 12px;
+            display: none;
+            text-align: right;
+        }
+        .success { background: #D1FAE5; color: #065F46; display: block; }
+        .error { background: #FEE2E2; color: #991B1B; display: block; }
+        .info { background: #DBEAFE; color: #1E40AF; display: block; }
+        
+        .loading {
+            display: none;
+            color: #0D9488;
+            font-size: 18px;
+            margin: 20px 0;
+        }
+        .loading.show { display: block; }
+        
+        .spinner {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border: 3px solid #0D9488;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-left: 10px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 إعداد متجر Healtha</h1>
+        <p>اتبع الخطوات التالية لتشغيل المتجر</p>
+
+        <div class="step">
+            <h3>📌 الخطوة 1: تغيير صلاحيات Firebase</h3>
+            <p>اذهب إلى لوحة تحكم Firebase > Realtime Database > Rules</p>
+            <p>والصق الكود التالي ثم اضغط Publish:</p>
+            <code>{
+  "rules": {
+    ".read": true,
+    ".write": true
+  }
+}</code>
+            <a href="https://console.firebase.google.com/project/medical-54ab4/database/medical-54ab4-default-rtdb/rules" target="_blank" class="btn btn-warning" style="font-size: 14px; padding: 10px 20px;">
+                🔗 فتح لوحة تحكم Firebase
+            </a>
+        </div>
+
+        <div class="step">
+            <h3>📌 الخطوة 2: إنشاء حساب المدير</h3>
+            <p>اضغط الزر التالي لإنشاء حساب المدير تلقائياً:</p>
+            <button class="btn btn-primary" onclick="setupAdmin()">
+                🛠️ إنشاء حساب المدير
+            </button>
+            <div class="loading" id="loading">
+                <span class="spinner"></span> جاري الإعداد...
+            </div>
+            <div class="result" id="result"></div>
+        </div>
+
+        <div class="step" id="loginStep" style="display: none;">
+            <h3>✅ تم الإعداد بنجاح!</h3>
+            <p>يمكنك الآن تسجيل الدخول:</p>
+            <p><strong>البريد:</strong> admin@healtha.com</p>
+            <p><strong>كلمة المرور:</strong> admin123</p>
+            <a href="login.html" class="btn btn-success">🔐 الذهاب إلى تسجيل الدخول</a>
+            <a href="index.html" class="btn btn-primary">🏠 الذهاب للمتجر</a>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    <script>
+        const firebaseConfig = {
+            databaseURL: "https://medical-54ab4-default-rtdb.firebaseio.com/"
+        };
+        
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        async function setupAdmin() {
+            const loading = document.getElementById('loading');
+            const result = document.getElementById('result');
+            
+            loading.classList.add('show');
+            result.style.display = 'none';
+            result.className = 'result';
+            
+            try {
+                // محاولة إنشاء بيانات المدير
+                const adminData = {
+                    name: "مدير المتجر",
+                    email: "admin@healtha.com",
+                    password: "admin123",
+                    phone: "0500000000",
+                    role: "admin",
+                    createdAt: Date.now(),
+                    lastLogin: Date.now()
+                };
+
+                // محاولة إنشاء مستخدم جديد
+                await database.ref('users').push(adminData);
+                
+                // إنشاء بيانات العميل التجريبي
+                const customerData = {
+                    name: "عميل تجريبي",
+                    email: "customer@healtha.com",
+                    password: "123456",
+                    phone: "0500000001",
+                    role: "customer",
+                    createdAt: Date.now(),
+                    lastLogin: Date.now()
+                };
+                await database.ref('users').push(customerData);
+
+                // إنشاء الفئات
+                await database.ref('categories').set({
+                    cat1: { name: "أجهزة تشخيص", icon: "🩺", description: "أجهزة التشخيص الطبي" },
+                    cat2: { name: "معدات طبية", icon: "🏥", description: "المعدات والأدوات الطبية" },
+                    cat3: { name: "مستلزمات طبية", icon: "💊", description: "المستلزمات الطبية اليومية" },
+                    cat4: { name: "أجهزة قياس", icon: "📊", description: "أجهزة القياس الحيوي" }
+                });
+
+                // إنشاء منتج تجريبي
+                await database.ref('products').set({
+                    prod1: {
+                        name: "سماعة طبية احترافية",
+                        description: "سماعة طبية عالية الجودة",
+                        price: 150,
+                        category: "أجهزة تشخيص",
+                        image: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400",
+                        stock: 50,
+                        featured: true,
+                        createdAt: Date.now()
+                    }
+                });
+
+                // إنشاء الإعدادات
+                await database.ref('settings').set({
+                    storeName: "Healtha",
+                    logo: "",
+                    phone: "966555555555",
+                    email: "info@healtha.com",
+                    address: "الرياض، المملكة العربية السعودية",
+                    currency: "SAR"
+                });
+
+                result.innerHTML = `
+                    <h3>✅ تم الإعداد بنجاح!</h3>
+                    <p>تم إنشاء جميع البيانات المطلوبة.</p>
+                `;
+                result.className = 'result success';
+                
+                document.getElementById('loginStep').style.display = 'block';
+                
+            } catch (error) {
+                console.error('Setup error:', error);
+                
+                if (error.code === 'PERMISSION_DENIED') {
+                    result.innerHTML = `
+                        <h3>❌ خطأ في الصلاحيات</h3>
+                        <p>يجب تغيير إعدادات Firebase Rules أولاً!</p>
+                        <p>اذهب إلى: Firebase Console > Realtime Database > Rules</p>
+                        <p>وغير القواعد إلى:</p>
+                        <code style="background: #1e293b; color: #e2e8f0; padding: 10px; display: block; border-radius: 8px; margin: 10px 0; direction: ltr; text-align: left;">{
+  "rules": {
+    ".read": true,
+    ".write": true
+  }
+}</code>
+                        <p>ثم اضغط <strong>Publish</strong> وارجع لهذه الصفحة واضغط الزر مرة أخرى.</p>
+                    `;
+                    result.className = 'result error';
+                } else {
+                    result.innerHTML = `
+                        <h3>❌ خطأ</h3>
+                        <p>${error.message}</p>
+                    `;
+                    result.className = 'result error';
+                }
+            }
+            
+            loading.classList.remove('show');
+        }
+
+        // فحص تلقائي
+        database.ref('users').once('value')
+            .then((snapshot) => {
+                if (snapshot.exists()) {
+                    let hasAdmin = false;
+                    snapshot.forEach((child) => {
+                        if (child.val().role === 'admin') hasAdmin = true;
+                    });
+                    if (hasAdmin) {
+                        document.getElementById('loginStep').style.display = 'block';
+                    }
+                }
+            })
+            .catch(() => {});
+    </script>
+</body>
+</html>
