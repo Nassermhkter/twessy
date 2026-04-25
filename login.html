@@ -17,6 +17,7 @@
             --border: #E2E8F0;
             --danger: #EF4444;
             --success: #27ae60;
+            --facebook: #1877F2;
             --shadow-lg: 0 10px 40px rgba(0,0,0,0.15);
             --radius: 16px;
             --radius-sm: 8px;
@@ -175,11 +176,27 @@
             background: white;
             color: #DB4437;
             border: 2px solid #DB4437;
+        }
+
+        .btn-facebook {
+            background: white;
+            color: var(--facebook);
+            border: 2px solid var(--facebook);
+        }
+
+        .btn-google:active, .btn-facebook:active {
+            transform: scale(0.97);
+        }
+
+        .social-buttons {
+            display: flex;
+            gap: 12px;
             margin-top: 15px;
         }
 
-        .btn-google:active {
-            transform: scale(0.97);
+        .social-buttons .btn {
+            margin-top: 0;
+            flex: 1;
         }
 
         .divider {
@@ -259,16 +276,11 @@
             font-size: 14px;
         }
 
-        .back-link a:hover {
-            text-decoration: underline;
-        }
-
         @keyframes spin {
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
         }
 
-        /* Responsive */
         @media (max-width: 480px) {
             .login-card {
                 padding: 20px;
@@ -277,6 +289,10 @@
             .form-row {
                 grid-template-columns: 1fr;
                 gap: 10px;
+            }
+            
+            .social-buttons {
+                flex-direction: column;
             }
             
             .login-header h1 {
@@ -293,7 +309,6 @@
                 <p>تسجيل الدخول أو إنشاء حساب جديد</p>
             </div>
 
-            <!-- Tabs -->
             <div class="tabs">
                 <button class="tab-btn active" onclick="switchTab('login')">تسجيل الدخول</button>
                 <button class="tab-btn" onclick="switchTab('register')">حساب جديد</button>
@@ -317,9 +332,14 @@
 
                 <div class="divider">أو</div>
 
-                <button class="btn btn-google" onclick="handleGoogleLogin()">
-                    <i class="fab fa-google"></i> تسجيل الدخول بحساب Google
-                </button>
+                <div class="social-buttons">
+                    <button class="btn btn-google" onclick="handleGoogleLogin()">
+                        <i class="fab fa-google"></i> Google
+                    </button>
+                    <button class="btn btn-facebook" onclick="handleFacebookLogin()">
+                        <i class="fab fa-facebook-f"></i> Facebook
+                    </button>
+                </div>
 
                 <div class="loading-spinner" id="loginLoading">
                     <i class="fas fa-circle-notch"></i> جاري تسجيل الدخول...
@@ -349,7 +369,8 @@
                     
                     <div class="form-group">
                         <label><i class="fas fa-phone"></i> رقم الجوال</label>
-                        <input type="tel" id="regPhone" placeholder="05xxxxxxxx" required>
+                        <input type="tel" id="regPhone" placeholder="77xxxxxxx أو 78xxxxxxx" required>
+                        <small style="color: var(--text-secondary);">يجب أن يبدأ بـ 77 أو 78 (مثال: 771234567)</small>
                     </div>
                     
                     <div class="form-row">
@@ -401,9 +422,14 @@
 
                 <div class="divider">أو</div>
 
-                <button class="btn btn-google" onclick="handleGoogleRegister()">
-                    <i class="fab fa-google"></i> إنشاء حساب بـ Google
-                </button>
+                <div class="social-buttons">
+                    <button class="btn btn-google" onclick="handleGoogleRegister()">
+                        <i class="fab fa-google"></i> Google
+                    </button>
+                    <button class="btn btn-facebook" onclick="handleFacebookRegister()">
+                        <i class="fab fa-facebook-f"></i> Facebook
+                    </button>
+                </div>
 
                 <div class="loading-spinner" id="registerLoading">
                     <i class="fas fa-circle-notch"></i> جاري إنشاء الحساب...
@@ -418,18 +444,35 @@
         </div>
     </div>
 
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+
     <script>
+        // Firebase Configuration
         const firebaseConfig = {
+            apiKey: "YOUR_API_KEY", // يجب إضافة API Key من Firebase Console
+            authDomain: "medical-54ab4.firebaseapp.com",
+            projectId: "medical-54ab4",
+            storageBucket: "medical-54ab4.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID",
             databaseURL: "https://medical-54ab4-default-rtdb.firebaseio.com/"
         };
         
+        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
         const database = firebase.database();
 
-        // Google OAuth User (محاكاة)
-        let googleUserData = null;
+        // Google Provider
+        const googleProvider = new firebase.auth.GoogleAuthProvider();
+        
+        // Facebook Provider
+        const facebookProvider = new firebase.auth.FacebookAuthProvider();
+        facebookProvider.addScope('email');
+        facebookProvider.addScope('public_profile');
 
         function switchTab(tab) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -462,6 +505,30 @@
             }
         }
 
+        function showToast(message, isError = false) {
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                left: 20px;
+                background: ${isError ? '#EF4444' : '#27ae60'};
+                color: white;
+                padding: 12px 20px;
+                border-radius: 50px;
+                text-align: center;
+                z-index: 9999;
+                animation: slideUp 0.3s ease;
+                font-size: 14px;
+            `;
+            toast.innerHTML = isError ? '❌ ' + message : '✅ ' + message;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
         // تسجيل الدخول العادي
         function handleLogin() {
             const email = document.getElementById('loginEmail').value.trim();
@@ -476,62 +543,44 @@
 
             document.getElementById('loginLoading').classList.add('show');
 
-            database.ref('users').orderByChild('email').equalTo(email).once('value')
-                .then((snapshot) => {
-                    document.getElementById('loginLoading').classList.remove('show');
+            auth.signInWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    const user = userCredential.user;
                     
-                    if (snapshot.exists()) {
-                        let loggedIn = false;
+                    // جلب بيانات المستخدم من قاعدة البيانات
+                    return database.ref(`users/${user.uid}`).once('value').then((snapshot) => {
+                        const userData = snapshot.val() || {};
                         
-                        snapshot.forEach((childSnapshot) => {
-                            const user = childSnapshot.val();
-                            
-                            if (user.password === password) {
-                                loggedIn = true;
-                                
-                                const userData = {
-                                    id: childSnapshot.key,
-                                    email: user.email,
-                                    firstName: user.firstName,
-                                    lastName: user.lastName,
-                                    fullName: `${user.firstName} ${user.lastName}`,
-                                    role: user.role || 'customer',
-                                    phone: user.phone || '',
-                                    city: user.city || '',
-                                    district: user.district || '',
-                                    address: user.address || '',
-                                    birthdate: user.birthdate || '',
-                                    gender: user.gender || ''
-                                };
-                                
-                                localStorage.setItem('user', JSON.stringify(userData));
-                                showMessage('loginSuccess', '✅ تم تسجيل الدخول بنجاح!');
-                                
-                                database.ref(`users/${childSnapshot.key}`).update({
-                                    lastLogin: Date.now()
-                                }).catch(() => {});
-                                
-                                setTimeout(() => {
-                                    if (userData.role === 'admin') {
-                                        window.location.href = 'admin.html';
-                                    } else {
-                                        window.location.href = 'index.html';
-                                    }
-                                }, 800);
+                        const userInfo = {
+                            id: user.uid,
+                            email: user.email,
+                            firstName: userData.firstName || '',
+                            lastName: userData.lastName || '',
+                            fullName: userData.firstName ? `${userData.firstName} ${userData.lastName}` : user.displayName || user.email,
+                            role: userData.role || 'customer',
+                            phone: userData.phone || '',
+                            provider: 'email'
+                        };
+                        
+                        localStorage.setItem('user', JSON.stringify(userInfo));
+                        showMessage('loginSuccess', '✅ تم تسجيل الدخول بنجاح!');
+                        
+                        setTimeout(() => {
+                            if (userInfo.role === 'admin') {
+                                window.location.href = 'admin.html';
+                            } else {
+                                window.location.href = 'index.html';
                             }
-                        });
-                        
-                        if (!loggedIn) {
-                            showMessage('loginError', '❌ كلمة المرور غير صحيحة');
-                        }
-                    } else {
-                        showMessage('loginError', '❌ البريد الإلكتروني غير مسجل');
-                    }
+                        }, 800);
+                    });
                 })
                 .catch((error) => {
                     document.getElementById('loginLoading').classList.remove('show');
-                    console.error('Firebase error:', error);
-                    showMessage('loginError', '❌ خطأ في الاتصال: ' + error.message);
+                    let errorMessage = 'خطأ في تسجيل الدخول';
+                    if (error.code === 'auth/user-not-found') errorMessage = 'البريد الإلكتروني غير مسجل';
+                    else if (error.code === 'auth/wrong-password') errorMessage = 'كلمة المرور غير صحيحة';
+                    else if (error.code === 'auth/invalid-email') errorMessage = 'البريد الإلكتروني غير صحيح';
+                    showMessage('loginError', `❌ ${errorMessage}`);
                 });
         }
 
@@ -540,53 +589,101 @@
             hideAllMessages();
             document.getElementById('loginLoading').classList.add('show');
             
-            // محاكاة تسجيل الدخول بـ Google
-            setTimeout(() => {
-                document.getElementById('loginLoading').classList.remove('show');
-                
-                const googleEmail = prompt('📧 أدخل بريدك الإلكتروني في Google:', 'user@gmail.com');
-                if (!googleEmail) return;
-                
-                const googleName = prompt('👤 أدخل اسمك الكامل:', 'Ahmed Mohammed');
-                
-                database.ref('users').orderByChild('email').equalTo(googleEmail).once('value')
-                    .then((snapshot) => {
-                        if (snapshot.exists()) {
-                            let userFound = false;
-                            snapshot.forEach((childSnapshot) => {
-                                const user = childSnapshot.val();
-                                if (user.provider === 'google' || user.email === googleEmail) {
-                                    userFound = true;
-                                    const userData = {
-                                        id: childSnapshot.key,
-                                        email: user.email,
-                                        firstName: user.firstName,
-                                        lastName: user.lastName,
-                                        fullName: `${user.firstName} ${user.lastName}`,
-                                        role: user.role || 'customer',
-                                        phone: user.phone || '',
-                                        provider: 'google'
-                                    };
-                                    localStorage.setItem('user', JSON.stringify(userData));
-                                    showMessage('loginSuccess', '✅ تم تسجيل الدخول بحساب Google!');
-                                    
-                                    setTimeout(() => {
-                                        window.location.href = 'index.html';
-                                    }, 800);
-                                }
-                            });
-                            
-                            if (!userFound) {
-                                showMessage('loginError', '❌ لا يوجد حساب مرتبط ببريد Google هذا، يرجى إنشاء حساب جديد');
-                            }
-                        } else {
-                            showMessage('loginError', '❌ لا يوجد حساب مرتبط ببريد Google هذا، يرجى إنشاء حساب جديد');
+            auth.signInWithPopup(googleProvider)
+                .then((result) => {
+                    const user = result.user;
+                    
+                    // التحقق من وجود المستخدم في قاعدة البيانات
+                    return database.ref(`users/${user.uid}`).once('value').then((snapshot) => {
+                        if (!snapshot.exists()) {
+                            // إنشاء حساب جديد للمستخدم
+                            const newUser = {
+                                firstName: user.displayName?.split(' ')[0] || '',
+                                lastName: user.displayName?.split(' ')[1] || '',
+                                email: user.email,
+                                phone: user.phoneNumber || '',
+                                role: 'customer',
+                                provider: 'google',
+                                createdAt: Date.now(),
+                                lastLogin: Date.now()
+                            };
+                            return database.ref(`users/${user.uid}`).set(newUser).then(() => newUser);
                         }
-                    })
-                    .catch((error) => {
-                        showMessage('loginError', '❌ خطأ: ' + error.message);
+                        return snapshot.val();
+                    }).then((userData) => {
+                        const userInfo = {
+                            id: user.uid,
+                            email: user.email,
+                            firstName: userData.firstName || '',
+                            lastName: userData.lastName || '',
+                            fullName: user.displayName || user.email,
+                            role: userData.role || 'customer',
+                            phone: userData.phone || '',
+                            provider: 'google'
+                        };
+                        
+                        localStorage.setItem('user', JSON.stringify(userInfo));
+                        showMessage('loginSuccess', '✅ تم تسجيل الدخول بنجاح!');
+                        
+                        setTimeout(() => {
+                            window.location.href = 'index.html';
+                        }, 800);
                     });
-            }, 1000);
+                })
+                .catch((error) => {
+                    document.getElementById('loginLoading').classList.remove('show');
+                    showMessage('loginError', '❌ فشل تسجيل الدخول بـ Google: ' + error.message);
+                });
+        }
+
+        // تسجيل الدخول بـ Facebook
+        function handleFacebookLogin() {
+            hideAllMessages();
+            document.getElementById('loginLoading').classList.add('show');
+            
+            auth.signInWithPopup(facebookProvider)
+                .then((result) => {
+                    const user = result.user;
+                    
+                    return database.ref(`users/${user.uid}`).once('value').then((snapshot) => {
+                        if (!snapshot.exists()) {
+                            const newUser = {
+                                firstName: user.displayName?.split(' ')[0] || '',
+                                lastName: user.displayName?.split(' ')[1] || '',
+                                email: user.email,
+                                phone: '',
+                                role: 'customer',
+                                provider: 'facebook',
+                                createdAt: Date.now(),
+                                lastLogin: Date.now()
+                            };
+                            return database.ref(`users/${user.uid}`).set(newUser).then(() => newUser);
+                        }
+                        return snapshot.val();
+                    }).then((userData) => {
+                        const userInfo = {
+                            id: user.uid,
+                            email: user.email,
+                            firstName: userData.firstName || '',
+                            lastName: userData.lastName || '',
+                            fullName: user.displayName || user.email,
+                            role: userData.role || 'customer',
+                            phone: userData.phone || '',
+                            provider: 'facebook'
+                        };
+                        
+                        localStorage.setItem('user', JSON.stringify(userInfo));
+                        showMessage('loginSuccess', '✅ تم تسجيل الدخول بنجاح!');
+                        
+                        setTimeout(() => {
+                            window.location.href = 'index.html';
+                        }, 800);
+                    });
+                })
+                .catch((error) => {
+                    document.getElementById('loginLoading').classList.remove('show');
+                    showMessage('loginError', '❌ فشل تسجيل الدخول بـ Facebook: ' + error.message);
+                });
         }
 
         // إنشاء حساب جديد
@@ -620,21 +717,17 @@
                 return;
             }
             
-            // التحقق من صحة رقم الجوال
-            if (!phone.match(/^05\d{8}$|^9665\d{8}$/)) {
-                showMessage('registerError', 'رقم الجوال غير صحيح (يجب أن يبدأ بـ 05)');
+            // التحقق من رقم الجوال - يبدأ بـ 77 أو 78 ويتكون من 9 أرقام
+            if (!phone.match(/^(77|78)\d{7}$/)) {
+                showMessage('registerError', 'رقم الجوال غير صحيح (يجب أن يبدأ بـ 77 أو 78 ويتكون من 9 أرقام)');
                 return;
             }
 
             document.getElementById('registerLoading').classList.add('show');
 
-            database.ref('users').orderByChild('email').equalTo(email).once('value')
-                .then((snapshot) => {
-                    if (snapshot.exists()) {
-                        document.getElementById('registerLoading').classList.remove('show');
-                        showMessage('registerError', 'البريد الإلكتروني مسجل بالفعل');
-                        return;
-                    }
+            auth.createUserWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    const user = userCredential.user;
                     
                     const newUser = {
                         firstName: firstName,
@@ -646,127 +739,55 @@
                         address: address,
                         birthdate: birthdate,
                         gender: gender,
-                        password: password,
                         role: 'customer',
                         provider: 'email',
                         createdAt: Date.now(),
                         lastLogin: Date.now()
                     };
                     
-                    database.ref('users').push(newUser)
-                        .then((ref) => {
-                            document.getElementById('registerLoading').classList.remove('show');
-                            
-                            const userData = {
-                                id: ref.key,
-                                email: email,
-                                firstName: firstName,
-                                lastName: lastName,
-                                fullName: `${firstName} ${lastName}`,
-                                role: 'customer',
-                                phone: phone,
-                                city: city,
-                                district: district,
-                                address: address
-                            };
-                            
-                            localStorage.setItem('user', JSON.stringify(userData));
-                            showMessage('registerSuccess', '✅ تم إنشاء الحساب بنجاح!');
-                            
-                            setTimeout(() => {
-                                window.location.href = 'index.html';
-                            }, 1000);
-                        })
-                        .catch((error) => {
-                            document.getElementById('registerLoading').classList.remove('show');
-                            showMessage('registerError', 'خطأ: ' + error.message);
-                        });
+                    return database.ref(`users/${user.uid}`).set(newUser).then(() => newUser);
+                })
+                .then((userData) => {
+                    document.getElementById('registerLoading').classList.remove('show');
+                    
+                    const userInfo = {
+                        id: userData.uid,
+                        email: email,
+                        firstName: firstName,
+                        lastName: lastName,
+                        fullName: `${firstName} ${lastName}`,
+                        role: 'customer',
+                        phone: phone,
+                        city: city,
+                        district: district,
+                        address: address
+                    };
+                    
+                    localStorage.setItem('user', JSON.stringify(userInfo));
+                    showMessage('registerSuccess', '✅ تم إنشاء الحساب بنجاح!');
+                    
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 1000);
                 })
                 .catch((error) => {
                     document.getElementById('registerLoading').classList.remove('show');
-                    showMessage('registerError', 'خطأ في الاتصال: ' + error.message);
+                    let errorMessage = 'حدث خطأ';
+                    if (error.code === 'auth/email-already-in-use') errorMessage = 'البريد الإلكتروني مسجل بالفعل';
+                    else if (error.code === 'auth/invalid-email') errorMessage = 'البريد الإلكتروني غير صحيح';
+                    else if (error.code === 'auth/weak-password') errorMessage = 'كلمة المرور ضعيفة';
+                    showMessage('registerError', `❌ ${errorMessage}`);
                 });
         }
 
         // إنشاء حساب بـ Google
         function handleGoogleRegister() {
-            hideAllMessages();
-            document.getElementById('registerLoading').classList.add('show');
-            
-            setTimeout(() => {
-                const googleEmail = prompt('📧 أدخل بريدك الإلكتروني في Google:', 'user@gmail.com');
-                if (!googleEmail) {
-                    document.getElementById('registerLoading').classList.remove('show');
-                    return;
-                }
-                
-                const googleFirstName = prompt('👤 أدخل اسمك الأول:', 'أحمد');
-                const googleLastName = prompt('👤 أدخل اسمك الأخير:', 'محمد');
-                const googlePhone = prompt('📱 أدخل رقم جوالك:', '05xxxxxxxx');
-                
-                if (!googleFirstName || !googleLastName) {
-                    document.getElementById('registerLoading').classList.remove('show');
-                    showMessage('registerError', 'يرجى إدخال الاسم');
-                    return;
-                }
-                
-                database.ref('users').orderByChild('email').equalTo(googleEmail).once('value')
-                    .then((snapshot) => {
-                        if (snapshot.exists()) {
-                            document.getElementById('registerLoading').classList.remove('show');
-                            showMessage('registerError', 'البريد الإلكتروني مسجل بالفعل، يرجى تسجيل الدخول');
-                            return;
-                        }
-                        
-                        const newUser = {
-                            firstName: googleFirstName,
-                            lastName: googleLastName,
-                            email: googleEmail,
-                            phone: googlePhone || '',
-                            city: '',
-                            district: '',
-                            address: '',
-                            birthdate: '',
-                            gender: '',
-                            password: '',
-                            role: 'customer',
-                            provider: 'google',
-                            createdAt: Date.now(),
-                            lastLogin: Date.now()
-                        };
-                        
-                        database.ref('users').push(newUser)
-                            .then((ref) => {
-                                document.getElementById('registerLoading').classList.remove('show');
-                                
-                                const userData = {
-                                    id: ref.key,
-                                    email: googleEmail,
-                                    firstName: googleFirstName,
-                                    lastName: googleLastName,
-                                    fullName: `${googleFirstName} ${googleLastName}`,
-                                    role: 'customer',
-                                    phone: googlePhone || '',
-                                    provider: 'google'
-                                };
-                                
-                                localStorage.setItem('user', JSON.stringify(userData));
-                                showMessage('registerSuccess', '✅ تم إنشاء الحساب بـ Google بنجاح!');
-                                
-                                setTimeout(() => {
-                                    window.location.href = 'index.html';
-                                }, 1000);
-                            })
-                            .catch((error) => {
-                                document.getElementById('registerLoading').classList.remove('show');
-                                showMessage('registerError', 'خطأ: ' + error.message);
-                            });
-                    })
-                    .catch((error) => {
-                        document.getElementById('registerLoading').classList.remove('show');
-                        showMessage('registerError', 'خطأ: ' + error.message);
-                    });
-            }, 500);
+            handleGoogleLogin();
+        }
+
+        // إنشاء حساب بـ Facebook
+        function handleFacebookRegister() {
+            handleFacebookLogin();
         }
 
         // التحقق من وجود جلسة سابقة
@@ -776,7 +797,6 @@
                 window.location.href = 'admin.html';
             }
             
-            // تعبئة تاريخ الميلاد كحد أقصى
             const birthdateInput = document.getElementById('regBirthdate');
             if (birthdateInput) {
                 const today = new Date();
